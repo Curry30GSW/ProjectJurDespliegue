@@ -68,3 +68,14 @@ function mostrarCamposTrabajo(valor) {
         const campo = document.getElementById('dataCreditoInput');
         campo.style.display = (valor === 'si') ? 'block' : 'none';
       }
+
+      function formatearMoneda(input) {
+        // Eliminar caracteres que no sean números
+        let valor = input.value.replace(/\D/g, '');
+        
+        // Formatear como moneda colombiana
+        valor = new Intl.NumberFormat('es-CO').format(valor);
+    
+        // Mostrar con símbolo de pesos
+        input.value = '$ ' + valor;
+      }

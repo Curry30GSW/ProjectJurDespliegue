@@ -84,21 +84,9 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark" href="../pages/billing.html">
-            <i class="material-symbols-rounded opacity-5">receipt_long</i>
-            <span class="nav-link-text ms-1">Billing</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="../pages/virtual-reality.html">
-            <i class="material-symbols-rounded opacity-5">view_in_ar</i>
-            <span class="nav-link-text ms-1">Virtual Reality</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="../pages/rtl.html">
-            <i class="material-symbols-rounded opacity-5">format_textdirection_r_to_l</i>
-            <span class="nav-link-text ms-1">RTL</span>
+          <a class="nav-link active bg-gradient-dark text-white" href="../pages/clientes.html">
+            <i class="material-symbols-rounded opacity-5">person</i>
+            <span class="nav-link-text ms-1">Clientes</span>
           </a>
         </li>
         <li class="nav-item">
@@ -108,10 +96,10 @@
           </a>
         </li>
         <li class="nav-item mt-3">
-          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Account pages</h6>
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">OPCIONES ADMINISTRADOR</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link active bg-gradient-dark text-white" href="../pages/profile.html">
+          <a class="nav-link text-dark" href="../pages/profile.html">
             <i class="material-symbols-rounded opacity-5">person</i>
             <span class="nav-link-text ms-1">Profile</span>
           </a>
@@ -278,8 +266,9 @@
             <div class="col-md-3 text-center">
               <div class="avatar avatar-xxl position-relative mb-3">
                 <img id="previewImagen" src="../assets/img/avatar.png" alt="Foto de perfil"
-                  class="border-radius-lg shadow w-100">
+                  class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
               </div>
+            
               <!-- Título centrado, en bold y más grande -->
               <label class="fw-bold fs-5 d-block mb-3">Foto de perfil</label>
             
@@ -287,6 +276,7 @@
               <input class="form-control" type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*"
                 onchange="mostrarVistaPrevia(event)">
             </div>
+            
             
 
             <!-- Información -->
@@ -543,7 +533,7 @@
 
                     <div class="col-md-6 mb-3">
                       <label class="form-label fw-bold text-dark">Salario</label>
-                      <input type="number" class="form-control" name="ingresos">
+                      <input type="text" class="form-control" name="ingresos" id="ingresos" oninput="formatearMoneda(this)">
                     </div>
                     <div class="col-md-6 mb-3">
                       <label class="form-label fw-bold text-dark">Adjuntar Desprendible</label>
