@@ -45,6 +45,7 @@
       background-color: #fff !important;
       color: #000 !important;
     }
+
     .form-select {
       border: 1px solid #ced4da !important;
       border-radius: 0.375rem !important;
@@ -53,7 +54,7 @@
       color: #000 !important;
     }
   </style>
-  
+
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -96,7 +97,8 @@
           </a>
         </li>
         <li class="nav-item mt-3">
-          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">OPCIONES ADMINISTRADOR</h6>
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">OPCIONES ADMINISTRADOR
+          </h6>
         </li>
         <li class="nav-item">
           <a class="nav-link text-dark" href="../pages/profile.html">
@@ -268,363 +270,377 @@
                 <img id="previewImagen" src="../assets/img/avatar.png" alt="Foto de perfil"
                   class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
               </div>
-            
+
               <!-- Título centrado, en bold y más grande -->
               <label class="fw-bold fs-5 d-block mb-3">Foto de perfil</label>
-            
+
               <!-- Campo para subir imagen -->
               <input class="form-control" type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*"
                 onchange="mostrarVistaPrevia(event)">
+
+              <input type="hidden" id="fotoPerfilUrl" name="fotoPerfilUrl">
             </div>
-            
-            
+
+
 
             <!-- Información -->
-              <div class="col-md-9">
+            <div class="col-md-9">
 
-                <!-- SECCIÓN: DATOS PERSONALES -->
-                <div class="card mb-4 shadow-sm">
-                  <div class="card-header bg-primary text-white fw-bold">Datos Personales</div>
-                  <div class="card-body row">
-                
-                    <!-- Nombre y Apellidos -->
-                    <div class="col-md-6 mb-3">
-                      <label for="nombre" class="form-label fw-bold text-dark">Nombres</label>
-                      <input type="text" class="form-control" id="nombre" name="nombre" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="apellidos" class="form-label fw-bold text-dark">Apellidos</label>
-                      <input type="text" class="form-control" id="apellidos" name="apellidos" required>
-                    </div>
-                
-                    <!-- Cédula y PDF -->
-                    <div class="col-md-6 mb-3">
-                      <label for="cedula" class="form-label fw-bold text-dark">Cédula</label>
-                      <input type="text" class="form-control" id="cedula" name="cedula" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="archivoPDF" class="form-label fw-bold text-dark">Adjuntar Cedùla (PDF)</label>
-                      <input type="file" class="form-control" id="archivoPDF" name="archivoPDF" accept=".pdf">
-                    </div>
-                
-                    <!-- Dirección y Teléfono -->
-                    <div class="col-md-6 mb-3">
-                      <label for="direccion" class="form-label fw-bold text-dark">Dirección</label>
-                      <input type="text" class="form-control" id="direccion" name="direccion">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="telefono" class="form-label fw-bold text-dark">Teléfono</label>
-                      <input type="text" class="form-control" id="telefono" name="telefono">
-                    </div>
-                
-                    <!-- Sexo y Otro -->
-                    <div class="col-md-6 mb-3">
-                      <label for="sexo" class="form-label fw-bold text-dark">Sexo</label>
-                      <select class="form-select" id="sexo" name="sexo" onchange="toggleOtroSexo(this.value)">
-                        <option disabled selected>Seleccione...</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Femenino">Femenino</option>
-                        <option value="Otro">Otro</option>
-                      </select>
-                    </div>
-                    <div class="col-md-6 mb-3" id="campoOtroSexo" style="display: none;">
-                      <label for="otroSexo" class="form-label fw-bold text-dark">¿Cuál?</label>
-                      <input type="text" class="form-control" id="otroSexo" name="otroSexo">
-                    </div>
-                
-                    <!-- Fecha de nacimiento y Edad -->
-                    <div class="col-md-6 mb-3">
-                      <label for="fechaNacimiento" class="form-label fw-bold text-dark">Fecha de nacimiento</label>
-                      <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" onchange="calcularEdad()">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="edad" class="form-label fw-bold text-dark">Edad</label>
-                      <input type="number" class="form-control" id="edad" name="edad" readonly>
-                    </div>
-                
-                    <!-- Ciudad, Correo, Barrio -->
-                    <div class="col-md-6 mb-3">
-                      <label for="ciudad" class="form-label fw-bold text-dark">Ciudad</label>
-                      <input type="text" class="form-control" id="ciudad" name="ciudad">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="correo" class="form-label fw-bold text-dark">Correo</label>
-                      <input type="email" class="form-control" id="correo" name="correo">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="barrio" class="form-label fw-bold text-dark">Barrio</label>
-                      <input type="text" class="form-control" id="barrio" name="barrio">
-                    </div>
-                
-                    <div class="col-md-6 mb-3">
-                      <label for="estadoCivil" class="form-label fw-bold text-dark">Estado Civil</label>
-                      <select class="form-select" id="estadoCivil" name="estadoCivil">
-                        <option disabled selected>Seleccione...</option>
-                        <option value="Soltero">Soltero</option>
-                        <option value="Casado">Casado</option>
-                        <option value="Unión Libre">Unión Libre</option>
-                        <option value="Separado">Separado</option>
-                        <option value="Divorciado">Divorciado</option>
-                        <option value="Viudo">Viudo</option>
-                      </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="trabaja" class="form-label fw-bold text-dark">Situación laboral</label>
-                      <select class="form-select" id="trabaja" name="trabaja" onchange="mostrarCamposTrabajo(this.value)">
-                        <option disabled selected>Seleccione...</option>
-                        <option value="ACTIVO">ACTIVO</option>
-                        <option value="PENSIONADO">PENSIONADO</option>
-                      </select>
-                    </div>
-                    
-                    <!-- Campos si está ACTIVO -->
-                    <div class="col-md-6 mb-3" id="campoEmpresa" style="display: none;">
-                      <label for="empresa" class="form-label fw-bold text-dark">Empresa</label>
-                      <input type="text" class="form-control" id="empresa" name="empresa">
-                    </div>
-                    
-                    <div class="col-md-6 mb-3" id="campoCargo" style="display: none;">
-                      <label for="cargo" class="form-label fw-bold text-dark">Cargo</label>
-                      <input type="text" class="form-control" id="cargo" name="cargo">
-                    </div>
-                    
-                    <!-- Campo si es PENSIONADO -->
-                    <div class="col-md-6 mb-3" id="campoPagaduria" style="display: none;">
-                      <label for="pagaduria" class="form-label fw-bold text-dark">Pagaduría</label>
-                      <input type="text" class="form-control" id="pagaduria" name="pagaduria">
-                    </div>                  
+              <!-- SECCIÓN: DATOS PERSONALES -->
+              <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white fw-bold">Datos Personales</div>
+                <div class="card-body row">
 
-
+                  <!-- Nombre y Apellidos -->
+                  <div class="col-md-6 mb-3">
+                    <label for="nombre" class="form-label fw-bold text-dark">Nombres</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
                   </div>
-                </div>
-                
-                <!-- SECCIÓN: REFERENCIAS FAMILIARES -->
-                <div class="card mb-4 shadow-sm">
-                  <div class="card-header bg-info text-white fw-bold">Referencias Familiares</div>
-                  <div class="card-body row">
-                    <!-- Fila 1 -->
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                      <input type="text" class="form-control" name="referencia1" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Teléfono</label>
-                      <input type="text" class="form-control" name="telefono_referencia1" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Parentesco</label>
-                      <select class="form-control" name="parentesco1" required>
-                        <option disabled selected>Seleccione Parentesco</option>
-                        <option value="Padre">Padre</option>
-                        <option value="Madre">Madre</option>
-                        <option value="Hermano(a)">Hermano(a)</option>
-                        <option value="Tío(a)">Tío(a)</option>
-                        <option value="Abuelo(a)">Abuelo(a)</option>
-                        <option value="Primo(a)">Primo(a)</option>
-                        <option value="Hijo(a)">Hijo(a)</option>
-                        <option value="Esposo(a)">Esposo(a)</option>
-                        <option value="Sobrino(a)">Sobrino(a)</option>
-                        <option value="Cuñado(a)">Cuñado(a)</option>
-                        <option value="Suegro(a)">Suegro(a)</option>
-                        <option value="Otro">Otro</option>
-                      </select>
-                    </div>
-
-                    <!-- Fila 2 -->
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                      <input type="text" class="form-control" name="referencia2" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Teléfono</label>
-                      <input type="text" class="form-control" name="telefono_referencia2" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Parentesco</label>
-                      <select class="form-control" name="parentesco2" required>
-                        <option disabled selected>Seleccione Parentesco</option>
-                        <option value="Padre">Padre</option>
-                        <option value="Madre">Madre</option>
-                        <option value="Hermano(a)">Hermano(a)</option>
-                        <option value="Tío(a)">Tío(a)</option>
-                        <option value="Abuelo(a)">Abuelo(a)</option>
-                        <option value="Primo(a)">Primo(a)</option>
-                        <option value="Hijo(a)">Hijo(a)</option>
-                        <option value="Esposo(a)">Esposo(a)</option>
-                        <option value="Sobrino(a)">Sobrino(a)</option>
-                        <option value="Cuñado(a)">Cuñado(a)</option>
-                        <option value="Suegro(a)">Suegro(a)</option>
-                        <option value="Otro">Otro</option>
-                      </select>
-                    </div>
-
-                    <!-- Fila 3 (opcional) -->
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                      <input type="text" class="form-control" name="referencia3">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Teléfono</label>
-                      <input type="text" class="form-control" name="telefono_referencia3">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label class="form-label fw-bold text-dark">Parentesco</label>
-                      <select class="form-control" name="parentesco3">
-                        <option disabled selected>Seleccione Parentesco</option>
-                        <option value="Padre">Padre</option>
-                        <option value="Madre">Madre</option>
-                        <option value="Hermano(a)">Hermano(a)</option>
-                        <option value="Tío(a)">Tío(a)</option>
-                        <option value="Abuelo(a)">Abuelo(a)</option>
-                        <option value="Primo(a)">Primo(a)</option>
-                        <option value="Hijo(a)">Hijo(a)</option>
-                        <option value="Esposo(a)">Esposo(a)</option>
-                        <option value="Sobrino(a)">Sobrino(a)</option>
-                        <option value="Cuñado(a)">Cuñado(a)</option>
-                        <option value="Suegro(a)">Suegro(a)</option>
-                        <option value="Otro">Otro</option>
-                      </select>
-                    </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="apellidos" class="form-label fw-bold text-dark">Apellidos</label>
+                    <input type="text" class="form-control" id="apellidos" name="apellidos" required>
                   </div>
-                </div>
 
-                            
-                <!-- SECCIÓN: REFERENCIAS PERSONALES -->
-                <div class="card mb-4 shadow-sm">
-                  <div class="card-header bg-success text-white fw-bold">Referencias Personales</div>
-                  <div class="card-body row">
-                    <!-- Referencia 1 (obligatoria) -->
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                      <input type="text" class="form-control" name="referencia1" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Teléfono</label>
-                      <input type="text" class="form-control" name="telefono_referencia1" required>
-                    </div>
-                
-                    <!-- Referencia 2 (obligatoria) -->
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                      <input type="text" class="form-control" name="referencia2" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Teléfono</label>
-                      <input type="text" class="form-control" name="telefono_referencia2" required>
-                    </div>
-                
-                    <!-- Referencia 3 (opcional) -->
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                      <input type="text" class="form-control" name="referencia3">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Teléfono</label>
-                      <input type="text" class="form-control" name="telefono_referencia3">
-                    </div>
+                  <!-- Cédula y PDF -->
+                  <div class="col-md-6 mb-3">
+                    <label for="cedula" class="form-label fw-bold text-dark">Cédula</label>
+                    <input type="text" class="form-control" id="cedula" name="cedula" required>
                   </div>
-                </div>
-                
-              
-                <!-- SECCIÓN: DATOS FINANCIEROS -->
-                <div class="card mb-4 shadow-sm">
-                  <div class="card-header bg-warning text-dark fw-bold">Datos Financieros</div>
-                  <div class="card-body row">
-
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Salario</label>
-                      <input type="text" class="form-control" name="ingresos" id="ingresos" oninput="formatearMoneda(this)">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold text-dark">Adjuntar Desprendible</label>
-                      <input type="file" class="form-control" name="desprendible" accept="application/pdf">
-                    </div>
-                          <!-- Campo de "Bienes Inmuebles" -->
-                <div class="col-md-6 mb-3">
-                  <label class="form-label fw-bold text-dark">¿Tiene Bienes Inmuebles?</label>
-                  <select class="form-select" name="bienes_inmuebles" id="bienes_inmuebles" onchange="toggleBienesInmueblesInput()">
-                    <option value="no">No</option>
-                    <option value="si">Sí</option>
-                  </select>
-                </div>
-                
-                <!-- Campo de "Adjuntar PDF de Bienes Inmuebles" (solo si tiene bienes inmuebles) -->
-                <div class="col-md-6 mb-3" id="bienInmuebleInputs" style="display: none;">
-                  <label class="form-label fw-bold text-dark">Adjuntar Bienes Inmuebles (PDF)</label>
-                  <input type="file" class="form-control" name="bienesInmuebles[]" accept="application/pdf" multiple>
-                  <small class="text-muted">Puedes agregar varios archivos PDF.</small>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                  <label class="form-label fw-bold text-dark">Data Crédito</label>
-                  <select class="form-select" name="data_credito" id="data_credito" onchange="toggleDataCreditoInput()">
-                    <option value="no">No</option>
-                    <option value="si">Sí</option>
-                  </select>
-                </div>
-            
-                <!-- Adjuntar Data-Crédito -->
-                <div class="col-md-6 mb-3" id="dataCreditoInput" style="display: none;">
-                  <label class="form-label fw-bold text-dark">Adjuntar Data-Crédito (PDF)</label>
-                  <input type="file" class="form-control" name="data_credito_pdf" accept="application/pdf">
-                </div>
-            
+                  <div class="col-md-6 mb-3">
+                    <label for="archivoPDF" class="form-label fw-bold text-dark">Adjuntar Cedùla (PDF)</label>
+                    <input type="file" class="form-control" id="archivoPDF" name="archivoPDF" accept=".pdf">
+                    <input type="hidden" id="archivoPDFUrl" name="archivoPDFUrl">
                   </div>
-                </div>
-            <!-- ASESOR A CARGO -->
-                <div class="mb-4 text-end">
-                  <span class="fw-bold text-secondary">Asesor a Cargo: <span id="asesorNombre">AndresitoCurryBrrr</span></span>
+
+                  <!-- Dirección y Teléfono -->
+                  <div class="col-md-6 mb-3">
+                    <label for="direccion" class="form-label fw-bold text-dark">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="telefono" class="form-label fw-bold text-dark">Teléfono</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono">
+                  </div>
+
+                  <!-- Sexo y Otro -->
+                  <div class="col-md-6 mb-3">
+                    <label for="sexo" class="form-label fw-bold text-dark">Sexo</label>
+                    <select class="form-select" id="sexo" name="sexo" onchange="toggleOtroSexo(this.value)">
+                      <option disabled selected>Seleccione...</option>
+                      <option value="Masculino">Masculino</option>
+                      <option value="Femenino">Femenino</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3" id="campoOtroSexo" style="display: none;">
+                    <label for="otroSexo" class="form-label fw-bold text-dark">¿Cuál?</label>
+                    <input type="text" class="form-control" id="otroSexo" name="otroSexo">
+                  </div>
+
+                  <!-- Fecha de nacimiento y Edad -->
+                  <div class="col-md-6 mb-3">
+                    <label for="fechaNacimiento" class="form-label fw-bold text-dark">Fecha de nacimiento</label>
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento"
+                      onchange="calcularEdad()">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="edad" class="form-label fw-bold text-dark">Edad</label>
+                    <input type="number" class="form-control" id="edad" name="edad" readonly>
+                  </div>
+
+                  <!-- Ciudad, Correo, Barrio -->
+                  <div class="col-md-6 mb-3">
+                    <label for="ciudad" class="form-label fw-bold text-dark">Ciudad</label>
+                    <input type="text" class="form-control" id="ciudad" name="ciudad">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="correo" class="form-label fw-bold text-dark">Correo</label>
+                    <input type="email" class="form-control" id="correo" name="correo">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="barrio" class="form-label fw-bold text-dark">Barrio</label>
+                    <input type="text" class="form-control" id="barrio" name="barrio">
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="estadoCivil" class="form-label fw-bold text-dark">Estado Civil</label>
+                    <select class="form-select" id="estadoCivil" name="estadoCivil" required>
+                      <option value="" disabled selected hidden>Seleccione...</option>
+                      <option value="Soltero">Soltero</option>
+                      <option value="Casado">Casado</option>
+                      <option value="Unión Libre">Unión Libre</option>
+                      <option value="Separado">Separado</option>
+                      <option value="Divorciado">Divorciado</option>
+                      <option value="Viudo">Viudo</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="trabaja" class="form-label fw-bold text-dark">Situación laboral</label>
+                    <select class="form-select" id="trabaja" name="trabaja" onchange="mostrarCamposTrabajo(this.value)">
+                      <option disabled selected>Seleccione...</option>
+                      <option value="1">ACTIVO</option>
+                      <option value="0">PENSIONADO</option>
+                    </select>
+                  </div>
+
+                  <!-- Campos si está ACTIVO -->
+                  <div class="col-md-6 mb-3" id="campoEmpresa" style="display: none;">
+                    <label for="empresa" class="form-label fw-bold text-dark">Empresa</label>
+                    <input type="text" class="form-control" id="empresa" name="empresa">
+                  </div>
+
+                  <div class="col-md-6 mb-3" id="campoCargo" style="display: none;">
+                    <label for="cargo" class="form-label fw-bold text-dark">Cargo</label>
+                    <input type="text" class="form-control" id="cargo" name="cargo">
+                  </div>
+
+                  <!-- Campo si es PENSIONADO -->
+                  <div class="col-md-6 mb-3" id="campoPagaduria" style="display: none;">
+                    <label for="pagaduria" class="form-label fw-bold text-dark">Pagaduría</label>
+                    <input type="text" class="form-control" id="pagaduria" name="pagaduria">
+                  </div>
+
+
                 </div>
               </div>
-          </div>              
+
+              <!-- SECCIÓN: REFERENCIAS FAMILIARES -->
+              <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-info text-white fw-bold">Referencias Familiares</div>
+                <div class="card-body row">
+                  <!-- Fila 1 -->
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                    <input type="text" class="form-control" name="referencia1" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Teléfono</label>
+                    <input type="text" class="form-control" name="telefono_referencia1" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Parentesco</label>
+                    <select class="form-control" name="parentesco1" required>
+                      <option disabled selected>Seleccione Parentesco</option>
+                      <option value="Padre">Padre</option>
+                      <option value="Madre">Madre</option>
+                      <option value="Hermano(a)">Hermano(a)</option>
+                      <option value="Tío(a)">Tío(a)</option>
+                      <option value="Abuelo(a)">Abuelo(a)</option>
+                      <option value="Primo(a)">Primo(a)</option>
+                      <option value="Hijo(a)">Hijo(a)</option>
+                      <option value="Esposo(a)">Esposo(a)</option>
+                      <option value="Sobrino(a)">Sobrino(a)</option>
+                      <option value="Cuñado(a)">Cuñado(a)</option>
+                      <option value="Suegro(a)">Suegro(a)</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+
+                  <!-- Fila 2 -->
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                    <input type="text" class="form-control" name="referencia2" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Teléfono</label>
+                    <input type="text" class="form-control" name="telefono_referencia2" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Parentesco</label>
+                    <select class="form-control" name="parentesco2" required>
+                      <option disabled selected>Seleccione Parentesco</option>
+                      <option value="Padre">Padre</option>
+                      <option value="Madre">Madre</option>
+                      <option value="Hermano(a)">Hermano(a)</option>
+                      <option value="Tío(a)">Tío(a)</option>
+                      <option value="Abuelo(a)">Abuelo(a)</option>
+                      <option value="Primo(a)">Primo(a)</option>
+                      <option value="Hijo(a)">Hijo(a)</option>
+                      <option value="Esposo(a)">Esposo(a)</option>
+                      <option value="Sobrino(a)">Sobrino(a)</option>
+                      <option value="Cuñado(a)">Cuñado(a)</option>
+                      <option value="Suegro(a)">Suegro(a)</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+
+                  <!-- Fila 3 (opcional) -->
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                    <input type="text" class="form-control" name="referencia3">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Teléfono</label>
+                    <input type="text" class="form-control" name="telefono_referencia3">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold text-dark">Parentesco</label>
+                    <select class="form-control" name="parentesco3">
+                      <option disabled selected>Seleccione Parentesco</option>
+                      <option value="Padre">Padre</option>
+                      <option value="Madre">Madre</option>
+                      <option value="Hermano(a)">Hermano(a)</option>
+                      <option value="Tío(a)">Tío(a)</option>
+                      <option value="Abuelo(a)">Abuelo(a)</option>
+                      <option value="Primo(a)">Primo(a)</option>
+                      <option value="Hijo(a)">Hijo(a)</option>
+                      <option value="Esposo(a)">Esposo(a)</option>
+                      <option value="Sobrino(a)">Sobrino(a)</option>
+                      <option value="Cuñado(a)">Cuñado(a)</option>
+                      <option value="Suegro(a)">Suegro(a)</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- SECCIÓN: REFERENCIAS PERSONALES -->
+              <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-success text-white fw-bold">Referencias Personales</div>
+                <div class="card-body row">
+                  <!-- Referencia 1 (obligatoria) -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                    <input type="text" class="form-control" name="referencia1" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Teléfono</label>
+                    <input type="text" class="form-control" name="telefono_referencia1" required>
+                  </div>
+
+                  <!-- Referencia 2 (obligatoria) -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                    <input type="text" class="form-control" name="referencia2" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Teléfono</label>
+                    <input type="text" class="form-control" name="telefono_referencia2" required>
+                  </div>
+
+                  <!-- Referencia 3 (opcional) -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                    <input type="text" class="form-control" name="referencia3">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Teléfono</label>
+                    <input type="text" class="form-control" name="telefono_referencia3">
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- SECCIÓN: DATOS FINANCIEROS -->
+              <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-warning text-dark fw-bold">Datos Financieros</div>
+                <div class="card-body row">
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Salario</label>
+                    <input type="text" class="form-control" name="ingresos" id="ingresos"
+                      oninput="formatearMoneda(this)">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Adjuntar Desprendible</label>
+                    <input type="file" id="desprendible" class="form-control" name="desprendible"
+                      accept="application/pdf">
+                    <input type="hidden" id="desprendibleUrl" name="desprendibleUrl">
+                  </div>
+                  <!-- Campo de "Bienes Inmuebles" -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">¿Tiene Bienes Inmuebles?</label>
+                    <select class="form-select" name="bienes_inmuebles" id="bienes_inmuebles"
+                      onchange="toggleBienesInmueblesInput()">
+                      <option value="no">No</option>
+                      <option value="si">Sí</option>
+                    </select>
+                  </div>
+
+                  <!-- Campo de "Adjuntar PDF de Bienes Inmuebles" (solo si tiene bienes inmuebles) -->
+                  <div class="col-md-6 mb-3" id="bienInmuebleInputs" style="display: none;">
+                    <label class="form-label fw-bold text-dark">Adjuntar Bienes Inmuebles (PDF)</label>
+                    <input type="file" id="bienesInmuebles" class="form-control" name="bienesInmuebles"
+                      accept="application/pdf" multiple>
+                    <input type="hidden" id="bienesInmueblesUrls" name="bienesInmueblesUrls">
+                    <small class="text-muted">Puedes agregar varios archivos PDF.</small>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold text-dark">Data Crédito</label>
+                    <select class="form-select" name="data_credito" id="data_credito"
+                      onchange="toggleDataCreditoInput()">
+                      <option value="no">No</option>
+                      <option value="si">Sí</option>
+                    </select>
+                  </div>
+
+                  <!-- Adjuntar Data-Crédito -->
+                  <div class="col-md-6 mb-3" id="dataCreditoInput" style="display: none;">
+                    <label class="form-label fw-bold text-dark">Adjuntar Data-Crédito (PDF)</label>
+                    <input type="file" id="data_credito_pdf" class="form-control" name="data_credito_pdf"
+                      accept="application/pdf">
+                    <input type="hidden" id="dataCreditoPdfUrl" name="dataCreditoPdfUrl">
+                  </div>
+
+                </div>
+              </div>
+              <!-- ASESOR A CARGO -->
+              <div class="mb-4 text-end">
+                <span class="fw-bold text-secondary">Asesor a Cargo: <span
+                    id="asesorNombre">AndresitoCurryBrrr</span></span>
+              </div>
+            </div>
+          </div>
           <div class="text-end">
             <button type="submit" class="btn btn-dark">Guardar Cliente</button>
           </div>
-            </div>
-            
-          </div>
-
-          
-        </form>
       </div>
+
     </div>
 
 
-    <footer class="footer py-4  ">
-      <div class="container-fluid">
-        <div class="row align-items-center justify-content-lg-between">
-          <div class="col-lg-6 mb-lg-0 mb-4">
-            <div class="copyright text-center text-sm text-muted text-lg-start">
-              ©
-              <script>
-                document.write(new Date().getFullYear())
-              </script>,
-              made with <i class="fa fa-heart"></i> by
-              <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-              for a better web.
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-              <li class="nav-item">
-                <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-              </li>
-              <li class="nav-item">
-                <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About
-                  Us</a>
-              </li>
-              <li class="nav-item">
-                <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-              </li>
-              <li class="nav-item">
-                <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted"
-                  target="_blank">License</a>
-              </li>
-            </ul>
+    </form>
+  </div>
+  </div>
+
+
+  <footer class="footer py-4  ">
+    <div class="container-fluid">
+      <div class="row align-items-center justify-content-lg-between">
+        <div class="col-lg-6 mb-lg-0 mb-4">
+          <div class="copyright text-center text-sm text-muted text-lg-start">
+            ©
+            <script>
+              document.write(new Date().getFullYear())
+            </script>,
+            made with <i class="fa fa-heart"></i> by
+            <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+            for a better web.
           </div>
         </div>
+        <div class="col-lg-6">
+          <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About
+                Us</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted"
+                target="_blank">License</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </footer>
+    </div>
+  </footer>
   </div>
   <div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
@@ -728,7 +744,7 @@
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
 
-<script src="/js/crearCliente.js"></script>
+  <script src="/js/crearCliente.js"></script>
 </body>
 
 </html>
