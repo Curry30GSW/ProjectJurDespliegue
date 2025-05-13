@@ -60,7 +60,10 @@ function obtenerReferenciasPersonales() {
     const telefono = container.querySelector(`input[name=telefono_referencia${i}]`)?.value.trim();
 
     if (nombre && telefono) {
-      personales.push({ nombre, telefono });
+      personales.push({ 
+        personal_nombre: nombre, 
+        personal_telefono: telefono 
+      });
     }
   }
   return personales;
@@ -75,7 +78,11 @@ function obtenerReferenciasFamiliares() {
     const parentesco = container.querySelector(`select[name=parentesco${i}]`)?.value.trim();
 
     if (nombre && telefono && parentesco && parentesco !== 'Seleccione Parentesco') {
-      familiares.push({ nombre, telefono, parentesco });
+      familiares.push({ 
+        familia_nombre: nombre, 
+        familia_telefono: telefono, 
+        parentesco: parentesco 
+      });
     }
   }
   return familiares;
@@ -120,19 +127,19 @@ function formatearMoneda(input) {
   // Restaurar posición del cursor
   input.setSelectionRange(start, end);
 }
+// Obtener el nombre del asesor desde sessionStorage
+const nombreAsesor = sessionStorage.getItem('nombreUsuario');
+  
+  // Si existe, actualizar el elemento en el DOM
+  if (nombreAsesor) {
+    document.getElementById('asesorNombre').textContent = nombreAsesor;
+  } else {
+    console.warn('No se encontró el nombre del asesor en sessionStorage');
+  }
+
 
 // ==========================
-// MANEJO DEL FORMULARIO
-// ==========================
-
-// Extrae referencias familiares desde la tarjeta azul (bg-info)
-// ==========================
-// FUNCIONES DE UI (Mantener igual)
-// ==========================
-// [Todas las funciones de mostrar/ocultar campos, calcularEdad, formatearMoneda, etc. se mantienen igual]
-
-// ==========================
-// MANEJO DEL FORMULARIO - PARTE MODIFICADA
+// MANEJO DEL FORMULARIO 
 // ==========================
 
 // Función optimizada para subir archivos
@@ -269,19 +276,23 @@ async function handleFormSubmit(e) {
       desprendibleUrl: form.desprendibleUrl.value,
       dataCreditoPdfUrl: form.dataCreditoPdfUrl.value,
       bienesInmueblesUrls: form.bienesInmueblesUrls.value,
-      asesor: document.getElementById('asesorNombre').textContent.trim(),
+      asesor: sessionStorage.getItem('nombreUsuario') || 'Nombre por defecto',
       referencias_personales: obtenerReferenciasPersonales(),
       referencias_familiares: obtenerReferenciasFamiliares()
 
     };
 
-    // 3. Enviar datos del cliente
     const result = await enviarDatosCliente(formData);
 
-    // 4. Mostrar resultado
-    alert(`Cliente creado exitosamente con ID: ${result.id}`);
-    form.reset();
-
+    Swal.fire({
+      title: '¡Éxito!',
+      text: `Cliente creado exitosamente con ID: ${result.id}`,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      timer: 3000,
+    }).then(() => {
+      form.reset(); // Limpiar el formulario después de cerrar la alerta
+    });
   } catch (error) {
     console.error('Error en el proceso:', error);
     alert(`Error: ${error.message}`);
