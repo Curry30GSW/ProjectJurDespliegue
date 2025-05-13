@@ -40,15 +40,19 @@ function toggleDataCreditoInput() {
 }
 
 function mostrarVistaPrevia(event) {
-  if (event.target.files && event.target.files[0]) {
+  const input = event.target;
+  const preview = document.getElementById('previewImagen');
+  const previewRef = document.getElementById('previewImagenRef');
+
+  if (input.files && input.files[0]) {
     const reader = new FileReader();
-    reader.onload = function () {
-      const preview = document.getElementById('previewImagen');
-      if (preview) {
-        preview.src = reader.result;
-      }
-    };
-    reader.readAsDataURL(event.target.files[0]);
+
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      if (previewRef) previewRef.src = e.target.result;
+    }
+
+    reader.readAsDataURL(input.files[0]);
   }
 }
 
@@ -60,9 +64,9 @@ function obtenerReferenciasPersonales() {
     const telefono = container.querySelector(`input[name=telefono_referencia${i}]`)?.value.trim();
 
     if (nombre && telefono) {
-      personales.push({ 
-        personal_nombre: nombre, 
-        personal_telefono: telefono 
+      personales.push({
+        personal_nombre: nombre,
+        personal_telefono: telefono
       });
     }
   }
@@ -78,10 +82,10 @@ function obtenerReferenciasFamiliares() {
     const parentesco = container.querySelector(`select[name=parentesco${i}]`)?.value.trim();
 
     if (nombre && telefono && parentesco && parentesco !== 'Seleccione Parentesco') {
-      familiares.push({ 
-        familia_nombre: nombre, 
-        familia_telefono: telefono, 
-        parentesco: parentesco 
+      familiares.push({
+        familia_nombre: nombre,
+        familia_telefono: telefono,
+        parentesco: parentesco
       });
     }
   }
@@ -129,26 +133,129 @@ function formatearMoneda(input) {
 }
 // Obtener el nombre del asesor desde sessionStorage
 const nombreAsesor = sessionStorage.getItem('nombreUsuario');
-  
-  // Si existe, actualizar el elemento en el DOM
-  if (nombreAsesor) {
-    document.getElementById('asesorNombre').textContent = nombreAsesor;
-  } else {
-    console.warn('No se encontró el nombre del asesor en sessionStorage');
+
+// Si existe, actualizar el elemento en el DOM
+if (nombreAsesor) {
+  document.getElementById('asesorNombre').textContent = nombreAsesor;
+} else {
+  console.warn('No se encontró el nombre del asesor en sessionStorage');
+}
+
+
+function validarCamposObligatorios(form) {
+  const camposObligatorios = [
+    { id: 'nombre', nombre: 'Nombres' },
+    { id: 'apellidos', nombre: 'Apellidos' },
+    { id: 'cedula', nombre: 'Cédula' },
+    { id: 'sexo', nombre: 'Sexo' },
+    { id: 'fechaNacimiento', nombre: 'Fecha de nacimiento' },
+    { id: 'estadoCivil', nombre: 'Estado civil' },
+    { id: 'telefono', nombre: 'Teléfono' },
+    { id: 'trabaja', nombre: 'Situación laboral' },
+    { id: 'direccion', nombre: 'Dirección' },
+    { id: 'ciudad', nombre: 'Ciudad' },
+    { id: 'correo', nombre: 'Correo Electronico' },
+    { id: 'barrio', nombre: 'Barrio' },
+    { id: 'ingresos', nombre: 'Salario' }
+  ];
+
+  const archivosObligatorios = [
+    { id: 'archivoPDF', nombre: 'Cédula (PDF)', campoUrl: 'archivoPDFUrl' },
+    { id: 'desprendible', nombre: 'Desprendible de pago', campoUrl: 'desprendibleUrl' }
+  ];
+
+  const camposFaltantes = [];
+  const camposInvalidos = [];
+
+  // Validar campos obligatorios de texto
+  camposObligatorios.forEach(campo => {
+    const elemento = document.getElementById(campo.id);
+    if (!elemento || !elemento.value) {
+      camposFaltantes.push(campo.nombre);
+      if (elemento) {
+        elemento.classList.add('is-invalid');
+      }
+    } else {
+      if (elemento) elemento.classList.remove('is-invalid');
+    }
+  });
+
+  // Validar archivos obligatorios
+  archivosObligatorios.forEach(archivo => {
+    const fileInput = document.getElementById(archivo.id);
+    const urlInput = document.getElementById(archivo.campoUrl);
+
+    // Verificar si no hay archivo seleccionado ni URL previa
+    if ((!fileInput || !fileInput.files[0]) && (!urlInput || !urlInput.value)) {
+      camposFaltantes.push(archivo.nombre);
+      if (fileInput) {
+        fileInput.classList.add('is-invalid');
+      }
+    } else {
+      if (fileInput) fileInput.classList.remove('is-invalid');
+    }
+  });
+
+  // Validar data crédito si está marcado como "Sí"
+  const dataCredito = document.getElementById('data_credito');
+  const dataCreditoPdf = document.getElementById('data_credito_pdf');
+  const dataCreditoUrl = document.getElementById('dataCreditoPdfUrl');
+
+  if (dataCredito && dataCredito.value === 'si') {
+    if ((!dataCreditoPdf || !dataCreditoPdf.files[0]) && (!dataCreditoUrl || !dataCreditoUrl.value)) {
+      camposFaltantes.push('Data crédito (PDF)');
+      if (dataCreditoPdf) {
+        dataCreditoPdf.classList.add('is-invalid');
+      }
+    } else {
+      if (dataCreditoPdf) dataCreditoPdf.classList.remove('is-invalid');
+    }
   }
 
+  // Validar bienes inmuebles si está marcado como "Sí"
+  const bienesInmuebles = document.getElementById('bienes_inmuebles');
+  const bienesInmueblesInput = document.getElementById('bienesInmuebles');
+  const bienesInmueblesUrls = document.getElementById('bienesInmueblesUrls');
+
+  if (bienesInmuebles && bienesInmuebles.value === 'si') {
+    if ((!bienesInmueblesInput || !bienesInmueblesInput.files[0]) && (!bienesInmueblesUrls || !bienesInmueblesUrls.value)) {
+      camposFaltantes.push('Documentos de bienes inmuebles');
+      if (bienesInmueblesInput) {
+        bienesInmueblesInput.classList.add('is-invalid');
+      }
+    } else {
+      if (bienesInmueblesInput) bienesInmueblesInput.classList.remove('is-invalid');
+    }
+  }
+
+  // Validar referencias familiares (mínimo 2)
+  const refFamiliaresCompletas = obtenerReferenciasFamiliares();
+  if (!refFamiliaresCompletas) {
+    camposFaltantes.push('Referencias familiares (mínimo 2 completas)');
+  }
+
+  // Validar referencias personales (mínimo 2)
+  const refPersonalesCompletas = obtenerReferenciasPersonales();
+  if (!refPersonalesCompletas) {
+    camposFaltantes.push('Referencias personales (mínimo 2 completas)');
+  }
+
+  return camposFaltantes;
+}
 
 // ==========================
 // MANEJO DEL FORMULARIO 
 // ==========================
 
 // Función optimizada para subir archivos
-async function subirArchivo(file, tipo) {
+async function subirArchivo(file, tipo, cedula) {
   if (!file) return null;
 
   const formData = new FormData();
   formData.append('file', file);
   formData.append('tipo', tipo);
+  formData.append('cedula', cedula);
+
 
   try {
     const response = await fetch('http://localhost:3000/api/upload', {  // Cambiado a ruta relativa
@@ -201,7 +308,7 @@ async function enviarDatosCliente(formValues) {
 
 // Función principal para manejar el envío del formulario
 async function handleFormSubmit(e) {
-  e.preventDefault();
+  e.preventDefault(); // Esto debe ir AL INICIO de la función
   const form = e.target;
   const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -211,7 +318,25 @@ async function handleFormSubmit(e) {
   submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
 
   try {
-    // 1. Subir archivos en paralelo
+    // 1. Validar campos obligatorios (incluyendo archivos)
+    const camposFaltantes = validarCamposObligatorios(form);
+
+    if (camposFaltantes.length > 0) {
+      // Mostrar alerta con campos faltantes
+      Swal.fire({
+        title: 'Campos incompletos',
+        html: `<div class="text-start">Los siguientes campos son obligatorios:<ul class="mt-2">${camposFaltantes.map(campo => `<li>${campo}</li>`).join('')
+          }</ul></div>`,
+        icon: 'error',
+        confirmButtonText: 'Entendido'
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      return; // Detener la ejecución si hay campos faltantes
+    }
+
+    // 2. Subir archivos en paralelo
     const fileUploads = [];
     const fileFields = [
       { id: 'fotoPerfil', type: 'fotoPerfil', target: 'fotoPerfilUrl' },
@@ -219,13 +344,14 @@ async function handleFormSubmit(e) {
       { id: 'desprendible', type: 'desprendible', target: 'desprendibleUrl' },
       { id: 'data_credito_pdf', type: 'dataCredito', target: 'dataCreditoPdfUrl' }
     ];
+    const cedula = form.cedula.value;
 
     // Subir archivos individuales
     fileFields.forEach(field => {
       const fileInput = document.getElementById(field.id);
       if (fileInput?.files[0]) {
         fileUploads.push(
-          subirArchivo(fileInput.files[0], field.type)
+          subirArchivo(fileInput.files[0], field.type, cedula)
             .then(data => {
               document.getElementById(field.target).value = data.url;
               return data;
@@ -251,7 +377,7 @@ async function handleFormSubmit(e) {
 
     await Promise.all(fileUploads);
 
-    // 2. Preparar datos del formulario
+    // 3. Preparar datos del formulario
     const formData = {
       nombres: form.nombre.value,
       apellidos: form.apellidos.value,
@@ -279,11 +405,12 @@ async function handleFormSubmit(e) {
       asesor: sessionStorage.getItem('nombreUsuario') || 'Nombre por defecto',
       referencias_personales: obtenerReferenciasPersonales(),
       referencias_familiares: obtenerReferenciasFamiliares()
-
     };
 
+    // 4. Enviar datos al servidor
     const result = await enviarDatosCliente(formData);
 
+    // 5. Mostrar mensaje de éxito
     Swal.fire({
       title: '¡Éxito!',
       text: `Cliente creado exitosamente con ID: ${result.id}`,
@@ -295,7 +422,12 @@ async function handleFormSubmit(e) {
     });
   } catch (error) {
     console.error('Error en el proceso:', error);
-    alert(`Error: ${error.message}`);
+    Swal.fire({
+      title: 'Error',
+      text: error.message || 'Ocurrió un error al guardar el cliente',
+      icon: 'error',
+      confirmButtonText: 'Entendido'
+    });
   } finally {
     submitBtn.disabled = false;
     submitBtn.innerHTML = originalText;
