@@ -24,7 +24,7 @@ if (!token) {
 
 document.addEventListener('DOMContentLoaded', async function () {
     if (!token) {
-        window.location.href = '../../../conciliacion/login/login.html';
+        window.location.href = '../pages/login.html';
         return;
     }
     async function obtenerClientes() {
@@ -148,4 +148,432 @@ $(document).on('click', '.foto-cliente', function () {
 
     const modal = new bootstrap.Modal(document.getElementById('modalFoto'));
     modal.show();
+});
+
+
+document.querySelector('#tablaClientes tbody').addEventListener('click', function (e) {
+    const boton = e.target.closest('.ver-detalle');
+    if (boton) {
+        const cedula = boton.getAttribute('data-cedula');
+        const fila = boton.closest('tr');
+        const foto = fila.querySelector('.foto-cliente')?.getAttribute('data-src');
+
+        fetch(`http://localhost:3000/api/clientes/${cedula}`)
+            .then(response => response.json())
+            .then(cliente => {
+                // Llenar datos en el modal
+                llenarModalDetalle(cliente, foto);
+
+                // Mostrar el modal
+                const modal = new bootstrap.Modal(document.getElementById('modalVerDetalle'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error al obtener los detalles:', error);
+                mostrarError('Error al cargar los datos del cliente');
+            });
+    }
+});
+
+function llenarModalDetalle(cliente, fotoUrl) {
+    // Foto de perfil
+    const fotoPerfil = document.getElementById('detalleFotoPerfil');
+    fotoPerfil.src = cliente.foto_perfil
+        ? `http://localhost:3000${cliente.foto_perfil}`
+        : (fotoUrl || '../assets/img/avatar.png');
+
+
+    // Datos personales
+    document.getElementById('detalleNombre').value = cliente.nombres || 'No registrado';
+    document.getElementById('detalleApellidos').value = cliente.apellidos || 'No registrado';
+    document.getElementById('detalleCedula').value = cliente.cedula || 'No registrado';
+    document.getElementById('detalleTelefono').value = cliente.telefono || 'No registrado';
+    document.getElementById('detalleCorreo').value = cliente.correo || 'No registrado';
+    document.getElementById('detalleDireccion').value = cliente.direccion || 'No registrado';
+    document.getElementById('detalleCiudad').value = cliente.ciudad || 'No registrado';
+    document.getElementById('detalleBarrio').value = cliente.barrio || 'No registrado';
+    document.getElementById('detalleSexo').value = cliente.sexo || 'No registrado';
+    if (cliente.fecha_nac) {
+        const fecha = new Date(cliente.fecha_nac);
+
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = fecha.toLocaleString('es-CO', { month: 'short' });
+        const anio = fecha.getFullYear();
+
+        const mesFormateado = mes.charAt(0).toUpperCase() + mes.slice(1).replace('.', '');
+
+        const fechaFormateada = `${dia}/${mesFormateado}/${anio}`;
+        document.getElementById('detalleFechaNacimiento').value = fechaFormateada;
+    } else {
+        document.getElementById('detalleFechaNacimiento').value = 'No registrado';
+    }
+
+    document.getElementById('detalleEdad').value = cliente.edad || 'No registrado';
+    document.getElementById('detalleEstCivil').value = cliente.estado_civil || 'No registrado';
+
+    // Datos financieros
+    document.getElementById('detalleSalario').value = cliente.salario ?
+        '$' + cliente.salario.toLocaleString('es-CO') : 'No registrado';
+
+    const situacionLaboral = cliente.laboral == 1 ? 'ACTIVO' : 'PENSIONADO';
+    document.getElementById('detalleSituacionLaboral').value = situacionLaboral;
+
+    document.getElementById('detalleEmpresa').value = cliente.empresa || 'No registrado';
+    document.getElementById('detalleCargo').value = cliente.cargo || 'No registrado';
+    document.getElementById('detallePagaduria').value = cliente.pagaduria || 'No registrado';
+
+    // Mostrar/ocultar campos según situación laboral
+    if (cliente.laboral == 1) {
+        document.getElementById('detalleEmpresaContainer').style.display = 'block';
+        document.getElementById('detalleCargoContainer').style.display = 'block';
+        document.getElementById('detallePagaduriaContainer').style.display = 'none';
+    } else {
+        document.getElementById('detalleEmpresaContainer').style.display = 'none';
+        document.getElementById('detalleCargoContainer').style.display = 'none';
+        document.getElementById('detallePagaduriaContainer').style.display = 'block';
+    }
+
+    // Documentos PDF
+    actualizarBotonPDF('detalleCedulaPDF', cliente.cedula_pdf, 'Ver Cédula');
+    actualizarBotonPDF('detalleDesprendible', cliente.desprendible, 'Ver Desprendible');
+
+    // Bienes inmuebles
+    const bienesInmueblesDiv = document.getElementById('detalleBienesInmuebles');
+    if (cliente.bienes === "1") {
+        // Aquí deberías hacer otra solicitud para obtener los PDFs de bienes inmuebles
+        // Por ahora mostramos un mensaje genérico
+        bienesInmueblesDiv.innerHTML = `
+            <span class="text-success fw-bold">El cliente reporta tener bienes inmuebles</span>
+            <small class="text-muted d-block">(Los documentos deben ser consultados)</small>
+        `;
+    } else {
+        bienesInmueblesDiv.innerHTML = '<span class="text-muted">El cliente no reporta bienes inmuebles</span>';
+    }
+
+    // Data crédito
+    const dataCreditoDiv = document.getElementById('detalleDataCredito');
+    if (cliente.datacred === "1") {
+        // Aquí deberías hacer otra solicitud para obtener el PDF de data crédito
+        // Por ahora mostramos un mensaje genérico
+        dataCreditoDiv.innerHTML = `
+            <span class="text-success fw-bold">El cliente tiene data crédito registrado</span>
+            <small class="text-muted d-block">(El documento debe ser consultado)</small>
+        `;
+    } else {
+        dataCreditoDiv.innerHTML = '<span class="text-muted">El cliente no tiene data crédito registrado</span>';
+    }
+
+    // Asesor
+    document.getElementById('detalleAsesor').value = cliente.asesor || 'No asignado';
+
+    // Fecha de vinculación
+    if (cliente.fecha_vinculo) {
+        const fecha = new Date(cliente.fecha_vinculo);
+
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = fecha.toLocaleString('es-CO', { month: 'short' }); // ejemplo: "may."
+        const anio = fecha.getFullYear();
+
+        // Quitar el punto final en el mes (si lo tiene)
+        const mesFormateado = mes.charAt(0).toUpperCase() + mes.slice(1).replace('.', '');
+
+        const fechaFormateada = `${dia}/${mesFormateado}/${anio}`;
+        document.getElementById('detalleFechaVinculo').value = fechaFormateada;
+    } else {
+        document.getElementById('detalleFechaVinculo').value = 'No registrada';
+    }
+
+
+    // Estado del cliente
+    const estadoCliente = cliente.estado == 0 ? 'Activo' : 'Inactivo';
+    document.getElementById('detalleEstadoCliente').value = estadoCliente;
+
+    // Motivo de retiro (si aplica)
+    document.getElementById('detalleMotivoRetiro').value = cliente.motivo_retiro || 'No aplica';
+
+
+    // Llenar referencias familiares
+    if (cliente.referencias_familiares) {
+        const refsFamiliares = cliente.referencias_familiares;
+
+        for (let i = 0; i < 3; i++) {
+            const nombreInput = document.getElementById(`detalleRefFam${i + 1}`);
+            const telInput = document.getElementById(`detalleRefFamTel${i + 1}`);
+            const parentescoInput = document.getElementById(`detalleRefFamParentesco${i + 1}`);
+
+            if (refsFamiliares[i]) {
+                nombreInput.value = refsFamiliares[i].familia_nombre || '';
+                telInput.value = refsFamiliares[i].familia_telefono || '';
+                parentescoInput.value = refsFamiliares[i].parentesco || '';
+
+                // Mostrar el campo por si estaba oculto
+                nombreInput.parentElement.style.display = '';
+                telInput.parentElement.style.display = '';
+                parentescoInput.parentElement.style.display = '';
+            } else {
+                // Limpiar y ocultar campos si no hay datos
+                nombreInput.value = '';
+                telInput.value = '';
+                parentescoInput.value = '';
+
+                nombreInput.parentElement.style.display = 'none';
+                telInput.parentElement.style.display = 'none';
+                parentescoInput.parentElement.style.display = 'none';
+            }
+        }
+    }
+
+    // Llenar referencias personales
+    if (cliente.referencias_personales) {
+        const refsPersonales = cliente.referencias_personales;
+
+        for (let i = 0; i < 3; i++) {
+            const nombreInput = document.getElementById(`detalleRefPer${i + 1}`);
+            const telInput = document.getElementById(`detalleRefPerTel${i + 1}`);
+
+            if (refsPersonales[i]) {
+                nombreInput.value = refsPersonales[i].personal_nombre || '';
+                telInput.value = refsPersonales[i].personal_telefono || '';
+
+                nombreInput.parentElement.style.display = '';
+                telInput.parentElement.style.display = '';
+            } else {
+                nombreInput.value = '';
+                telInput.value = '';
+
+                nombreInput.parentElement.style.display = 'none';
+                telInput.parentElement.style.display = 'none';
+            }
+        }
+    }
+
+}
+
+function actualizarBotonPDF(elementId, url, textoBoton) {
+    const elemento = document.getElementById(elementId);
+    if (url) {
+        const fullUrl = url.startsWith('http') ? url : `http://localhost:3000${url}`;
+        elemento.innerHTML = `
+            <a href="${fullUrl}" target="_blank" class="btn btn-danger btn-lg">
+                <i class="fas fa-file-pdf me-1"></i> ${textoBoton}
+            </a>
+        `;
+    } else {
+        elemento.innerHTML = '<span class="text-muted">No hay documento adjunto</span>';
+    }
+}
+
+
+function mostrarError(mensaje) {
+    // Implementar lógica para mostrar errores al usuario
+    console.error(mensaje);
+    alert(mensaje);
+}
+
+
+
+// Evento para el botón Editar
+$(document).on('click', '.editar-cliente', function () {
+    const cedula = $(this).data('cedula');
+
+    // Obtener datos del cliente desde la API
+    $.get(`http://localhost:3000/api/clientes/${cedula}`, function (cliente) {
+        const salarioFormateado = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0
+        }).format(cliente.salario);
+        // Habilitar/deshabilitar motivo de retiro según estado
+        $('#editarEstado').change(function () {
+            if ($(this).val() === '1') { // Inactivo
+                $('#editarMotivoRetiro').prop('disabled', false);
+                // Si viene el motivo de retiro, lo carga en el input
+                if (cliente.motivo_retiro) {
+                    $('#editarMotivoRetiro').val(cliente.motivo_retiro);
+                }
+            } else { // Activo
+                $('#editarMotivoRetiro').prop('disabled', true);
+                $('#editarMotivoRetiro').val('');
+            }
+        });
+
+        // Llenar el formulario con los datos del cliente
+        $('#editarNombre').val(cliente.nombres);
+        $('#editarApellidos').val(cliente.apellidos);
+        $('#editarCedula').val(cliente.cedula);
+        $('#editarTelefono').val(cliente.telefono);
+        $('#editarCorreo').val(cliente.correo);
+        $('#editarDireccion').val(cliente.direccion);
+        $('#editarCiudad').val(cliente.ciudad);
+        $('#editarBarrio').val(cliente.barrio);
+        $('#editarSexo').val(cliente.sexo);
+        $('#editarSalario').val(salarioFormateado);
+        $('#editarEmpresa').val(cliente.empresa);
+        $('#editarCargo').val(cliente.cargo);
+        $('#editarPagaduria').val(cliente.pagaduria);
+        if (cliente.laboral === 1) {
+            $('#editarSituacionLaboral').val('ACTIVO').trigger('change');
+        } else {
+            $('#editarSituacionLaboral').val('PENSIONADO').trigger('change');
+        }
+        $('#editarEstado').val(cliente.estado.toString()).trigger('change');
+
+
+
+
+        // Mostrar referencias familiares
+        // Limpiar los contenedores primero
+        $('#contenedorReferenciasFamiliares .card-body').empty();
+        $('#contenedorReferenciasPersonales .card-body').empty();
+
+        // Mostrar referencias familiares
+        cliente.referencias_familiares.forEach((ref, index) => {
+            const html = `
+                <div class="mb-3">
+                <label class="form-label fw-bold">Referencia Familiar ${index + 1}:</label>
+                <input type="hidden" name="ref_fam_id${index + 1}" value="${ref.id_referencia}">
+                <input type="text" class="form-control mb-2" name="ref_fam${index + 1}" value="${ref.familia_nombre}">
+                <div class="row">
+                    <div class="col-md-6">
+                    <input type="text" class="form-control mb-2" name="ref_fam_tel${index + 1}" value="${ref.familia_telefono}" placeholder="Teléfono">
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text" class="form-control" name="ref_fam_parentesco${index + 1}" value="${ref.parentesco}" placeholder="Parentesco">
+                    </div>
+                </div>
+                </div>
+            `;
+            $('#contenedorReferenciasFamiliares .card-body').append(html);
+        });
+
+
+        // Mostrar referencias personales
+        cliente.referencias_personales.forEach((ref, index) => {
+            const html = `
+                <div class="mb-3">
+                <label class="form-label fw-bold">Referencia Personal ${index + 1}:</label>
+                <input type="hidden" name="ref_per_id${index + 1}" value="${ref.id_referenciaFa}">
+                <input type="text" class="form-control mb-2" name="ref_per${index + 1}" value="${ref.personal_nombre}">
+                <input type="text" class="form-control" name="ref_per_tel${index + 1}" value="${ref.personal_telefono}" placeholder="Teléfono">
+                </div>
+            `;
+            $('#contenedorReferenciasPersonales .card-body').append(html);
+        });
+
+
+
+        // Mostrar la foto de perfil si existe
+        if (cliente.foto_perfil) {
+            $('#editarFotoPerfil').attr('src', `http://localhost:3000${cliente.foto_perfil}`);
+        }
+
+        // Mostrar el modal
+        $('#modalEditarCliente').modal('show');
+    }).fail(function () {
+        mostrarError('No se pudo cargar la información del cliente');
+    });
+});
+
+// Evento para enviar el formulario de edición
+$('#formEditarCliente').submit(function (e) {
+    e.preventDefault();
+
+    // Obtener los datos del formulario
+    const datos = {
+        nombres: $('#editarNombre').val(),
+        apellidos: $('#editarApellidos').val(),
+        telefono: $('#editarTelefono').val(),
+        correo: $('#editarCorreo').val(),
+        direccion: $('#editarDireccion').val(),
+        ciudad: $('#editarCiudad').val(),
+        barrio: $('#editarBarrio').val(),
+        salario: $('#editarSalario').val(),
+        empresa: $('#editarEmpresa').val(),
+        cargo: $('#editarCargo').val(),
+        pagaduria: $('#editarPagaduria').val(),
+        laboral: $('#editarSituacionLaboral').val()
+
+    };
+
+    const referencias_familiares = [];
+    const referencias_personales = [];
+
+    // Familiares
+    for (let i = 1; i <= 3; i++) {
+        referencias_familiares.push({
+            id_referencia: $(`[name=ref_fam_id${i}]`).val(),
+            familia_nombre: $(`[name=ref_fam${i}]`).val(),
+            familia_telefono: $(`[name=ref_fam_tel${i}]`).val(),
+            parentesco: $(`[name=ref_fam_parentesco${i}]`).val()
+        });
+    }
+
+    // Personales
+    for (let i = 1; i <= 3; i++) {
+        referencias_personales.push({
+            id_referenciaFa: $(`[name=ref_per_id${i}]`).val(),
+            personal_nombre: $(`[name=ref_per${i}]`).val(),
+            personal_telefono: $(`[name=ref_per_tel${i}]`).val()
+        });
+    }
+
+    // Crear FormData para manejar archivos
+    const formData = new FormData();
+
+    // Agregar datos al FormData
+    for (const key in datos) {
+        formData.append(key, datos[key]);
+    }
+
+    // Agregar referencias
+    formData.append('referencias_familiares', JSON.stringify(referencias_familiares));
+    formData.append('referencias_personales', JSON.stringify(referencias_personales));
+
+    // Agregar archivos si se seleccionaron
+    const fotoPerfil = $('#inputFotoPerfil')[0].files[0];
+    if (fotoPerfil) {
+        formData.append('foto_perfil', fotoPerfil);
+    }
+
+    const cedulaPDF = $('#inputCedulaPDF')[0].files[0];
+    if (cedulaPDF) {
+        formData.append('cedula_pdf', cedulaPDF);
+    }
+
+    // Enviar datos a la API
+    $.ajax({
+        url: `/api/clientes/${$('#editarCedula').val()}`,
+        type: 'PUT',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            mostrarExito('Cliente actualizado correctamente');
+            $('#modalEditarCliente').modal('hide');
+            cargarClientes();
+        },
+        error: function () {
+            mostrarError('Error al actualizar el cliente');
+        }
+    });
+});
+
+
+
+
+$('#editarSituacionLaboral').change(function () {
+    const situacion = $(this).val();
+
+    if (situacion === 'ACTIVO') {
+        $('#editarEmpresa').prop('disabled', false);
+        $('#editarCargo').prop('disabled', false);
+        $('#editarPagaduria').prop('disabled', true).val('');
+    } else if (situacion === 'PENSIONADO') {
+        $('#editarEmpresa').prop('disabled', true).val('');
+        $('#editarCargo').prop('disabled', true).val('');
+        $('#editarPagaduria').prop('disabled', false);
+    } else {
+        // Si no se selecciona nada
+        $('#editarEmpresa, #editarCargo, #editarPagaduria').prop('disabled', true).val('');
+    }
 });

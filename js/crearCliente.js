@@ -248,6 +248,31 @@ function validarCamposObligatorios(form) {
 // ==========================
 
 // Función optimizada para subir archivos
+async function verificarCedula(cedula) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/clientes/${cedula}`);
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.existe || true; // cliente existe
+    }
+
+    // Si es 404, significa que no existe: OK para crear
+    if (response.status === 404) {
+      return false;
+    }
+
+    // Otros errores sí son críticos
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error ${response.status} al verificar cédula`);
+  } catch (error) {
+    console.error('Error al verificar cédula:', error);
+    throw error;
+  }
+}
+
+
+
 async function subirArchivo(file, tipo, cedula) {
   if (!file) return null;
 
@@ -308,7 +333,7 @@ async function enviarDatosCliente(formValues) {
 
 // Función principal para manejar el envío del formulario
 async function handleFormSubmit(e) {
-  e.preventDefault(); // Esto debe ir AL INICIO de la función
+  e.preventDefault();
   const form = e.target;
   const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -322,18 +347,33 @@ async function handleFormSubmit(e) {
     const camposFaltantes = validarCamposObligatorios(form);
 
     if (camposFaltantes.length > 0) {
-      // Mostrar alerta con campos faltantes
       Swal.fire({
         title: 'Campos incompletos',
-        html: `<div class="text-start">Los siguientes campos son obligatorios:<ul class="mt-2">${camposFaltantes.map(campo => `<li>${campo}</li>`).join('')
-          }</ul></div>`,
+        html: `<div class="text-start">Los siguientes campos son obligatorios:<ul class="mt-2">${camposFaltantes.map(campo => `<li>${campo}</li>`).join('')}</ul></div>`,
         icon: 'error',
         confirmButtonText: 'Entendido'
       });
 
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
-      return; // Detener la ejecución si hay campos faltantes
+      return;
+    }
+
+    const cedula = form.cedula.value;
+
+    // Verificar si la cédula ya está registrada
+    const cedulaExiste = await verificarCedula(cedula);
+    if (cedulaExiste) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Ya existe un cliente con esa cédula. No se puede subir el archivo.',
+        icon: 'error',
+        confirmButtonText: 'Entendido'
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      return; // Detener la ejecución si la cédula ya existe
     }
 
     // 2. Subir archivos en paralelo
@@ -344,9 +384,8 @@ async function handleFormSubmit(e) {
       { id: 'desprendible', type: 'desprendible', target: 'desprendibleUrl' },
       { id: 'data_credito_pdf', type: 'dataCredito', target: 'dataCreditoPdfUrl' }
     ];
-    const cedula = form.cedula.value;
 
-    // Subir archivos individuales
+    // Subir archivos solo si no hay cédula duplicada
     fileFields.forEach(field => {
       const fileInput = document.getElementById(field.id);
       if (fileInput?.files[0]) {
@@ -359,21 +398,6 @@ async function handleFormSubmit(e) {
         );
       }
     });
-
-    // Subir múltiples archivos de bienes inmuebles
-    const bienesInmueblesInput = document.getElementById('bienesInmuebles');
-    if (bienesInmueblesInput?.files.length > 0) {
-      const bienesUploads = Array.from(bienesInmueblesInput.files).map(file =>
-        subirArchivo(file, 'bienesInmuebles')
-      );
-      fileUploads.push(
-        Promise.all(bienesUploads)
-          .then(results => {
-            const urls = results.map(r => r.url).filter(Boolean);
-            document.getElementById('bienesInmueblesUrls').value = JSON.stringify(urls);
-          })
-      );
-    }
 
     await Promise.all(fileUploads);
 
@@ -418,7 +442,7 @@ async function handleFormSubmit(e) {
       confirmButtonText: 'Aceptar',
       timer: 3000,
     }).then(() => {
-      form.reset(); // Limpiar el formulario después de cerrar la alerta
+      form.reset();
     });
   } catch (error) {
     console.error('Error en el proceso:', error);
@@ -433,6 +457,7 @@ async function handleFormSubmit(e) {
     submitBtn.innerHTML = originalText;
   }
 }
+
 
 // Inicialización del formulario
 function inicializarFormulario() {

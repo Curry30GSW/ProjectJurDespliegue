@@ -25492,6 +25492,12 @@ hr.horizontal.gray-light {
     margin-bottom: 1.5px;
   }
 
+  .sidenav {
+  position: fixed !important; /* para que esté fijo */
+  z-index: 1030 !important; /* un valor estándar debajo del modal */
+}
+
+
   .navbar-vertical.navbar-expand-xxl .navbar-nav .nav-link .nav-link-text,
   .navbar-vertical.navbar-expand-xxl .navbar-nav .nav-link .sidenav-mini-icon,
   .navbar-vertical.navbar-expand-xxl .navbar-nav .nav-link .sidenav-normal,
