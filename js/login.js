@@ -48,7 +48,7 @@ document.getElementById('btnLogin').addEventListener('click', async function () 
                     timer: 2000,
                     showConfirmButton: false,
                 }).then(() => {
-                    window.location.href = '/pages/dashboard.html';
+                    window.location.href = '/pages/clientes.html';
                 });
 
             } else if (['Gerencia', 'Coordinacion', 'admin'].includes(rolUsuario)) {
@@ -60,7 +60,7 @@ document.getElementById('btnLogin').addEventListener('click', async function () 
                     timer: 2000,
                     showConfirmButton: false,
                 }).then(() => {
-                    window.location.href = '/pages/dashboard.html';
+                    window.location.href = '/pages/clientes.html';
                 });
             } else if (rolUsuario === 'Jefatura') {
                 sessionStorage.setItem('hideOnbushTes', 'true'); // Según necesidad
@@ -71,7 +71,7 @@ document.getElementById('btnLogin').addEventListener('click', async function () 
                     timer: 2000,
                     showConfirmButton: false,
                 }).then(() => {
-                    window.location.href = '/pages/dashboard.html';
+                    window.location.href = '/pages/clientes.html';
                 });
             } else {
                 Swal.fire({

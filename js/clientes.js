@@ -176,6 +176,8 @@ document.querySelector('#tablaClientes tbody').addEventListener('click', functio
 });
 
 function llenarModalDetalle(cliente, fotoUrl) {
+    console.log(cliente);
+
     // Foto de perfil
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
@@ -184,6 +186,20 @@ function llenarModalDetalle(cliente, fotoUrl) {
 
 
     // Datos personales
+    document.getElementById('detalleID').textContent = cliente.id_cliente || 'No registrado';
+    const vinculo = cliente.fecha_vinculo;
+
+    if (vinculo) {
+        const fecha = new Date(vinculo);
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = fecha.toLocaleString('es-CO', { month: 'short' }).replace('.', '');
+        const mesFormateado = mes.charAt(0).toUpperCase() + mes.slice(1).toLowerCase(); // Ene, Feb, Mar, etc.
+        const anio = fecha.getFullYear();
+
+        document.getElementById('detalleVinculacion').textContent = `${dia}/${mesFormateado}/${anio}`;
+    } else {
+        document.getElementById('detalleVinculacion').textContent = 'No registrado';
+    }
     document.getElementById('detalleNombre').value = cliente.nombres || 'No registrado';
     document.getElementById('detalleApellidos').value = cliente.apellidos || 'No registrado';
     document.getElementById('detalleCedula').value = cliente.cedula || 'No registrado';
@@ -193,6 +209,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     document.getElementById('detalleCiudad').value = cliente.ciudad || 'No registrado';
     document.getElementById('detalleBarrio').value = cliente.barrio || 'No registrado';
     document.getElementById('detalleSexo').value = cliente.sexo || 'No registrado';
+
     if (cliente.fecha_nac) {
         const fecha = new Date(cliente.fecha_nac);
 
