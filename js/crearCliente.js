@@ -32,7 +32,16 @@ function toggleCampoPorValor(idSelect, idCampo, valorEsperado) {
 
 // Campos específicos que usan la función genérica
 function toggleBienesInmueblesInput() {
-  toggleCampoPorValor('bienes_inmuebles', 'bienInmuebleInputs', 'si');
+  const bienesInmueblesSelect = document.getElementById('bienesInmuebles');
+  const bienInmuebleInputs = document.getElementById('bienInmuebleInputs');
+
+  bienInmuebleInputs.style.display = bienesInmueblesSelect.value === 'si' ? 'block' : 'none';
+
+  // Resetear el campo si vuelven a "No"
+  if (bienesInmueblesSelect.value === 'no') {
+    document.getElementById('bienes_inmuebles_pdf').value = '';
+    document.getElementById('bienesInmueblesUrls').value = '';
+  }
 }
 
 function toggleDataCreditoInput() {
@@ -382,7 +391,8 @@ async function handleFormSubmit(e) {
       { id: 'fotoPerfil', type: 'fotoPerfil', target: 'fotoPerfilUrl' },
       { id: 'archivoPDF', type: 'cedulaPdf', target: 'archivoPDFUrl' },
       { id: 'desprendible', type: 'desprendible', target: 'desprendibleUrl' },
-      { id: 'data_credito_pdf', type: 'dataCredito', target: 'dataCreditoPdfUrl' }
+      { id: 'data_credito_pdf', type: 'dataCredito', target: 'dataCreditoPdfUrl' },
+      { id: 'bienes_inmuebles_pdf', type: 'bienesInmuebles', target: 'bienesInmueblesUrls' }
     ];
 
     // Subir archivos solo si no hay cédula duplicada
@@ -424,13 +434,15 @@ async function handleFormSubmit(e) {
       fotoPerfilUrl: form.fotoPerfilUrl.value,
       archivoPDFUrl: form.archivoPDFUrl.value,
       desprendibleUrl: form.desprendibleUrl.value,
-      dataCreditoPdfUrl: form.dataCreditoPdfUrl.value,
-      bienesInmueblesUrls: form.bienesInmueblesUrls.value,
+      data_credPdf: form.dataCreditoPdfUrl.value,
+      bienes: form.bienesInmuebles.value,
+      bienes_inmuebles: form.bienesInmueblesUrls.value,
       asesor: sessionStorage.getItem('nombreUsuario') || 'Nombre por defecto',
       referencias_personales: obtenerReferenciasPersonales(),
       referencias_familiares: obtenerReferenciasFamiliares()
     };
 
+    console.log('Datos que se enviarán al backend:', formData);
     // 4. Enviar datos al servidor
     const result = await enviarDatosCliente(formData);
 
@@ -475,7 +487,7 @@ function inicializarFormulario() {
     mostrarCamposTrabajo(this.value);
   });
 
-  document.getElementById('bienes_inmuebles')?.addEventListener('change', toggleBienesInmueblesInput);
+  document.getElementById('bienesInmuebles')?.addEventListener('change', toggleBienesInmueblesInput);
   document.getElementById('data_credito')?.addEventListener('change', toggleDataCreditoInput);
   document.getElementById('fechaNacimiento')?.addEventListener('change', calcularEdad);
   document.getElementById('ingresos')?.addEventListener('input', function () {

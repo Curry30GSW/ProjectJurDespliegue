@@ -176,7 +176,7 @@ document.querySelector('#tablaClientes tbody').addEventListener('click', functio
 });
 
 function llenarModalDetalle(cliente, fotoUrl) {
-    console.log(cliente);
+
 
     // Foto de perfil
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
@@ -256,29 +256,35 @@ function llenarModalDetalle(cliente, fotoUrl) {
 
     // Bienes inmuebles
     const bienesInmueblesDiv = document.getElementById('detalleBienesInmuebles');
-    if (cliente.bienes === "1") {
-        // Aquí deberías hacer otra solicitud para obtener los PDFs de bienes inmuebles
-        // Por ahora mostramos un mensaje genérico
+    if (cliente.bienes === "1" && cliente.bienes_pdf) {
         bienesInmueblesDiv.innerHTML = `
-            <span class="text-success fw-bold">El cliente reporta tener bienes inmuebles</span>
-            <small class="text-muted d-block">(Los documentos deben ser consultados)</small>
-        `;
+        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.bienes_pdf}', '_blank')">
+            Ver Documento de Bienes
+        </button>`;
+    } else if (cliente.bienes === "1") {
+        bienesInmueblesDiv.innerHTML = `
+        <span class="text-success fw-bold">El cliente reporta tener bienes inmuebles</span>
+        <small class="text-muted d-block">(Los documentos deben ser consultados)</small>`;
     } else {
         bienesInmueblesDiv.innerHTML = '<span class="text-muted">El cliente no reporta bienes inmuebles</span>';
     }
 
+
     // Data crédito
     const dataCreditoDiv = document.getElementById('detalleDataCredito');
-    if (cliente.datacred === "1") {
-        // Aquí deberías hacer otra solicitud para obtener el PDF de data crédito
-        // Por ahora mostramos un mensaje genérico
+    if (cliente.datacred === "1" && cliente.datacredito_pdf) {
         dataCreditoDiv.innerHTML = `
-            <span class="text-success fw-bold">El cliente tiene data crédito registrado</span>
-            <small class="text-muted d-block">(El documento debe ser consultado)</small>
-        `;
+        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.datacredito_pdf}', '_blank')">
+            Ver Reporte de DataCrédito
+        </button>`;
+    } else if (cliente.datacred === "1") {
+        dataCreditoDiv.innerHTML = `
+        <span class="text-success fw-bold">El cliente tiene data crédito registrado</span>
+        <small class="text-muted d-block">(El documento debe ser consultado)</small>`;
     } else {
         dataCreditoDiv.innerHTML = '<span class="text-muted">El cliente no tiene data crédito registrado</span>';
     }
+
 
     // Asesor
     document.getElementById('detalleAsesor').value = cliente.asesor || 'No asignado';
@@ -382,7 +388,6 @@ function actualizarBotonPDF(elementId, url, textoBoton) {
 
 
 function mostrarError(mensaje) {
-    // Implementar lógica para mostrar errores al usuario
     console.error(mensaje);
     alert(mensaje);
 }
@@ -495,88 +500,46 @@ $(document).on('click', '.editar-cliente', function () {
 $('#formEditarCliente').submit(function (e) {
     e.preventDefault();
 
-    // Obtener los datos del formulario
-    const datos = {
-        nombres: $('#editarNombre').val(),
-        apellidos: $('#editarApellidos').val(),
-        telefono: $('#editarTelefono').val(),
-        correo: $('#editarCorreo').val(),
-        direccion: $('#editarDireccion').val(),
-        ciudad: $('#editarCiudad').val(),
-        barrio: $('#editarBarrio').val(),
-        salario: $('#editarSalario').val(),
-        empresa: $('#editarEmpresa').val(),
-        cargo: $('#editarCargo').val(),
-        pagaduria: $('#editarPagaduria').val(),
-        laboral: $('#editarSituacionLaboral').val()
+    const formData = new FormData(this);
+    const cedula = $('#editarCedula').val();
 
-    };
+    // Procesar referencias
+    const referenciasFamiliares = [];
+    const referenciasPersonales = [];
 
-    const referencias_familiares = [];
-    const referencias_personales = [];
-
-    // Familiares
+    // Ejemplo para 3 referencias (ajusta según tu UI)
     for (let i = 1; i <= 3; i++) {
-        referencias_familiares.push({
-            id_referencia: $(`[name=ref_fam_id${i}]`).val(),
-            familia_nombre: $(`[name=ref_fam${i}]`).val(),
-            familia_telefono: $(`[name=ref_fam_tel${i}]`).val(),
-            parentesco: $(`[name=ref_fam_parentesco${i}]`).val()
+        referenciasFamiliares.push({
+            familia_nombre: $(`#refFamNombre${i}`).val(),
+            familia_telefono: $(`#refFamTel${i}`).val(),
+            parentesco: $(`#refFamParentesco${i}`).val()
+        });
+
+        referenciasPersonales.push({
+            personal_nombre: $(`#refPerNombre${i}`).val(),
+            personal_telefono: $(`#refPerTel${i}`).val()
         });
     }
 
-    // Personales
-    for (let i = 1; i <= 3; i++) {
-        referencias_personales.push({
-            id_referenciaFa: $(`[name=ref_per_id${i}]`).val(),
-            personal_nombre: $(`[name=ref_per${i}]`).val(),
-            personal_telefono: $(`[name=ref_per_tel${i}]`).val()
-        });
-    }
+    // Agregar referencias al FormData
+    formData.append('referencias_familiares', JSON.stringify(referenciasFamiliares));
+    formData.append('referencias_personales', JSON.stringify(referenciasPersonales));
 
-    // Crear FormData para manejar archivos
-    const formData = new FormData();
-
-    // Agregar datos al FormData
-    for (const key in datos) {
-        formData.append(key, datos[key]);
-    }
-
-    // Agregar referencias
-    formData.append('referencias_familiares', JSON.stringify(referencias_familiares));
-    formData.append('referencias_personales', JSON.stringify(referencias_personales));
-
-    // Agregar archivos si se seleccionaron
-    const fotoPerfil = $('#inputFotoPerfil')[0].files[0];
-    if (fotoPerfil) {
-        formData.append('foto_perfil', fotoPerfil);
-    }
-
-    const cedulaPDF = $('#inputCedulaPDF')[0].files[0];
-    if (cedulaPDF) {
-        formData.append('cedula_pdf', cedulaPDF);
-    }
-
-    // Enviar datos a la API
     $.ajax({
-        url: `/api/clientes/${$('#editarCedula').val()}`,
+        url: `http://localhost:3000/api/clientes/${cedula}`,
         type: 'PUT',
         data: formData,
         contentType: false,
         processData: false,
         success: function (response) {
-            mostrarExito('Cliente actualizado correctamente');
-            $('#modalEditarCliente').modal('hide');
-            cargarClientes();
+            alert('Cliente actualizado correctamente');
+            location.reload();
         },
-        error: function () {
-            mostrarError('Error al actualizar el cliente');
+        error: function (xhr) {
+            alert('Error: ' + (xhr.responseJSON?.message || 'Error al actualizar'));
         }
     });
 });
-
-
-
 
 $('#editarSituacionLaboral').change(function () {
     const situacion = $(this).val();
