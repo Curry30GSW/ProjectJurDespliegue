@@ -21,7 +21,6 @@ if (!token) {
     }, 5000);
 }
 
-
 document.addEventListener('DOMContentLoaded', async function () {
     if (!token) {
         window.location.href = '../pages/login.html';
@@ -69,8 +68,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
 });
-
-
 
 const mostrar = (clientes) => {
 
@@ -453,7 +450,7 @@ $(document).on('click', '.editar-cliente', function () {
             const html = `
                 <div class="mb-3">
                 <label class="form-label fw-bold">Referencia Familiar ${index + 1}:</label>
-                <input type="hidden" name="ref_fam_id${index + 1}" value="${ref.id_referencia}">
+                <input type="hidden" name="ref_fam_id${index + 1}" value="${ref.id_referenciaFa}">
                 <input type="text" class="form-control mb-2" name="ref_fam${index + 1}" value="${ref.familia_nombre}">
                 <div class="row">
                     <div class="col-md-6">
@@ -474,7 +471,7 @@ $(document).on('click', '.editar-cliente', function () {
             const html = `
                 <div class="mb-3">
                 <label class="form-label fw-bold">Referencia Personal ${index + 1}:</label>
-                <input type="hidden" name="ref_per_id${index + 1}" value="${ref.id_referenciaFa}">
+                <input type="hidden" name="ref_per_id${index + 1}" value="${ref.id_referenciaPe}">
                 <input type="text" class="form-control mb-2" name="ref_per${index + 1}" value="${ref.personal_nombre}">
                 <input type="text" class="form-control" name="ref_per_tel${index + 1}" value="${ref.personal_telefono}" placeholder="Teléfono">
                 </div>
@@ -500,30 +497,88 @@ $(document).on('click', '.editar-cliente', function () {
 $('#formEditarCliente').submit(function (e) {
     e.preventDefault();
 
-    const formData = new FormData(this);
+    const formData = new FormData();
     const cedula = $('#editarCedula').val();
 
-    // Procesar referencias
+    // Agregar datos personales al FormData
+    formData.append('cedula', cedula);
+    formData.append('nombres', $('#editarNombre').val());
+    formData.append('apellidos', $('#editarApellidos').val());
+    formData.append('telefono', $('#editarTelefono').val());
+    formData.append('correo', $('#editarCorreo').val());
+    formData.append('direccion', $('#editarDireccion').val());
+    formData.append('ciudad', $('#editarCiudad').val());
+    formData.append('barrio', $('#editarBarrio').val());
+    formData.append('estado', $('#editarEstado').val());
+    formData.append('motivo_retiro', $('#editarMotivoRetiro').val());
+
+    // Datos financieros
+    formData.append('salario', $('#editarSalario').val().replace(/[^0-9]/g, ''));
+    formData.append('situacion_laboral', $('#editarSituacionLaboral').val());
+    formData.append('empresa', $('#editarEmpresa').val());
+    formData.append('cargo', $('#editarCargo').val());
+    formData.append('pagaduria', $('#editarPagaduria').val());
+
+    // Archivos
+    const fotoPerfil = $('#inputFotoPerfil')[0].files[0];
+    if (fotoPerfil) formData.append('foto_perfil', fotoPerfil);
+
+    const cedulaPDF = $('#inputCedulaPDF')[0].files[0];
+    if (cedulaPDF) formData.append('cedula_pdf', cedulaPDF);
+
+    const desprendible = $('#editarDesprendible')[0].files[0];
+    if (desprendible) formData.append('desprendible_pago', desprendible);
+
+    const bienesInmuebles = $('#editarBienesInmuebles')[0].files;
+    if (bienesInmuebles && bienesInmuebles.length > 0) {
+        for (let i = 0; i < bienesInmuebles.length; i++) {
+            formData.append('bienes_inmuebles[]', bienesInmuebles[i]);
+        }
+    }
+
+    const dataCredito = $('#editarDataCredito')[0].files[0];
+    if (dataCredito) formData.append('data_credito', dataCredito);
+
+    // Procesar referencias familiares
     const referenciasFamiliares = [];
-    const referenciasPersonales = [];
-
-    // Ejemplo para 3 referencias (ajusta según tu UI)
     for (let i = 1; i <= 3; i++) {
-        referenciasFamiliares.push({
-            familia_nombre: $(`#refFamNombre${i}`).val(),
-            familia_telefono: $(`#refFamTel${i}`).val(),
-            parentesco: $(`#refFamParentesco${i}`).val()
-        });
+        const nombre = $(`input[name="ref_fam${i}"]`).val();
+        const telefono = $(`input[name="ref_fam_tel${i}"]`).val();
+        const parentesco = $(`input[name="ref_fam_parentesco${i}"]`).val();
+        const id = $(`input[name="ref_fam_id${i}"]`).val();
 
-        referenciasPersonales.push({
-            personal_nombre: $(`#refPerNombre${i}`).val(),
-            personal_telefono: $(`#refPerTel${i}`).val()
-        });
+        if (nombre || telefono || parentesco) {
+            referenciasFamiliares.push({
+                id_referenciaFa: id || null,
+                familia_nombre: nombre,
+                familia_telefono: telefono,
+                parentesco: parentesco
+            });
+        }
+    }
+
+    // Procesar referencias personales
+    const referenciasPersonales = [];
+    for (let i = 1; i <= 3; i++) {
+        const nombre = $(`input[name="ref_per${i}"]`).val();
+        const telefono = $(`input[name="ref_per_tel${i}"]`).val();
+        const id = $(`input[name="ref_per_id${i}"]`).val();
+
+        if (nombre || telefono) {
+            referenciasPersonales.push({
+                id_referenciaPe: id || null,
+                personal_nombre: nombre,
+                personal_telefono: telefono
+            });
+        }
     }
 
     // Agregar referencias al FormData
     formData.append('referencias_familiares', JSON.stringify(referenciasFamiliares));
     formData.append('referencias_personales', JSON.stringify(referenciasPersonales));
+
+    $('#modalEditarCliente').modal('hide');
+
 
     $.ajax({
         url: `http://localhost:3000/api/clientes/${cedula}`,
@@ -532,11 +587,22 @@ $('#formEditarCliente').submit(function (e) {
         contentType: false,
         processData: false,
         success: function (response) {
-            alert('Cliente actualizado correctamente');
-            location.reload();
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: 'Cliente actualizado correctamente',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
         },
         error: function (xhr) {
-            alert('Error: ' + (xhr.responseJSON?.message || 'Error al actualizar'));
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: xhr.responseJSON?.message || 'Error al actualizar el cliente'
+            });
         }
     });
 });
