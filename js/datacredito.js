@@ -124,6 +124,11 @@ const mostrar = (clientes) => {
                     data-nombre="${cliente.nombres} ${cliente.apellidos}">
                 Subir DataCrédito
             </button>
+               <button class="btn btn-sm btn-warning text-white mover-area"
+                data-cedula="${cliente.cedula}"
+                data-nombre="${cliente.nombres} ${cliente.apellidos}">
+                Mover de Área
+            </button>
             </div>
         </td>
 
@@ -411,6 +416,7 @@ document.addEventListener('click', function (event) {
 document.getElementById('btnConfirmarDatacredito').addEventListener('click', async () => {
     const fileInput = document.getElementById('inputDatacredito');
     const cedula = document.getElementById('cedulaClienteSeleccionado').value;
+    const usuario = sessionStorage.getItem('nombreUsuario');
 
     if (!fileInput.files[0]) {
         return Swal.fire({
@@ -423,6 +429,7 @@ document.getElementById('btnConfirmarDatacredito').addEventListener('click', asy
     const formData = new FormData();
     formData.append('file', fileInput.files[0]);
     formData.append('cedula', cedula);
+    formData.append('usuario', usuario);
 
     try {
         const response = await fetch('http://localhost:3000/api/subir-documento', {
@@ -463,3 +470,52 @@ document.getElementById('btnConfirmarDatacredito').addEventListener('click', asy
 });
 
 
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('mover-area')) {
+        const cedula = event.target.getAttribute('data-cedula');
+        const nombre = event.target.getAttribute('data-nombre');
+
+        document.getElementById('nombreClienteArea').textContent = nombre;
+        document.getElementById('cedulaClienteArea').value = cedula;
+        document.getElementById('selectNuevaArea').value = '';
+
+        // Mostrar la modal
+        const modal = new bootstrap.Modal(document.getElementById('modalMoverArea'));
+        modal.show();
+    }
+});
+
+
+document.getElementById('btnConfirmarMoverArea').addEventListener('click', async () => {
+    const cedula = document.getElementById('cedulaClienteArea').value;
+    const nuevaArea = document.getElementById('selectNuevaArea').value;
+
+    if (!nuevaArea) {
+        alert('Selecciona una nueva área.');
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/datacredito/mover-area', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cedula, area: nuevaArea })
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+            alert(result.message);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalMoverArea'));
+            modal.hide();
+            location.reload(); // O actualiza la tabla sin recargar
+        } else {
+            alert(result.message || 'Error al mover de área');
+        }
+    } catch (error) {
+        console.error('Error al mover de área:', error);
+        alert('Error en la conexión');
+    }
+});

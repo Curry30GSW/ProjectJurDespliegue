@@ -657,387 +657,87 @@
                 </div>
             </div>
 
-            <!-- Modal para Editar Cliente -->
-            <div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-labelledby="modalEditarClienteLabel"
+            <div class="modal fade" id="modalDataCredito" tabindex="-1" aria-labelledby="modalDataCredito"
                 aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header bg-dark text-white">
-                            <h5 class="modal-title text-white font-weight-bold text-center w-100"
-                                id="modalEditarClienteLabel">Editar
-                                Cliente</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content shadow rounded-4 border-0">
+                        <div class="modal-header bg-dark text-dark position-relative">
+                            <h5 class="modal-title font-weight-bold text-white text-center w-100">
+                                Cargar DataCrédito
+                            </h5>
+                            <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
                         </div>
-                        <form id="formEditarCliente">
-                            <div class="modal-body">
-                                <!-- Pestañas para organizar la información -->
-                                <ul class="nav nav-tabs" id="editarClienteTabs" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="editar-datos-personales-tab"
-                                            data-bs-toggle="tab" data-bs-target="#editar-datos-personales" type="button"
-                                            role="tab">Datos Personales</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="editar-financieros-tab" data-bs-toggle="tab"
-                                            data-bs-target="#editar-financieros" type="button" role="tab">Datos
-                                            Financieros</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="editar-referencias-tab" data-bs-toggle="tab"
-                                            data-bs-target="#editar-referencias" type="button"
-                                            role="tab">Referencias</button>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content pt-3">
-                                    <!-- Pestaña de Datos Personales -->
-                                    <div class="tab-pane fade show active" id="editar-datos-personales" role="tabpanel">
-                                        <div class="row">
-                                            <!-- Columna izquierda (Foto y Documentos) -->
-                                            <div class="col-md-4">
-                                                <!-- Foto de perfil -->
-                                                <div class="text-center mb-4 p-3 bg-light rounded-3 shadow-sm">
-                                                    <img id="editarFotoPerfil" src="../assets/img/avatar.png"
-                                                        alt="Foto de perfil" class="rounded-circle shadow mb-3"
-                                                        style="width: 150px; height: 150px; object-fit: cover;">
-                                                    <input type="file" id="inputFotoPerfil" class="form-control d-none"
-                                                        accept="image/*">
-                                                    <h6 class="fw-bold text-muted mt-2">FOTO DE PERFIL</h6>
-                                                    <button type="button" class="btn btn-sm btn-dark"
-                                                        onclick="document.getElementById('inputFotoPerfil').click()">
-                                                        Cambiar Foto
-                                                    </button>
-                                                </div>
-
-                                                <!-- Documentos adjuntos -->
-                                                <div class="card mb-4 border-0 shadow-sm">
-                                                    <div class="card-header bg-warning text-dark fw-bold">
-                                                        <i class="fas fa-file-pdf me-2"></i>Documentos Adjuntos
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold d-block">Cédula
-                                                                PDF:</label>
-                                                            <input type="file" id="inputCedulaPDF"
-                                                                class="form-control mb-2" accept=".pdf">
-                                                            <div id="editarCedulaPDF" class="d-flex align-items-center">
-                                                                <!-- Botón PDF se insertará aquí -->
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Columna derecha (Datos personales) -->
-                                            <div class="col-md-8">
-                                                <div class="card border-0 shadow-sm h-100">
-                                                    <div class="card-header bg-primary text-white fw-bold">
-                                                        <i class="fas fa-user me-2"></i>Información Personal
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="row g-4">
-                                                            <!-- Fila 1 -->
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Nombres</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarNombre" required>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Apellidos</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarApellidos" required>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Fila 2 -->
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Cédula</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarCedula" disabled>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Teléfono</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarTelefono" required>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Fila 3 -->
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Correo
-                                                                        electrónico</label required>
-                                                                    <input type="email" class="form-control"
-                                                                        id="editarCorreo">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Dirección</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarDireccion" required>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Fila 4 -->
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Ciudad</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarCiudad" required>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Barrio</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarBarrio" required>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Fila 7 -->
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Estado</label>
-                                                                    <select class="form-select" id="editarEstado">
-                                                                        <option value="0">Activo</option>
-                                                                        <option value="1">Inactivo</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label fw-bold">Motivo de
-                                                                        Retiro</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarMotivoRetiro" disabled>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                        <div class="modal-body bg-light">
+                            <div class="modal-body bg-light">
+                                <div
+                                    class="alert alert-secondary d-flex align-items-center gap-1 p-2 mb-4 rounded-2 shadow-sm">
+                                    <div>
+                                        <div class="fw-bold text-white" style="font-size: 1.1rem;">Cliente seleccionado:
                                         </div>
+                                        <span id="nombreClienteModal" class="text-white fw-semibold"
+                                            style="font-size: 1.2rem;"></span>
+                                        <input type="hidden" id="cedulaClienteSeleccionado">
                                     </div>
-
-                                    <!-- Pestaña de Datos Financieros -->
-                                    <div class="tab-pane fade" id="editar-financieros" role="tabpanel">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="editarSalario"
-                                                        class="form-label fw-bold">Salario:</label>
-                                                    <input type="text" class="form-control" id="editarSalario"
-                                                        name="salario" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="editarSituacionLaboral"
-                                                        class="form-label fw-bold">Situación Laboral:</label>
-                                                    <select class="form-select" id="editarSituacionLaboral"
-                                                        name="situacion_laboral" required>
-                                                        <option value="">Seleccione...</option>
-                                                        <option value="ACTIVO">ACTIVO</option>
-                                                        <option value="PENSIONADO">PENSIONADO</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="mb-3" id="editarEmpresaContainer">
-                                                    <label for="editarEmpresa"
-                                                        class="form-label fw-bold">Empresa:</label>
-                                                    <input type="text" class="form-control" id="editarEmpresa"
-                                                        name="empresa" disabled>
-                                                </div>
-
-                                                <div class="mb-3" id="editarCargoContainer">
-                                                    <label for="editarCargo" class="form-label fw-bold">Cargo:</label>
-                                                    <input type="text" class="form-control" id="editarCargo"
-                                                        name="cargo" disabled>
-                                                </div>
-
-                                                <div class="mb-3" id="editarPagaduriaContainer">
-                                                    <label for="editarPagaduria"
-                                                        class="form-label fw-bold">Pagaduría:</label>
-                                                    <input type="text" class="form-control" id="editarPagaduria"
-                                                        name="pagaduria" disabled>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <!-- Documentos financieros -->
-                                                <div class="card">
-                                                    <div class="card-header bg-warning text-dark">
-                                                        <i class="fas fa-file-upload me-2"></i>Subir Documentos
-                                                        Financieros
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="mb-3">
-                                                            <label for="editarDesprendible"
-                                                                class="form-label fw-bold">Desprendible de Pago:</label>
-                                                            <input type="file" class="form-control"
-                                                                id="editarDesprendible" name="desprendible_pago"
-                                                                accept=".pdf">
-                                                        </div>
-
-                                                        <div class="mb-3" id="editarBienesInmueblesContainer">
-                                                            <label for="editarBienesInmuebles"
-                                                                class="form-label fw-bold">Bienes Inmuebles:</label>
-                                                            <input type="file" class="form-control"
-                                                                id="editarBienesInmuebles" name="bienes_inmuebles[]"
-                                                                accept=".pdf" multiple>
-                                                        </div>
-
-                                                        <div class="mb-3" id="editarDataCreditoContainer">
-                                                            <label for="editarDataCredito"
-                                                                class="form-label fw-bold">Data Crédito:</label>
-                                                            <input type="file" class="form-control"
-                                                                id="editarDataCredito" name="data_credito"
-                                                                accept=".pdf">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Pestaña de Referencias -->
-                                    <div class="tab-pane fade" id="editar-referencias" role="tabpanel">
-                                        <div class="row">
-                                            <div id="contenedorReferenciasFamiliares" class="col-md-6">
-                                                <div class="card mb-4">
-                                                    <div class="card-header bg-info text-white">
-                                                        <i class="fas fa-users me-2"></i>Referencias Familiares
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <!-- Referencia Familiar 1 -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold">Referencia Familiar
-                                                                1:</label>
-                                                            <input type="text" class="form-control mb-2"
-                                                                id="editarRefFam1" name="ref_fam1">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <input type="text" class="form-control mb-2"
-                                                                        id="editarRefFamTel1" name="ref_fam_tel1"
-                                                                        placeholder="Teléfono">
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarRefFamParentesco1"
-                                                                        name="ref_fam_parentesco1"
-                                                                        placeholder="Parentesco">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Referencia Familiar 2 -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold">Referencia Familiar
-                                                                2:</label>
-                                                            <input type="text" class="form-control mb-2"
-                                                                id="editarRefFam2" name="ref_fam2">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <input type="text" class="form-control mb-2"
-                                                                        id="editarRefFamTel2" name="ref_fam_tel2"
-                                                                        placeholder="Teléfono">
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarRefFamParentesco2"
-                                                                        name="ref_fam_parentesco2"
-                                                                        placeholder="Parentesco">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Referencia Familiar 3 -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold">Referencia Familiar
-                                                                3:</label>
-                                                            <input type="text" class="form-control mb-2"
-                                                                id="editarRefFam3" name="ref_fam3">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <input type="text" class="form-control mb-2"
-                                                                        id="editarRefFamTel3" name="ref_fam_tel3"
-                                                                        placeholder="Teléfono">
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <input type="text" class="form-control"
-                                                                        id="editarRefFamParentesco3"
-                                                                        name="ref_fam_parentesco3"
-                                                                        placeholder="Parentesco">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Referencias Personales -->
-                                            <div id="contenedorReferenciasPersonales" class="col-md-6">
-                                                <div class="card">
-                                                    <div class="card-header bg-success text-white">
-                                                        <i class="fas fa-address-book me-2"></i>Referencias Personales
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <!-- Referencia Personal 1 -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold">Referencia Personal
-                                                                1:</label>
-                                                            <input type="text" class="form-control mb-2"
-                                                                id="editarRefPer1" name="ref_per1">
-                                                            <input type="text" class="form-control"
-                                                                id="editarRefPerTel1" name="ref_per_tel1"
-                                                                placeholder="Teléfono">
-                                                        </div>
-
-                                                        <!-- Referencia Personal 2 -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold">Referencia Personal
-                                                                2:</label>
-                                                            <input type="text" class="form-control mb-2"
-                                                                id="editarRefPer2" name="ref_per2">
-                                                            <input type="text" class="form-control"
-                                                                id="editarRefPerTel2" name="ref_per_tel2"
-                                                                placeholder="Teléfono">
-                                                        </div>
-
-                                                        <!-- Referencia Personal 3 -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold">Referencia Personal
-                                                                3:</label>
-                                                            <input type="text" class="form-control mb-2"
-                                                                id="editarRefPer3" name="ref_per3">
-                                                            <input type="text" class="form-control"
-                                                                id="editarRefPerTel3" name="ref_per_tel3"
-                                                                placeholder="Teléfono">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </div>
+                                <input type="file" id="inputDatacredito" name="archivo" accept="application/pdf"
+                                    class="form-control">
+                                <small class="text-danger d-block mt-1 font-weight-bold">
+                                    <span style="font-size: 1.05rem;">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> Solo se acepta formato PDF.
+                                    </span>
+                                </small>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-success">Guardar Cambios</button>
-                            </div>
-                        </form>
+                        </div>
+                        <div class="modal-footer bg-white">
+                            <button type="button" id="btnConfirmarDatacredito" class="btn btn-m btn-success">
+                                <i class="fas fa-file-upload me-2"></i> Cargar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="modalMoverArea" tabindex="-1" aria-labelledby="modalMoverAreaLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-md modal-dialog-centered">
+                    <div class="modal-content shadow rounded-4 border-0">
+                        <div class="modal-header bg-dark text-white position-relative">
+                            <h5 class="modal-title font-weight-bold text-white text-center w-100">
+                                Mover cliente a otra área
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3"
+                                data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body bg-light">
+                            <div
+                                class="alert alert-secondary d-flex align-items-start gap-2 p-3 mb-4 rounded-2 shadow-sm">
+                                <div>
+                                    <div class="fw-bold text-white" style="font-size: 1.1rem;">Cliente seleccionado:
+                                    </div>
+                                    <span id="nombreClienteArea" class="text-white fw-semibold"
+                                        style="font-size: 1.2rem;"></span>
+                                    <input type="hidden" id="cedulaClienteArea">
+                                </div>
+                            </div>
+                            <label for="selectNuevaArea" class="form-label fw-bold">Seleccione el área:</label>
+                            <select id="selectNuevaArea" class="form-select mt-1">
+                                <option value="">-- Seleccione --</option>
+                                <option value="credito">Créditos</option>
+                                <option value="embargo">Embargos</option>
+                                <option value="insolvencia">Insolvencias</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer bg-white">
+                            <button type="button" class="btn btn-primary w-100" id="btnConfirmarMoverArea">
+                                <i class="fas fa-share me-2"></i> Confirmar movimiento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
     </main>
     <div class="fixed-plugin">
@@ -1134,43 +834,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalDataCredito" tabindex="-1" aria-labelledby="modalDataCredito" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content shadow rounded-4 border-0">
-                <div class="modal-header bg-dark text-dark position-relative">
-                    <h5 class="modal-title font-weight-bold text-white text-center w-100">
-                        Cargar DataCrédito
-                    </h5>
-                    <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal"
-                        aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body bg-light">
-                    <div class="modal-body bg-light">
-                        <div class="alert alert-secondary d-flex align-items-center gap-1 p-2 mb-4 rounded-2 shadow-sm">
-                            <div>
-                                <div class="fw-bold text-white" style="font-size: 1.1rem;">Cliente seleccionado:</div>
-                                <span id="nombreClienteModal" class="text-white fw-semibold"
-                                    style="font-size: 1.2rem;"></span>
-                                <input type="hidden" id="cedulaClienteSeleccionado">
-                            </div>
-                        </div>
-                        <input type="file" id="inputDatacredito" name="archivo" accept="application/pdf"
-                            class="form-control">
-                        <small class="text-danger d-block mt-1 font-weight-bold">
-                            <span style="font-size: 1.05rem;">
-                                <i class="fas fa-exclamation-triangle me-2"></i> Solo se acepta formato PDF.
-                            </span>
-                        </small>
-                    </div>
-                </div>
-                <div class="modal-footer bg-white">
-                    <button type="button" id="btnConfirmarDatacredito" class="btn btn-m btn-success">
-                        <i class="fas fa-file-upload me-2"></i> Cargar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <!--   Core JS Files   -->
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
