@@ -73,68 +73,59 @@ const mostrar = (clientes) => {
     let resultados = '';
 
     clientes.forEach((cliente) => {
-
         const estadoTexto = !cliente.nombreData ? "FALTA DATACREDITO" : "Cargado";
         const estadoClase = !cliente.nombreData ? "bg-gradient-danger" : "bg-gradient-success";
+        const moverAreaDisabled = !cliente.nombreData ? 'disabled' : '';
 
-        // Formatear la fecha para mostrar en el formato 13/May/2025
         const fecha = new Date(cliente.fecha_vinculo);
-
-        // Definir los meses en formato corto
         const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
         const dia = fecha.getDate();
         const mes = meses[fecha.getMonth()];
         const año = fecha.getFullYear();
-
-        // Formato final
         const fechaFormateada = `${dia}/${mes}/${año}`;
 
         resultados += `
-    <tr>
+        <tr>
             <td>
-            <div class="d-flex align-items-center px-2 py-1">
-                <div>
-                    <img src="http://localhost:3000${cliente.foto_perfil}" 
-                        class="avatar avatar-lg me-3 foto-cliente" 
-                        alt="${cliente.nombres}"
-                        data-src="http://localhost:3000${cliente.foto_perfil}">
+                <div class="d-flex align-items-center px-2 py-1">
+                    <div>
+                        <img src="http://localhost:3000${cliente.foto_perfil}" 
+                            class="avatar avatar-lg me-3 foto-cliente" 
+                            alt="${cliente.nombres}"
+                            data-src="http://localhost:3000${cliente.foto_perfil}">
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                        <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
+                        <p class="text-xs text-secondary mb-0">${cliente.correo}</p>
+                    </div>
                 </div>
-                <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
-                    <p class="text-xs text-secondary mb-0">${cliente.correo}</p>
-                </div>
-            </div>
-        </td>
-        <td>
-            <p class="text-xs font-weight-bold ">${cliente.cedula}</p>
-        </td>
-        <td class="align-middle text-center text-sm">
-            <p class="badge badge-sm ${estadoClase}">${estadoTexto}</p>
-        </td>
-        <td class="align-middle text-center">
-            <p class="text-secondary text-xs font-weight-normal">${fechaFormateada}</p>
-        </td>
+            </td>
+            <td><p class="text-xs font-weight-bold ">${cliente.cedula}</p></td>
+            <td class="align-middle text-center text-sm">
+                <p class="badge badge-sm ${estadoClase}">${estadoTexto}</p>
+            </td>
+            <td class="align-middle text-center">
+                <p class="text-secondary text-xs font-weight-normal">${fechaFormateada}</p>
+            </td>
             <td class="align-middle">
-            <div class="d-flex justify-content-center gap-2">
-                <button class="btn btn-sm btn-info text-white ver-detalle" data-cedula="${cliente.cedula}">
-                    Ver detalle
-                </button>
-                <button class="btn btn-sm btn-primary text-white editar-cliente"
-                    data-cedula="${cliente.cedula}"
-                    data-nombre="${cliente.nombres} ${cliente.apellidos}">
-                Subir DataCrédito
-            </button>
-               <button class="btn btn-sm btn-warning text-white mover-area"
-                data-cedula="${cliente.cedula}"
-                data-nombre="${cliente.nombres} ${cliente.apellidos}">
-                Mover de Área
-            </button>
-            </div>
-        </td>
-
-    </tr>
-            `;
-
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-sm btn-info text-white ver-detalle" data-cedula="${cliente.cedula}">
+                        Ver detalle
+                    </button>
+                    <button class="btn btn-sm btn-primary text-white editar-cliente"
+                        data-cedula="${cliente.cedula}"
+                        data-nombre="${cliente.nombres} ${cliente.apellidos}">
+                        Subir DataCrédito
+                    </button>
+                    <button class="btn btn-sm btn-warning text-white mover-area" ${moverAreaDisabled}
+                        data-cedula="${cliente.cedula}"
+                        data-nombre="${cliente.nombres} ${cliente.apellidos}">
+                        Mover de Área
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
     });
 
     if ($.fn.DataTable.isDataTable('#tablaClientes')) {
@@ -412,6 +403,20 @@ document.addEventListener('click', function (event) {
     }
 });
 
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('mover-area')) {
+        const cedula = event.target.getAttribute('data-cedula');
+        const nombre = event.target.getAttribute('data-nombre');
+
+        document.getElementById('nombreClienteArea').textContent = nombre;
+        document.getElementById('cedulaClienteArea').value = cedula;
+        document.getElementById('selectNuevaArea').value = '';
+
+        // Mostrar la modal
+        const modal = new bootstrap.Modal(document.getElementById('modalMoverArea'));
+        modal.show();
+    }
+});
 
 document.getElementById('btnConfirmarDatacredito').addEventListener('click', async () => {
     const fileInput = document.getElementById('inputDatacredito');
@@ -469,53 +474,86 @@ document.getElementById('btnConfirmarDatacredito').addEventListener('click', asy
     }
 });
 
-
-document.addEventListener('click', function (event) {
-    if (event.target.classList.contains('mover-area')) {
-        const cedula = event.target.getAttribute('data-cedula');
-        const nombre = event.target.getAttribute('data-nombre');
-
-        document.getElementById('nombreClienteArea').textContent = nombre;
-        document.getElementById('cedulaClienteArea').value = cedula;
-        document.getElementById('selectNuevaArea').value = '';
-
-        // Mostrar la modal
-        const modal = new bootstrap.Modal(document.getElementById('modalMoverArea'));
-        modal.show();
-    }
-});
-
-
 document.getElementById('btnConfirmarMoverArea').addEventListener('click', async () => {
     const cedula = document.getElementById('cedulaClienteArea').value;
     const nuevaArea = document.getElementById('selectNuevaArea').value;
+    const usuario = sessionStorage.getItem('nombreUsuario');
 
     if (!nuevaArea) {
-        alert('Selecciona una nueva área.');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Área no seleccionada',
+            text: 'Por favor selecciona una nueva área.'
+        });
         return;
     }
 
     try {
-        const res = await fetch('/api/datacredito/mover-area', {
+        const res = await fetch('http://localhost:3000/api/mover-area', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ cedula, area: nuevaArea })
+            body: JSON.stringify({ cedula, area: nuevaArea, usuario })
         });
 
         const result = await res.json();
 
         if (res.ok) {
-            alert(result.message);
-            const modal = bootstrap.Modal.getInstance(document.getElementById('modalMoverArea'));
-            modal.hide();
-            location.reload(); // O actualiza la tabla sin recargar
+            Swal.fire({
+                icon: 'success',
+                title: 'Área actualizada',
+                html: result.message
+            }).then(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalMoverArea'));
+                modal.hide();
+                location.reload();
+            });
         } else {
-            alert(result.message || 'Error al mover de área');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: result.message || 'Ocurrió un error al mover de área.'
+            });
         }
     } catch (error) {
         console.error('Error al mover de área:', error);
-        alert('Error en la conexión');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo conectar con el servidor.'
+        });
     }
 });
+
+
+async function cargarNotificaciones() {
+    try {
+        const res = await fetch('http://localhost:3000/api/notificaciones');
+        const datos = await res.json();
+        const contenedor = document.getElementById('notificaciones-contenedor');
+        contenedor.innerHTML = ''; // limpiar
+
+        datos.forEach(n => {
+            contenedor.innerHTML += `
+                    <div class="timeline-block mb-3">
+                        <span class="timeline-step bg-success shadow">
+                            <i class="fa fa-check text-white"></i>
+                        </span>
+                        <div class="timeline-content">
+                            <h6 class="text-dark text-sm font-weight-bold mb-0">
+                                ${n.nombre_cliente} fue trasladado a <strong>${n.area_destino}</strong> por ${n.usuario}
+                            </h6>
+                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">${n.fecha_formateada}</p>
+                        </div>
+                    </div>
+                `;
+        });
+
+    } catch (err) {
+        console.error('Error cargando notificaciones:', err);
+    }
+}
+
+// Llamar al cargar la página
+window.addEventListener('DOMContentLoaded', cargarNotificaciones);
