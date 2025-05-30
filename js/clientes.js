@@ -251,11 +251,14 @@ function llenarModalDetalle(cliente, fotoUrl) {
     actualizarBotonPDF('detalleCedulaPDF', cliente.cedula_pdf, 'Ver Cédula');
     actualizarBotonPDF('detalleDesprendible', cliente.desprendible, 'Ver Desprendible');
 
+    actualizarBotonPDF('detalleBienesInmuebles', cliente.bienes, 'Ver Bienes');
+    actualizarBotonPDF('detalleDataCredito', cliente.datacred, 'Ver DataCredito');
+
     // Bienes inmuebles
     const bienesInmueblesDiv = document.getElementById('detalleBienesInmuebles');
-    if (cliente.bienes === "1" && cliente.bienes_pdf) {
+    if (cliente.bienes === "1" && cliente.bienes_inmuebles) {
         bienesInmueblesDiv.innerHTML = `
-        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.bienes_pdf}', '_blank')">
+         <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.bienes_inmuebles}', '_blank')">
             Ver Documento de Bienes
         </button>`;
     } else if (cliente.bienes === "1") {
@@ -269,9 +272,9 @@ function llenarModalDetalle(cliente, fotoUrl) {
 
     // Data crédito
     const dataCreditoDiv = document.getElementById('detalleDataCredito');
-    if (cliente.datacred === "1" && cliente.datacredito_pdf) {
+    if (cliente.datacred === "1" && cliente.data_credPdf) {
         dataCreditoDiv.innerHTML = `
-        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.datacredito_pdf}', '_blank')">
+        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.data_credPdf}', '_blank')">
             Ver Reporte de DataCrédito
         </button>`;
     } else if (cliente.datacred === "1") {
@@ -509,15 +512,32 @@ $('#formEditarCliente').submit(function (e) {
     formData.append('direccion', $('#editarDireccion').val());
     formData.append('ciudad', $('#editarCiudad').val());
     formData.append('barrio', $('#editarBarrio').val());
-    formData.append('estado', $('#editarEstado').val());
+    formData.append('estado', $('#editarEstado').val());  // ver esto
     formData.append('motivo_retiro', $('#editarMotivoRetiro').val());
+
+    $('#editarEmpresa, #editarCargo, #editarPagaduria').prop('disabled', false);
 
     // Datos financieros
     formData.append('salario', $('#editarSalario').val().replace(/[^0-9]/g, ''));
-    formData.append('situacion_laboral', $('#editarSituacionLaboral').val());
-    formData.append('empresa', $('#editarEmpresa').val());
-    formData.append('cargo', $('#editarCargo').val());
-    formData.append('pagaduria', $('#editarPagaduria').val());
+
+    //formData.append('laboral', $('#editarSituacionLaboral').val());  // ver esto
+
+    const situacion = $('#editarSituacionLaboral').val();
+    let valorLaboral = '';
+
+    if (situacion === 'ACTIVO') {
+        valorLaboral = '1';
+    } else if (situacion === 'PENSIONADO') {
+        valorLaboral = '0';
+    } else {
+        valorLaboral = 'NO APLICA';
+    }
+    formData.append('laboral', valorLaboral);
+
+
+    formData.set('empresa', $('#editarEmpresa').val() || 'NO APLICA');
+    formData.set('cargo', $('#editarCargo').val() || 'NO APLICA');
+    formData.set('pagaduria', $('#editarPagaduria').val() || 'NO APLICA');
 
     // Archivos
     const fotoPerfil = $('#inputFotoPerfil')[0].files[0];
@@ -576,8 +596,12 @@ $('#formEditarCliente').submit(function (e) {
     // Agregar referencias al FormData
     formData.append('referencias_familiares', JSON.stringify(referenciasFamiliares));
     formData.append('referencias_personales', JSON.stringify(referenciasPersonales));
+    formData.append('_method', 'PUT');
 
     $('#modalEditarCliente').modal('hide');
+
+    for (let [key, value] of formData.entries()) {
+    }
 
 
     $.ajax({
@@ -609,17 +633,54 @@ $('#formEditarCliente').submit(function (e) {
 
 $('#editarSituacionLaboral').change(function () {
     const situacion = $(this).val();
+    // let valorLaboral = '';
 
     if (situacion === 'ACTIVO') {
+        // valorLaboral = '1';
         $('#editarEmpresa').prop('disabled', false);
         $('#editarCargo').prop('disabled', false);
         $('#editarPagaduria').prop('disabled', true).val('');
     } else if (situacion === 'PENSIONADO') {
+        // valorLaboral = '0';
         $('#editarEmpresa').prop('disabled', true).val('');
         $('#editarCargo').prop('disabled', true).val('');
         $('#editarPagaduria').prop('disabled', false);
     } else {
         // Si no se selecciona nada
-        $('#editarEmpresa, #editarCargo, #editarPagaduria').prop('disabled', true).val('');
+        // valorLaboral = '';
+        $('#editarEmpresa, #editarCargo, #editarPagaduria').prop('readonly', true).val('');
+
     }
+    // formData.append('laboral', valorLaboral);
 });
+
+
+// cerrar modales tabs
+const ModalEdit = document.getElementById('modalEditarCliente');
+const firstTabEdit = document.querySelector('#editar-datos-personales-tab');
+
+if (ModalEdit && firstTabEdit) {
+    ModalEdit.addEventListener('hidden.bs.modal', () => {
+        const tabTrigger = new bootstrap.Tab(firstTabEdit);
+        tabTrigger.show();
+    });
+}
+
+const ModalSeen = document.getElementById('modalVerDetalle');
+const firstTabSeen = document.querySelector('#datos-personales-tab');
+
+if (ModalSeen && firstTabSeen) {
+    ModalSeen.addEventListener('hidden.bs.modal', () => {
+        const tabTrigger = new bootstrap.Tab(firstTabSeen);
+        tabTrigger.show();
+    });
+}
+
+
+const modal = document.getElementById('modalVerDetalle');
+
+modal.addEventListener('hidden.bs.modal', function () {
+    const firstTab = document.querySelector('#editar-datos-personales-tab');
+    const tabInstance = new bootstrap.Tab(firstTab);
+    tabInstance.show();
+})

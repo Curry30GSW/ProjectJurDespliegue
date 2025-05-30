@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/justicia.png">
     <link rel="icon" type="image/png" href="../assets/img/justicia.ico">
     <title>
-        DataCrédito
+        Insolvencias
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -26,6 +26,90 @@
     <!-- DataTables con Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link href="../assets/css/stilos.css" rel="stylesheet" />
+    <style>
+        .toggle-card {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+
+        .toggle-card .toggle-header {
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .toggle-card .toggle-icon {
+            transition: transform 0.3s;
+        }
+
+        .toggle-card.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .toggle-content {
+            display: none;
+        }
+
+        .toggle-card.active .toggle-content {
+            display: block;
+        }
+
+        .file-upload-container {
+            position: relative;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px dashed #adb5bd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-label:hover {
+            background-color: #e9ecef;
+            border-color: #6c757d;
+        }
+
+        .file-upload-text {
+            font-weight: 500;
+        }
+
+        .file-name-display {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .audiencias-container {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .audiencias-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .audiencia-item {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #0d6efd;
+        }
+
+        .liquidador-details {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -162,7 +246,7 @@
         <div class="container-fluid py-6">
             <div class="row mx-2 mt-n6">
                 <!-- TARJETA DE LA TABLA -->
-                <div class="col-lg-9 mb-4">
+                <div class="col-lg-12 mb-4">
                     <div class="card card-body">
                         <div class="card my-4">
                             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -198,34 +282,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TARJETA DE NOTIFICACIONES -->
-                <div class="col-lg-3 mb-4">
-                    <div class="card bg-light shadow rounded-4 p-3">
-                        <div class="card-header bg-transparent border-0 pb-2">
-                            <h6 class="text-primary mb-1">Notificaciones recientes</h6>
-                            <p class="text-sm text-muted mb-0">
-                                <i class="fa fa-bell me-2"></i>Resumen de acciones recientes
-                            </p>
-                        </div>
-                        <div class="card-body p-0">
-                            <div id="notificaciones-contenedor" class="timeline timeline-one-side">
-                                <!-- Ejemplo de notificación -->
-                                <div class="timeline-block mb-3">
-                                    <span class="timeline-step bg-success shadow">
-                                        <i class="fa fa-check text-white"></i>
-                                    </span>
-                                    <div class="timeline-content">
-                                        <h6 class="text-dark text-sm font-weight-bold mb-0">Cliente actualizado
-                                            correctamente</h6>
-                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 MAY 2:00 PM</p>
-                                    </div>
-                                </div>
-                                <!-- Puedes agregar más bloques aquí -->
                             </div>
                         </div>
                     </div>
@@ -657,81 +713,456 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="modalDataCredito" tabindex="-1" aria-labelledby="modalDataCredito"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content shadow rounded-4 border-0">
-                        <div class="modal-header bg-dark text-dark position-relative">
-                            <h5 class="modal-title font-weight-bold text-white text-center w-100">
-                                Cargar DataCrédito
-                            </h5>
-                            <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal"
+            <div class="modal fade" id="modalCrearInsolvencia" tabindex="-1"
+                aria-labelledby="modalCrearInsolvenciaLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark text-white">
+                            <h5 class="modal-title" id="modalCrearInsolvenciaLabel">Crear Insolvencia</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Cerrar"></button>
                         </div>
-                        <div class="modal-body bg-light">
-                            <div class="modal-body bg-light">
-                                <div
-                                    class="alert alert-secondary d-flex align-items-center gap-1 p-2 mb-4 rounded-2 shadow-sm">
-                                    <div>
-                                        <div class="fw-bold text-white" style="font-size: 1.1rem;">Cliente seleccionado:
-                                        </div>
-                                        <span id="nombreClienteModal" class="text-white fw-semibold"
-                                            style="font-size: 1.2rem;"></span>
-                                        <input type="hidden" id="cedulaClienteSeleccionado">
-                                    </div>
-                                </div>
-                                <input type="file" id="inputDatacredito" name="archivo" accept="application/pdf"
-                                    class="form-control">
-                                <small class="text-danger d-block mt-1 font-weight-bold">
-                                    <span style="font-size: 1.05rem;">
-                                        <i class="fas fa-exclamation-triangle me-2"></i> Solo se acepta formato PDF.
-                                    </span>
-                                </small>
-                            </div>
-                        </div>
-                        <div class="modal-footer bg-white">
-                            <button type="button" id="btnConfirmarDatacredito" class="btn btn-m btn-success">
-                                <i class="fas fa-file-upload me-2"></i> Cargar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <div class="modal-body">
+                            <!-- Contenido principal -->
+                            <div class="mx-2 mx-md-2 mt-n6">
+                                <h5 class="mb-4">Crear Insolvencia</h5>
+                                <form id="formCrearCliente" enctype="multipart/form-data">
+                                    <!-- Sección superior con foto de perfil y datos básicos del cliente -->
+                                    <div class="row mb-4">
+                                        <!-- Foto de perfil con efecto flotante -->
+                                        <div class="col-md-2 position-relative" style="z-index: 2;">
+                                            <div class="text-center p-3 bg-white rounded-3 shadow"
+                                                style="transform: translateY(20px);">
+                                                <img id="fotoperfilModal" src="../assets/img/avatar.png"
+                                                    alt="Foto de perfil" class="rounded-circle shadow mb-2"
+                                                    style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff;">
+                                                <h6 class="fw-bold text-muted mb-2">FOTO DE PERFIL</h6>
 
-            <div class="modal fade" id="modalMoverArea" tabindex="-1" aria-labelledby="modalMoverAreaLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-md modal-dialog-centered">
-                    <div class="modal-content shadow rounded-4 border-0">
-                        <div class="modal-header bg-dark text-white position-relative">
-                            <h5 class="modal-title font-weight-bold text-white text-center w-100">
-                                Mover cliente a otra área
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3"
-                                data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body bg-light">
-                            <div
-                                class="alert alert-secondary d-flex align-items-start gap-2 p-3 mb-4 rounded-2 shadow-sm">
-                                <div>
-                                    <div class="fw-bold text-white" style="font-size: 1.1rem;">Cliente seleccionado:
+                                                <!-- ID del Cliente con badge -->
+                                                <div class="mb-2">
+                                                    <span class="badge bg-info text-white fs-6">ID: <span
+                                                            id="idModal">---</span></span>
+                                                </div>
+
+                                                <!-- Fecha de vinculación -->
+                                                <div class="small text-muted">
+                                                    Vinculación: <span id="vinculacionModal"
+                                                        class="text-dark">---</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Datos del cliente -->
+                                        <div class="col-md-10 d-flex align-items-center">
+                                            <div class="card w-100 shadow-sm border-start border-5 border-success">
+                                                <div class="card-body py-3">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <h5 class="fw-bold mb-1" id="detalleNombreCliente">
+                                                                [Nombre del Cliente]</h5>
+                                                            <p class="text-muted small mb-1" id="detalleTipoDocumento">
+                                                                [Tipo de Documento]</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p class="mb-1"><span class="fw-semibold">Teléfono:</span>
+                                                                <span id="telefonoModal">---</span>
+                                                            </p>
+                                                            <p class="mb-1"><span class="fw-semibold">Email:</span>
+                                                                <span id="emailModal">---</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p class="mb-1"><span class="fw-semibold">Dirección:</span>
+                                                                <span id="direccionModal">---</span>
+                                                            </p>
+                                                            <p class="mb-1"><span class="fw-semibold">Ciudad:</span>
+                                                                <span id="ciudadModal">---</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <span id="nombreClienteArea" class="text-white fw-semibold"
-                                        style="font-size: 1.2rem;"></span>
-                                    <input type="hidden" id="cedulaClienteArea">
-                                </div>
+
+                                    <!-- Formulario de Insolvencia -->
+                                    <div class="card shadow">
+                                        <div
+                                            class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+                                            <span>DETALLES DE INSOLVENCIA</span>
+                                            <i class="fas fa-scale-unbalanced"></i>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <!-- Primera columna -->
+                                                <div class="col-md-6">
+                                                    <!-- Sección de Documentos -->
+                                                    <div class="card shadow-sm mb-4">
+                                                        <div class="card-header bg-success text-white">
+                                                            <h6 class="mb-0 text-white"><i
+                                                                    class="fas fa-file-alt me-2"></i>Documentos del
+                                                                Proceso</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <!-- Cuadernillo - Tarjeta estilo toggle -->
+                                                            <div class="mb-3 toggle-card">
+                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                                                    onclick="toggleCard(this)">
+                                                                    <label
+                                                                        class="form-label fw-bold mb-0">Cuadernillo</label>
+                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                                                </div>
+                                                                <div class="toggle-content mt-2">
+                                                                    <div class="btn-group btn-group-sm" role="group">
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="cuadernillo" id="cuadernillo_si"
+                                                                            value="Sí" autocomplete="off">
+                                                                        <label class="btn btn-outline-success"
+                                                                            for="cuadernillo_si">Sí</label>
+
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="cuadernillo" id="cuadernillo_no"
+                                                                            value="No" autocomplete="off">
+                                                                        <label class="btn btn-outline-danger"
+                                                                            for="cuadernillo_no">No</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Radicación - Tarjeta estilo toggle -->
+                                                            <div class="mb-3 toggle-card">
+                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                                                    onclick="toggleCard(this)">
+                                                                    <label
+                                                                        class="form-label fw-bold mb-0">Radicación</label>
+                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                                                </div>
+                                                                <div class="toggle-content mt-2">
+                                                                    <div class="btn-group btn-group-sm" role="group">
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="radicacion" id="radicacion_si"
+                                                                            value="Sí" autocomplete="off">
+                                                                        <label class="btn btn-outline-success"
+                                                                            for="radicacion_si">Sí</label>
+
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="radicacion" id="radicacion_no"
+                                                                            value="No" autocomplete="off">
+                                                                        <label class="btn btn-outline-danger"
+                                                                            for="radicacion_no">No</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Correcciones - Con campo dinámico -->
+                                                            <div class="mb-3 toggle-card">
+                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                                                    onclick="toggleCard(this)">
+                                                                    <label
+                                                                        class="form-label fw-bold mb-0">Correcciones</label>
+                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                                                </div>
+                                                                <div class="toggle-content mt-2">
+                                                                    <div class="btn-group btn-group-sm mb-2"
+                                                                        role="group">
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="correciones" id="correciones_si"
+                                                                            value="Sí" autocomplete="off"
+                                                                            onchange="mostrarCampoCorrecciones()">
+                                                                        <label class="btn btn-outline-success"
+                                                                            for="correciones_si">Sí</label>
+
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="correciones" id="correciones_no"
+                                                                            value="No" autocomplete="off"
+                                                                            onchange="ocultarCampoCorrecciones()">
+                                                                        <label class="btn btn-outline-danger"
+                                                                            for="correciones_no">No</label>
+                                                                    </div>
+                                                                    <div id="campoDetalleCorrecciones"
+                                                                        style="display: none;">
+                                                                        <label for="detalleCorrecciones"
+                                                                            class="form-label small text-muted">Detalle
+                                                                            de
+                                                                            correcciones:</label>
+                                                                        <textarea class="form-control form-control-sm"
+                                                                            id="detalleCorrecciones"
+                                                                            name="detalleCorrecciones" rows="2"
+                                                                            placeholder="Describa las correcciones necesarias"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Acta de aceptación -->
+                                                            <div class="mb-3">
+                                                                <label for="archivoPDF" class="form-label fw-bold">Acta
+                                                                    de aceptación
+                                                                    (PDF)</label>
+                                                                <div class="file-upload-container">
+                                                                    <input type="file" class="form-control d-none"
+                                                                        id="archivoPDF" name="archivoPDF" accept=".pdf">
+                                                                    <label for="archivoPDF" class="file-upload-label">
+                                                                        <i class="fas fa-cloud-upload-alt me-2"></i>
+                                                                        <span class="file-upload-text">Seleccionar
+                                                                            archivo</span>
+                                                                    </label>
+                                                                    <div class="file-name-display small mt-1"
+                                                                        id="fileNameDisplay">Ningún archivo
+                                                                        seleccionado
+                                                                    </div>
+                                                                </div>
+                                                                <input type="hidden" id="archivoPDFUrl"
+                                                                    name="archivoPDFUrl">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Sección de Audiencias -->
+                                                    <div class="card shadow-sm">
+                                                        <div class="card-header bg-info text-white">
+                                                            <h6 class="mb-0 text-white"><i
+                                                                    class="fas fa-gavel me-2"></i>Audiencias
+                                                            </h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="btn-group btn-group-sm mb-3" role="group">
+                                                                <input type="radio" class="btn-check" name="audiencias"
+                                                                    id="audiencias_si" value="Sí" autocomplete="off"
+                                                                    onchange="mostrarAudiencias()">
+                                                                <label class="btn btn-outline-success"
+                                                                    for="audiencias_si">Sí</label>
+
+                                                                <input type="radio" class="btn-check" name="audiencias"
+                                                                    id="audiencias_no" value="No" autocomplete="off"
+                                                                    onchange="ocultarAudiencias()">
+                                                                <label class="btn btn-outline-danger"
+                                                                    for="audiencias_no">No</label>
+                                                            </div>
+
+                                                            <div id="contenedorAudiencias" style="display: none;">
+                                                                <div class="audiencias-container">
+                                                                    <div
+                                                                        class="d-flex justify-content-between align-items-center mb-3">
+                                                                        <h6 class="mb-0 text-primary">Audiencias
+                                                                            Programadas</h6>
+                                                                        <button type="button"
+                                                                            class="btn btn-sm btn-primary"
+                                                                            onclick="agregarAudiencia()">
+                                                                            <i
+                                                                                class="fas fa-plus-circle me-1"></i>Agregar
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div id="listaAudiencias" class="audiencias-list">
+                                                                        <!-- Audiencias se agregarán aquí dinámicamente -->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Segunda columna -->
+                                                <div class="col-md-6">
+                                                    <!-- Sección de Estado del Proceso -->
+                                                    <div class="card shadow-sm mb-4">
+                                                        <div class="card-header bg-warning text-white">
+                                                            <h6 class="mb-0 text-white"><i
+                                                                    class="fas fa-clipboard-check me-2"></i>Estado
+                                                                del Proceso</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <!-- Estado Desprendible -->
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold">Estado
+                                                                    Desprendible</label>
+                                                                <div class="d-flex flex-wrap gap-2">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="desprendible"
+                                                                            id="desprendible_parcial" value="parcial">
+                                                                        <label
+                                                                            class="form-check-label badge bg-secondary"
+                                                                            for="desprendible_parcial">Parcial</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="desprendible" id="desprendible_limpio"
+                                                                            value="limpio">
+                                                                        <label class="form-check-label badge bg-success"
+                                                                            for="desprendible_limpio">Limpio</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="desprendible" id="desprendible_deudas"
+                                                                            value="deudas">
+                                                                        <label class="form-check-label badge bg-danger"
+                                                                            for="desprendible_deudas">Deudas</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Tipo de proceso -->
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold">Tipo de
+                                                                    proceso</label>
+                                                                <div class="btn-group w-100" role="group">
+                                                                    <input type="radio" class="btn-check"
+                                                                        name="tipo_proceso" id="proceso_liquidacion"
+                                                                        value="Liquidación" autocomplete="off">
+                                                                    <label class="btn btn-outline-primary"
+                                                                        for="proceso_liquidacion">Liquidación</label>
+
+                                                                    <input type="radio" class="btn-check"
+                                                                        name="tipo_proceso" id="proceso_acuerdo_pago"
+                                                                        value="Acuerdo de Pago" autocomplete="off">
+                                                                    <label class="btn btn-outline-primary"
+                                                                        for="proceso_acuerdo_pago">Acuerdo de
+                                                                        Pago</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Juzgado -->
+                                                            <div class="mb-3">
+                                                                <label for="juzgado"
+                                                                    class="form-label fw-bold">Juzgado</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i
+                                                                            class="fas fa-balance-scale"></i></span>
+                                                                    <input type="text" class="form-control" id="juzgado"
+                                                                        name="juzgado" placeholder="Nombre del juzgado">
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Liquidador -->
+                                                            <div class="mb-3 toggle-card">
+                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                                                    onclick="toggleCard(this)">
+                                                                    <label
+                                                                        class="form-label fw-bold mb-0">Liquidador</label>
+                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                                                </div>
+                                                                <div class="toggle-content mt-2">
+                                                                    <div class="btn-group btn-group-sm mb-2"
+                                                                        role="group">
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="liquidador" id="liquidador_si"
+                                                                            value="Sí" autocomplete="off"
+                                                                            onclick="mostrarDatosLiquidador(true)">
+                                                                        <label class="btn btn-outline-success"
+                                                                            for="liquidador_si">Sí</label>
+
+                                                                        <input type="radio" class="btn-check"
+                                                                            name="liquidador" id="liquidador_no"
+                                                                            value="No" autocomplete="off"
+                                                                            onclick="mostrarDatosLiquidador(false)">
+                                                                        <label class="btn btn-outline-danger"
+                                                                            for="liquidador_no">No</label>
+                                                                    </div>
+
+                                                                    <div id="datos_liquidador" style="display: none;"
+                                                                        class="liquidador-details">
+                                                                        <div class="mb-2">
+                                                                            <label for="nombre_liquidador"
+                                                                                class="form-label small">Nombre</label>
+                                                                            <input type="text"
+                                                                                class="form-control form-control-sm"
+                                                                                id="nombre_liquidador"
+                                                                                name="nombre_liquidador">
+                                                                        </div>
+                                                                        <div class="row g-2">
+                                                                            <div class="col-md-6">
+                                                                                <label for="telefono_liquidador"
+                                                                                    class="form-label small">Teléfono</label>
+                                                                                <input type="text"
+                                                                                    class="form-control form-control-sm"
+                                                                                    id="telefono_liquidador"
+                                                                                    name="telefono_liquidador">
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label for="correo_liquidador"
+                                                                                    class="form-label small">Correo</label>
+                                                                                <input type="email"
+                                                                                    class="form-control form-control-sm"
+                                                                                    id="correo_liquidador"
+                                                                                    name="correo_liquidador">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="mt-2">
+                                                                            <label class="form-label small">¿Ya se
+                                                                                pagó?</label>
+                                                                            <div class="btn-group btn-group-sm w-100"
+                                                                                role="group">
+                                                                                <input type="radio" class="btn-check"
+                                                                                    name="pago_liquidador" id="pago_si"
+                                                                                    value="Sí" autocomplete="off">
+                                                                                <label class="btn btn-outline-success"
+                                                                                    for="pago_si">Sí</label>
+
+                                                                                <input type="radio" class="btn-check"
+                                                                                    name="pago_liquidador" id="pago_no"
+                                                                                    value="No" autocomplete="off">
+                                                                                <label class="btn btn-outline-danger"
+                                                                                    for="pago_no">No</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Sección de Estado Final -->
+                                                    <div class="card shadow-sm">
+                                                        <div class="card-header bg-danger text-white">
+                                                            <h6 class="mb-0 text-white "><i
+                                                                    class="fas fa-flag me-2"></i>Estado
+                                                                Final</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold">Estado</label>
+                                                                <div class="btn-group w-100" role="group">
+                                                                    <input type="radio" class="btn-check" name="estado"
+                                                                        id="estado_apto" value="APTO" autocomplete="off"
+                                                                        onclick="mostrarMotivo(false)">
+                                                                    <label class="btn btn-outline-success"
+                                                                        for="estado_apto">APTO</label>
+
+                                                                    <input type="radio" class="btn-check" name="estado"
+                                                                        id="estado_no_apto" value="NO APTO"
+                                                                        autocomplete="off"
+                                                                        onclick="mostrarMotivo(true)">
+                                                                    <label class="btn btn-outline-danger"
+                                                                        for="estado_no_apto">NO APTO</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div id="motivo_no_apto" style="display: none;">
+                                                                <label for="motivo" class="form-label small">Motivo
+                                                                    del NO APTO</label>
+                                                                <textarea class="form-control form-control-sm"
+                                                                    id="motivo" name="motivo" rows="2"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Asesor a cargo -->
+                                    <div class="mt-4 text-end">
+                                        <span class="fw-bold text-secondary">Asesor a Cargo: <span id="asesorNombre"
+                                                class="text-dark">[Nombre del
+                                                Asesor]</span></span>
+                                    </div>
+                                </form>
                             </div>
-                            <label for="selectNuevaArea" class="form-label fw-bold">Seleccione el área:</label>
-                            <select id="selectNuevaArea" class="form-select mt-1">
-                                <option value="">-- Seleccione --</option>
-                                <option value="CREDITOS">Créditos</option>
-                                <option value="EMBARGOS">Embargos</option>
-                                <option value="INSOLVENCIAS">Insolvencias</option>
-                            </select>
                         </div>
-                        <div class="modal-footer bg-white">
-                            <button type="button" class="btn btn-primary w-100" id="btnConfirmarMoverArea">
-                                <i class="fas fa-share me-2"></i> Confirmar movimiento
-                            </button>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success" form="formCrearCliente">Guardar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -841,9 +1272,9 @@
     <script src="../assets/js/core/bootstrap.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-    <Script src="../js//hora.js"></Script>
+    <Script src="../js/hora.js"></Script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="../js/datacredito.js"></script>
+    <script src="../js/insolvencias.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
