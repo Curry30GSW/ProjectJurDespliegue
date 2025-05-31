@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Evento para el botón "Crear Insolvencia"
     $(document).on('click', '.crear-insolvencia', function () {
+        limpiarModalInsolvencia();
         // Obtener datos del cliente
         const cliente = {
             id_cliente: $(this).data('id'),
@@ -163,9 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
             foto: $(this).data('foto'),
             fecha: $(this).data('fecha'),
         };
-
-        console.log("Datos clientes", cliente);
-
 
         // Llenar el modal con los datos
         $('#idModal').text(String(cliente.id_cliente));
@@ -200,6 +198,83 @@ $(document).on('click', '.foto-cliente', function () {
     const modal = new bootstrap.Modal(document.getElementById('modalFoto'));
     modal.show();
 });
+
+
+function limpiarModalInsolvencia() {
+    // Deseleccionar todos los radios
+    document.querySelectorAll('#modalCrearInsolvencia input[type="radio"]').forEach(input => {
+        input.checked = false;
+    });
+
+    // Limpiar todos los inputs de tipo texto, email, etc.
+    document.querySelectorAll('#modalCrearInsolvencia input[type="text"], #modalCrearInsolvencia input[type="email"]').forEach(input => {
+        input.value = '';
+    });
+
+    // Limpiar textareas
+    document.querySelectorAll('#modalCrearInsolvencia textarea').forEach(textarea => {
+        textarea.value = '';
+    });
+
+    // Ocultar campos condicionales
+    document.getElementById('campoDetalleCorrecciones')?.style?.setProperty('display', 'none');
+    document.getElementById('contenedorAudiencias')?.style?.setProperty('display', 'none');
+    document.getElementById('datos_liquidador')?.style?.setProperty('display', 'none');
+    document.getElementById('motivo_no_apto')?.style?.setProperty('display', 'none');
+
+    // Limpiar lista de audiencias
+    const listaAudiencias = document.getElementById('listaAudiencias');
+    if (listaAudiencias) {
+        listaAudiencias.innerHTML = '';
+    }
+
+    // Resetear campo de archivo PDF
+    const inputArchivo = document.getElementById('archivoPDF');
+    if (inputArchivo) {
+        inputArchivo.value = '';
+    }
+
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    if (fileNameDisplay) {
+        fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+    }
+
+    // Resetear campo oculto del archivo
+    const archivoUrl = document.getElementById('archivoPDFUrl');
+    if (archivoUrl) {
+        archivoUrl.value = '';
+    }
+
+    // Resetear selects si los hubiera
+    document.querySelectorAll('#modalCrearInsolvencia select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+
+    // Cerrar todos los toggles que estén abiertos
+    document.querySelectorAll('#modalCrearInsolvencia .toggle-content').forEach(toggle => {
+        toggle.style.display = 'none';
+    });
+
+    // Resetear campos específicos adicionales
+    const juzgado = document.getElementById('juzgado');
+    if (juzgado) juzgado.value = '';
+
+    const nombreLiquidador = document.getElementById('nombre_liquidador');
+    if (nombreLiquidador) nombreLiquidador.value = '';
+
+    const telefonoLiquidador = document.getElementById('telefono_liquidador');
+    if (telefonoLiquidador) telefonoLiquidador.value = '';
+
+    const correoLiquidador = document.getElementById('correo_liquidador');
+    if (correoLiquidador) correoLiquidador.value = '';
+
+    const motivo = document.getElementById('motivo');
+    if (motivo) motivo.value = '';
+
+    const detalleCorrecciones = document.getElementById('detalleCorrecciones');
+    if (detalleCorrecciones) detalleCorrecciones.value = '';
+}
+
 
 
 // Función para toggle de tarjetas
