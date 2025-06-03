@@ -84,6 +84,19 @@
             font-style: italic;
         }
 
+        /* ESTILO CUANDO TIENE ARCHIVO - IMPORTANTE */
+        .file-upload-label.has-file {
+            background-color: #d1e7dd !important;
+            border-color: #badbcc !important;
+            color: #0f5132 !important;
+            border-style: solid !important;
+        }
+
+        .file-upload-label i,
+        .file-upload-label span {
+            pointer-events: none;
+        }
+
         .audiencias-container {
             border: 1px solid #dee2e6;
             border-radius: 5px;
@@ -742,6 +755,7 @@
                                                 <div class="mb-2">
                                                     <span class="badge bg-info text-white fs-6">ID: <span
                                                             id="idModal">---</span></span>
+                                                    <input type="hidden" id="inputIdCliente" name="id_cliente" value="">
                                                 </div>
 
                                                 <!-- Fecha de vinculación -->
@@ -816,13 +830,13 @@
                                                                     <div class="btn-group btn-group-sm" role="group">
                                                                         <input type="radio" class="btn-check"
                                                                             name="cuadernillo" id="cuadernillo_si"
-                                                                            value="Sí" autocomplete="off">
+                                                                            value="SI" autocomplete="off">
                                                                         <label class="btn btn-outline-success"
                                                                             for="cuadernillo_si">Sí</label>
 
                                                                         <input type="radio" class="btn-check"
                                                                             name="cuadernillo" id="cuadernillo_no"
-                                                                            value="No" autocomplete="off">
+                                                                            value="NO" autocomplete="off">
                                                                         <label class="btn btn-outline-danger"
                                                                             for="cuadernillo_no">No</label>
                                                                     </div>
@@ -841,13 +855,13 @@
                                                                     <div class="btn-group btn-group-sm" role="group">
                                                                         <input type="radio" class="btn-check"
                                                                             name="radicacion" id="radicacion_si"
-                                                                            value="Sí" autocomplete="off">
+                                                                            value="SI" autocomplete="off">
                                                                         <label class="btn btn-outline-success"
                                                                             for="radicacion_si">Sí</label>
 
                                                                         <input type="radio" class="btn-check"
                                                                             name="radicacion" id="radicacion_no"
-                                                                            value="No" autocomplete="off">
+                                                                            value="NO" autocomplete="off">
                                                                         <label class="btn btn-outline-danger"
                                                                             for="radicacion_no">No</label>
                                                                     </div>
@@ -867,14 +881,14 @@
                                                                         role="group">
                                                                         <input type="radio" class="btn-check"
                                                                             name="correciones" id="correciones_si"
-                                                                            value="Sí" autocomplete="off"
+                                                                            value="SI" autocomplete="off"
                                                                             onchange="mostrarCampoCorrecciones()">
                                                                         <label class="btn btn-outline-success"
                                                                             for="correciones_si">Sí</label>
 
                                                                         <input type="radio" class="btn-check"
                                                                             name="correciones" id="correciones_no"
-                                                                            value="No" autocomplete="off"
+                                                                            value="NO" autocomplete="off"
                                                                             onchange="ocultarCampoCorrecciones()">
                                                                         <label class="btn btn-outline-danger"
                                                                             for="correciones_no">No</label>
@@ -885,7 +899,8 @@
                                                                             class="form-label small text-muted">Detalle
                                                                             de
                                                                             correcciones:</label>
-                                                                        <textarea class="form-control form-control-sm"
+                                                                        <textarea
+                                                                            class="form-control form-control-sm border border-secondary bg-light"
                                                                             id="detalleCorrecciones"
                                                                             name="detalleCorrecciones" rows="2"
                                                                             placeholder="Describa las correcciones necesarias"></textarea>
@@ -896,8 +911,7 @@
                                                             <!-- Acta de aceptación -->
                                                             <div class="mb-3">
                                                                 <label for="archivoPDF" class="form-label fw-bold">Acta
-                                                                    de aceptación
-                                                                    (PDF)</label>
+                                                                    de aceptación (PDF)</label>
                                                                 <div class="file-upload-container">
                                                                     <input type="file" class="form-control d-none"
                                                                         id="archivoPDF" name="archivoPDF" accept=".pdf">
@@ -907,8 +921,8 @@
                                                                             archivo</span>
                                                                     </label>
                                                                     <div class="file-name-display small mt-1"
-                                                                        id="fileNameDisplay">Ningún archivo
-                                                                        seleccionado
+                                                                        id="fileNameDisplay">
+                                                                        Ningún archivo seleccionado
                                                                     </div>
                                                                 </div>
                                                                 <input type="hidden" id="archivoPDFUrl"
@@ -1139,11 +1153,14 @@
                                                             </div>
 
                                                             <div id="motivo_no_apto" style="display: none;">
-                                                                <label for="motivo" class="form-label small">Motivo
-                                                                    del NO APTO</label>
-                                                                <textarea class="form-control form-control-sm"
-                                                                    id="motivo" name="motivo" rows="2"></textarea>
+                                                                <label for="motivo" class="form-label small">Motivo del
+                                                                    NO APTO</label>
+                                                                <textarea
+                                                                    class="form-control form-control-sm border border-secondary bg-light"
+                                                                    id="motivo" name="motivo" rows="2"
+                                                                    placeholder="Describa el motivo por el que no es APTO"></textarea>
                                                             </div>
+
                                                         </div>
                                                     </div>
                                                 </div>

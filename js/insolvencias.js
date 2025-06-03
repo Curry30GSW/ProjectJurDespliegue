@@ -72,7 +72,7 @@ const mostrar = (clientes) => {
 
 
     clientes.forEach((cliente) => {
-        console.log(cliente);
+
 
         const estadoTexto = !cliente.nombreData ? "FALTA DATACREDITO" : "Cargado";
         const estadoClase = !cliente.nombreData ? "bg-gradient-danger" : "bg-gradient-success";
@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Llenar el modal con los datos
         $('#idModal').text(String(cliente.id_cliente));
+        $('#inputIdCliente').val(String(cliente.id_cliente));
         $('#detalleNombreCliente').text(`${cliente.nombres ?? ''} ${cliente.apellidos ?? ''}`);
         $('#detalleTipoDocumento').text(`Cédula: ${cliente.cedula ?? '---'}`);
         $('#telefonoModal').text(cliente.telefono ? String(cliente.telefono) : '---');
@@ -206,8 +207,8 @@ function limpiarModalInsolvencia() {
         input.checked = false;
     });
 
-    // Limpiar todos los inputs de tipo texto, email, etc.
-    document.querySelectorAll('#modalCrearInsolvencia input[type="text"], #modalCrearInsolvencia input[type="email"]').forEach(input => {
+    // Limpiar inputs de texto
+    document.querySelectorAll('#modalCrearInsolvencia input[type="text"], #modalCrearInsolvencia input[type="email"], #modalCrearInsolvencia input[type="number"]').forEach(input => {
         input.value = '';
     });
 
@@ -216,64 +217,145 @@ function limpiarModalInsolvencia() {
         textarea.value = '';
     });
 
-    // Ocultar campos condicionales
-    document.getElementById('campoDetalleCorrecciones')?.style?.setProperty('display', 'none');
-    document.getElementById('contenedorAudiencias')?.style?.setProperty('display', 'none');
-    document.getElementById('datos_liquidador')?.style?.setProperty('display', 'none');
-    document.getElementById('motivo_no_apto')?.style?.setProperty('display', 'none');
-
-    // Limpiar lista de audiencias
-    const listaAudiencias = document.getElementById('listaAudiencias');
-    if (listaAudiencias) {
-        listaAudiencias.innerHTML = '';
-    }
-
-    // Resetear campo de archivo PDF
-    const inputArchivo = document.getElementById('archivoPDF');
-    if (inputArchivo) {
-        inputArchivo.value = '';
-    }
-
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    if (fileNameDisplay) {
-        fileNameDisplay.textContent = 'Ningún archivo seleccionado';
-    }
-
-    // Resetear campo oculto del archivo
-    const archivoUrl = document.getElementById('archivoPDFUrl');
-    if (archivoUrl) {
-        archivoUrl.value = '';
-    }
-
-    // Resetear selects si los hubiera
+    // Resetear selects
     document.querySelectorAll('#modalCrearInsolvencia select').forEach(select => {
         select.selectedIndex = 0;
     });
 
-    // Cerrar todos los toggles que estén abiertos
-    document.querySelectorAll('#modalCrearInsolvencia .toggle-content').forEach(toggle => {
-        toggle.style.display = 'none';
+    // Ocultar campos condicionales
+    const camposOcultar = [
+        'campoDetalleCorrecciones',
+        'contenedorAudiencias',
+        'datos_liquidador',
+        'motivo_no_apto'
+    ];
+
+    camposOcultar.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.style.display = 'none';
     });
 
+    // Limpiar lista de audiencias
+    const listaAudiencias = document.getElementById('listaAudiencias');
+    if (listaAudiencias) listaAudiencias.innerHTML = '';
+
+    // Resetear campo de archivo PDF y su UI
+    const inputArchivo = document.getElementById('archivoPDF');
+    if (inputArchivo) {
+        inputArchivo.value = '';
+
+        // Restablecer la UI del campo de archivo
+        const uploadLabel = document.querySelector('.file-upload-label');
+        if (uploadLabel) {
+            uploadLabel.classList.remove('has-file');
+            const uploadText = uploadLabel.querySelector('.file-upload-text');
+            if (uploadText) uploadText.textContent = 'Seleccionar archivo';
+        }
+
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        if (fileNameDisplay) fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+    }
+
+    // Resetear campo oculto del archivo
+    const archivoUrl = document.getElementById('archivoPDFUrl');
+    if (archivoUrl) archivoUrl.value = '';
+
     // Resetear campos específicos adicionales
-    const juzgado = document.getElementById('juzgado');
-    if (juzgado) juzgado.value = '';
+    const camposEspecificos = {
+        'juzgado': '',
+        'nombre_liquidador': '',
+        'telefono_liquidador': '',
+        'correo_liquidador': '',
+        'motivo': '',
+        'detalleCorrecciones': ''
+    };
 
-    const nombreLiquidador = document.getElementById('nombre_liquidador');
-    if (nombreLiquidador) nombreLiquidador.value = '';
+    Object.entries(camposEspecificos).forEach(([id, value]) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.value = value;
+    });
 
-    const telefonoLiquidador = document.getElementById('telefono_liquidador');
-    if (telefonoLiquidador) telefonoLiquidador.value = '';
+    // Remover clases de validación si existen
+    document.querySelectorAll('#modalCrearInsolvencia .is-invalid').forEach(el => {
+        el.classList.remove('is-invalid');
+    });
 
-    const correoLiquidador = document.getElementById('correo_liquidador');
-    if (correoLiquidador) correoLiquidador.value = '';
+    document.querySelectorAll('#modalCrearInsolvencia .is-valid').forEach(el => {
+        el.classList.remove('is-valid');
+    });
 
-    const motivo = document.getElementById('motivo');
-    if (motivo) motivo.value = '';
-
-    const detalleCorrecciones = document.getElementById('detalleCorrecciones');
-    if (detalleCorrecciones) detalleCorrecciones.value = '';
+    // Opcional: Cerrar toggles si los hay
+    // document.querySelectorAll('#modalCrearInsolvencia .toggle-content').forEach(toggle => {
+    //     toggle.style.display = 'none';
+    // });
 }
+
+
+document.getElementById('formCrearCliente').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const id_cliente = document.getElementById('inputIdCliente').value;
+    const cuadernillo = document.querySelector('input[name="cuadernillo"]:checked')?.value === 'SI' ? 1 : 0;
+    const radicacion = document.querySelector('input[name="radicacion"]:checked')?.value === 'SI' ? 1 : 0;
+
+    const correccionesRadio = document.querySelector('input[name="correciones"]:checked')?.value;
+    const correcciones = correccionesRadio === 'SI'
+        ? document.getElementById('detalleCorrecciones').value.trim()
+        : '';
+
+    const archivoPDF = document.getElementById('archivoPDF').files[0];
+    const audienciasVisibles = document.querySelector('input[name="audiencias"]:checked')?.value === 'Sí';
+
+    const formData = new FormData();
+    formData.append('id_cliente', id_cliente);
+    formData.append('cuadernillo', cuadernillo);
+    formData.append('radicacion', radicacion);
+    formData.append('correcciones', correcciones);
+
+    if (archivoPDF) {
+        formData.append('archivoPDF', archivoPDF);
+    }
+
+    if (audienciasVisibles) {
+        const audienciasItems = document.querySelectorAll('#listaAudiencias .audiencia-item');
+        audienciasItems.forEach((item, index) => {
+            const descripcion = item.querySelector('input[name^="audiencias"][name$="[descripcion]"]').value;
+            const fecha = item.querySelector('input[name^="audiencias"][name$="[fecha]"]').value;
+
+            formData.append(`audiencias[${index}][descripcion]`, descripcion);
+            formData.append(`audiencias[${index}][fecha]`, fecha);
+        });
+    }
+
+    fetch('http://localhost:3000/api/actualizar-insolvencias', {
+        method: 'PUT',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Guardado!',
+                    text: 'Los datos se guardaron correctamente.',
+                    confirmButtonColor: '#3085d6'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un problema al guardar los datos.',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error de red o del servidor.');
+        });
+});
+
+
 
 
 
@@ -361,3 +443,27 @@ function mostrarDatosLiquidador(mostrar) {
 function mostrarMotivo(mostrar) {
     document.getElementById('motivo_no_apto').style.display = mostrar ? 'block' : 'none';
 }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.getElementById('archivoPDF');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const uploadLabel = document.querySelector('.file-upload-label');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function (e) {
+            if (this.files.length > 0) {
+                // Hay archivo seleccionado
+                const fileName = this.files[0].name;
+                fileNameDisplay.textContent = fileName;
+                uploadLabel.classList.add('has-file');
+                uploadLabel.querySelector('.file-upload-text').textContent = 'Archivo seleccionado';
+            } else {
+                // No hay archivo seleccionado
+                fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+                uploadLabel.classList.remove('has-file');
+                uploadLabel.querySelector('.file-upload-text').textContent = 'Seleccionar archivo';
+            }
+        });
+    }
+});
