@@ -281,7 +281,7 @@
                                                     CÉDULA</th>
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    DATACRÉDITO</th>
+                                                    ESTADO</th>
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     FECHA VINCULACIÓN</th>
@@ -880,18 +880,18 @@
                                                                     <div class="btn-group btn-group-sm mb-2"
                                                                         role="group">
                                                                         <input type="radio" class="btn-check"
-                                                                            name="correciones" id="correciones_si"
+                                                                            name="correcciones" id="correcciones_si"
                                                                             value="SI" autocomplete="off"
                                                                             onchange="mostrarCampoCorrecciones()">
                                                                         <label class="btn btn-outline-success"
-                                                                            for="correciones_si">Sí</label>
+                                                                            for="correcciones_si">Sí</label>
 
                                                                         <input type="radio" class="btn-check"
-                                                                            name="correciones" id="correciones_no"
+                                                                            name="correcciones" id="correcciones_no"
                                                                             value="NO" autocomplete="off"
                                                                             onchange="ocultarCampoCorrecciones()">
                                                                         <label class="btn btn-outline-danger"
-                                                                            for="correciones_no">No</label>
+                                                                            for="correcciones_no">No</label>
                                                                     </div>
                                                                     <div id="campoDetalleCorrecciones"
                                                                         style="display: none;">
@@ -994,7 +994,7 @@
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio"
                                                                             name="desprendible"
-                                                                            id="desprendible_parcial" value="parcial">
+                                                                            id="desprendible_parcial" value="PARCIAL">
                                                                         <label
                                                                             class="form-check-label badge bg-secondary"
                                                                             for="desprendible_parcial">Parcial</label>
@@ -1002,14 +1002,14 @@
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio"
                                                                             name="desprendible" id="desprendible_limpio"
-                                                                            value="limpio">
+                                                                            value="LIMPIO">
                                                                         <label class="form-check-label badge bg-success"
                                                                             for="desprendible_limpio">Limpio</label>
                                                                     </div>
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio"
                                                                             name="desprendible" id="desprendible_deudas"
-                                                                            value="deudas">
+                                                                            value="DEUDAS">
                                                                         <label class="form-check-label badge bg-danger"
                                                                             for="desprendible_deudas">Deudas</label>
                                                                     </div>
@@ -1130,8 +1130,7 @@
                                                     <div class="card shadow-sm">
                                                         <div class="card-header bg-danger text-white">
                                                             <h6 class="mb-0 text-white "><i
-                                                                    class="fas fa-flag me-2"></i>Estado
-                                                                Final</h6>
+                                                                    class="fas fa-flag me-2"></i>PROCESO FINALIZADO</h6>
                                                         </div>
                                                         <div class="card-body">
                                                             <div class="mb-3">
@@ -1141,14 +1140,14 @@
                                                                         id="estado_apto" value="APTO" autocomplete="off"
                                                                         onclick="mostrarMotivo(false)">
                                                                     <label class="btn btn-outline-success"
-                                                                        for="estado_apto">APTO</label>
+                                                                        for="estado_apto">SI</label>
 
                                                                     <input type="radio" class="btn-check" name="estado"
                                                                         id="estado_no_apto" value="NO APTO"
                                                                         autocomplete="off"
                                                                         onclick="mostrarMotivo(true)">
                                                                     <label class="btn btn-outline-danger"
-                                                                        for="estado_no_apto">NO APTO</label>
+                                                                        for="estado_no_apto">NO</label>
                                                                 </div>
                                                             </div>
 
