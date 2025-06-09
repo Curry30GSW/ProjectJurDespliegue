@@ -301,6 +301,27 @@ function limpiarModalInsolvencia() {
     // document.querySelectorAll('#modalCrearInsolvencia .toggle-content').forEach(toggle => {
     //     toggle.style.display = 'none';
     // });
+        // Limpiar campos de la calculadora parcial
+    const idsCalculadora = [
+        'salario',
+        'salud',
+        'salario_total',
+        'saldo_total',
+        'deducciones',
+        'saldo_libre',
+        'porcentaje',
+        'cuota_pagar'
+    ];
+
+    idsCalculadora.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) campo.value = '';
+    });
+
+    // Ocultar la calculadora parcial
+    const calculadora = document.getElementById('calculadora-parcial');
+    if (calculadora) calculadora.style.display = 'none';
+
 }
 
 
@@ -712,3 +733,89 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+function formatearPeso(valor) {
+    return valor.toLocaleString('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+    });
+}
+
+
+ const radioParcial = document.getElementById("desprendible_parcial");
+    const radioOtros = document.querySelectorAll('input[name="desprendible"]:not(#desprendible_parcial)');
+    const seccionParcial = document.getElementById("calculadora-parcial");
+
+    const salario = document.getElementById("salario");
+    const salud = document.getElementById("salud");
+    const salario_total = document.getElementById("salario_total");
+    const saldo_total = document.getElementById("saldo_total");
+    const deducciones = document.getElementById("deducciones");
+    const saldo_libre = document.getElementById("saldo_libre");
+    const porcentaje = document.getElementById("porcentaje");
+    const cuota_pagar = document.getElementById("cuota_pagar");
+
+    function formatCurrency(value) {
+        const number = parseFloat(value);
+        if (isNaN(number)) return "";
+        return '$' + number.toLocaleString('en-US', { maximumFractionDigits: 0 });
+
+    }
+
+    function unformatCurrency(value) {
+        return parseFloat(value.replace(/[^0-9.-]+/g, "")) || 0;
+    }
+
+   function calcular() {
+    const sal = unformatCurrency(salario.value);
+    const salu = unformatCurrency(salud.value);
+    const ded = unformatCurrency(deducciones.value);
+    const porc = parseFloat(porcentaje.value) || 0;
+
+    const sal_total = sal - salu;
+    salario_total.value = formatCurrency(sal_total);
+    salario_total.style.color = sal_total < 0 ? 'red' : 'inherit';
+
+    const saldo = sal_total / 2;
+    saldo_total.value = formatCurrency(saldo);
+    saldo_total.style.color = saldo < 0 ? 'red' : 'inherit';
+
+    const libre = saldo - ded;
+    saldo_libre.value = formatCurrency(libre);
+    saldo_libre.style.color = libre < 0 ? 'red' : 'inherit';
+
+    const cuota = (libre * porc) / 100;
+    cuota_pagar.value = formatCurrency(cuota);
+    cuota_pagar.style.color = cuota < 0 ? 'red' : 'inherit';
+}
+
+function applyCurrencyFormatting(input) {
+    input.addEventListener("input", () => {
+        calcular(); // Calcula mientras escribe, pero sin formatear
+    });
+
+    input.addEventListener("blur", () => {
+        const value = unformatCurrency(input.value);
+        input.value = formatCurrency(value); // Formatea solo cuando termina de escribir
+    });
+
+    // Formatear al inicio si hay un valor cargado
+    input.value = formatCurrency(unformatCurrency(input.value));
+}
+
+
+    [salario, salud, deducciones].forEach(applyCurrencyFormatting);
+    porcentaje.addEventListener("input", calcular);
+
+    radioParcial.addEventListener("change", () => {
+        if (radioParcial.checked) {
+            seccionParcial.style.display = "block";
+        }
+    });
+
+    radioOtros.forEach(radio => {
+        radio.addEventListener("change", () => {
+            seccionParcial.style.display = "none";
+        });
+    });

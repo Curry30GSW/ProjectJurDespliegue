@@ -768,13 +768,13 @@
 
                                         <!-- Datos del cliente -->
                                         <div class="col-md-10 d-flex align-items-center">
-                                            <div class="card w-100 shadow-sm border-start border-5 border-success">
+                                            <div class="card w-100 shadow-sm border-start border-5 border-info text-dark fw-bold">
                                                 <div class="card-body py-3">
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <h5 class="fw-bold mb-1" id="detalleNombreCliente">
                                                                 [Nombre del Cliente]</h5>
-                                                            <p class="text-muted small mb-1" id="detalleTipoDocumento">
+                                                            <p class="fw-bold mb-1" id="detalleTipoDocumento">
                                                                 [Tipo de Documento]</p>
                                                         </div>
                                                         <div class="col-md-4">
@@ -818,62 +818,63 @@
                                                                 Proceso</h6>
                                                         </div>
                                                         <div class="card-body">
-                                                            <!-- Cuadernillo - Tarjeta estilo toggle -->
-                                                            <div class="mb-3 toggle-card">
-                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
-                                                                    onclick="toggleCard(this)">
-                                                                    <label
-                                                                        class="form-label fw-bold mb-0">Cuadernillo</label>
-                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
-                                                                </div>
-                                                                <div class="toggle-content mt-2">
-                                                                    <div class="btn-group btn-group-sm" role="group">
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="cuadernillo" id="cuadernillo_si"
-                                                                            value="SI" autocomplete="off">
-                                                                        <label class="btn btn-outline-success"
-                                                                            for="cuadernillo_si">Sí</label>
+                                               <!-- Cuadernillo - Tarjeta estilo toggle -->
+                                                <div class="mb-3 toggle-card">
+                                                    <div class="d-flex justify-content-between align-items-center toggle-header" onclick="toggleCard(this)">
+                                                        <label class="form-label fw-bold mb-0 text-dark">Cuadernillo</label>
+                                                        <i class="fas fa-chevron-down toggle-icon"></i>
+                                                    </div>
+                                                    <div class="toggle-content mt-2">
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-2">
+                                                                <div class="btn-group btn-group-sm" role="group">
+                                                                    <input type="radio" class="btn-check" name="cuadernillo" id="cuadernillo_si" value="SI" autocomplete="off">
+                                                                    <label class="btn btn-outline-success" for="cuadernillo_si">Sí</label>
 
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="cuadernillo" id="cuadernillo_no"
-                                                                            value="NO" autocomplete="off">
-                                                                        <label class="btn btn-outline-danger"
-                                                                            for="cuadernillo_no">No</label>
-                                                                    </div>
+                                                                    <input type="radio" class="btn-check" name="cuadernillo" id="cuadernillo_no" value="NO" autocomplete="off">
+                                                                    <label class="btn btn-outline-danger" for="cuadernillo_no">No</label>
                                                                 </div>
                                                             </div>
+                                                            <div class="col-md-6 mb-2">
+                                                                <label for="fecha_cuadernillo" class="form-label fw-bold text-dark">Fecha Cuadernillo</label>
+                                                                <input type="date" class="form-control" id="fecha_cuadernillo" name="fecha_cuadernillo">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                            <!-- Radicación - Tarjeta estilo toggle -->
-                                                            <div class="mb-3 toggle-card">
-                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
-                                                                    onclick="toggleCard(this)">
-                                                                    <label
-                                                                        class="form-label fw-bold mb-0">Radicación</label>
-                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
-                                                                </div>
-                                                                <div class="toggle-content mt-2">
-                                                                    <div class="btn-group btn-group-sm" role="group">
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="radicacion" id="radicacion_si"
-                                                                            value="SI" autocomplete="off">
-                                                                        <label class="btn btn-outline-success"
-                                                                            for="radicacion_si">Sí</label>
+                                                <!-- Radicación - Tarjeta estilo toggle -->
+                                                <div class="mb-3 toggle-card">
+                                                    <div class="d-flex justify-content-between align-items-center toggle-header" onclick="toggleCard(this)">
+                                                        <label class="form-label fw-bold mb-0 text-dark">Radicación</label>
+                                                        <i class="fas fa-chevron-down toggle-icon"></i>
+                                                    </div>
+                                                    <div class="toggle-content mt-2">
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-2">
+                                                                <div class="btn-group btn-group-sm" role="group">
+                                                                    <input type="radio" class="btn-check" name="radicacion" id="radicacion_si" value="SI" autocomplete="off">
+                                                                    <label class="btn btn-outline-success" for="radicacion_si">Sí</label>
 
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="radicacion" id="radicacion_no"
-                                                                            value="NO" autocomplete="off">
-                                                                        <label class="btn btn-outline-danger"
-                                                                            for="radicacion_no">No</label>
-                                                                    </div>
+                                                                    <input type="radio" class="btn-check" name="radicacion" id="radicacion_no" value="NO" autocomplete="off">
+                                                                    <label class="btn btn-outline-danger" for="radicacion_no">No</label>
                                                                 </div>
                                                             </div>
+                                                            <div class="col-md-6 mb-2">
+                                                                <label for="fecha_radicacion" class="form-label fw-bold text-dark">Fecha Radicación</label>
+                                                                <input type="date" class="form-control" id="fecha_radicacion" name="fecha_radicacion">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
 
                                                             <!-- Correcciones - Con campo dinámico -->
                                                             <div class="mb-3 toggle-card">
                                                                 <div class="d-flex justify-content-between align-items-center toggle-header"
                                                                     onclick="toggleCard(this)">
                                                                     <label
-                                                                        class="form-label fw-bold mb-0">Correcciones</label>
+                                                                        class="form-label fw-bold mb-0 text-dark">Correcciones</label>
                                                                     <i class="fas fa-chevron-down toggle-icon"></i>
                                                                 </div>
                                                                 <div class="toggle-content mt-2">
@@ -910,7 +911,7 @@
 
                                                             <!-- Acta de aceptación -->
                                                             <div class="mb-3">
-                                                                <label for="archivoPDF" class="form-label fw-bold">Acta
+                                                                <label for="archivoPDF" class="form-label fw-bold text-dark">Acta
                                                                     de aceptación (PDF)</label>
                                                                 <div class="file-upload-container">
                                                                     <input type="file" class="form-control d-none"
@@ -988,37 +989,76 @@
                                                         <div class="card-body">
                                                             <!-- Estado Desprendible -->
                                                             <div class="mb-3">
-                                                                <label class="form-label fw-bold">Estado
-                                                                    Desprendible</label>
+                                                                <label for="desprendibleoPDF" class="form-label fw-bold text-dark">Desprendible (PDF)</label>
+                                                                <div class="file-upload-container">
+                                                                    <input type="file" class="form-control d-none" id="desprendibleoPDF" name="desprendibleoPDF" accept=".pdf">
+                                                                    <label for="desprendibleoPDF" class="file-upload-label">
+                                                                        <i class="fas fa-cloud-upload-alt me-2"></i>
+                                                                        <span class="file-upload-text">Seleccionar desprendible</span>
+                                                                    </label>
+                                                                    <div class="file-name-display small mt-1" id="fileNameDisplay">
+                                                                        Ningún archivo seleccionado
+                                                                    </div>
+                                                                </div>
+                                                                <input type="hidden" id="desprendiblePDFUrl" name="desprendiblePDFUrl">
+
+                                                                <label class="form-label fw-bold text-dark">Estado Desprendible</label>
                                                                 <div class="d-flex flex-wrap gap-2">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="desprendible"
-                                                                            id="desprendible_parcial" value="PARCIAL">
-                                                                        <label
-                                                                            class="form-check-label badge bg-secondary"
-                                                                            for="desprendible_parcial">Parcial</label>
+                                                                        <input class="form-check-input" type="radio" name="desprendible" id="desprendible_parcial" value="PARCIAL">
+                                                                        <label class="form-check-label badge bg-secondary" for="desprendible_parcial">Parcial</label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="desprendible" id="desprendible_limpio"
-                                                                            value="LIMPIO">
-                                                                        <label class="form-check-label badge bg-success"
-                                                                            for="desprendible_limpio">Limpio</label>
+                                                                        <input class="form-check-input" type="radio" name="desprendible" id="desprendible_limpio" value="LIMPIO">
+                                                                        <label class="form-check-label badge bg-success" for="desprendible_limpio">Limpio</label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="desprendible" id="desprendible_deudas"
-                                                                            value="DEUDAS">
-                                                                        <label class="form-check-label badge bg-danger"
-                                                                            for="desprendible_deudas">Deudas</label>
+                                                                        <input class="form-check-input" type="radio" name="desprendible" id="desprendible_deudas" value="DEUDAS">
+                                                                        <label class="form-check-label badge bg-danger" for="desprendible_deudas">Deudas</label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Sección visible solo si es PARCIAL -->
+                                                                <div id="calculadora-parcial" style="display: none;">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="salario" class="form-label fw-bold text-dark">Salario</label>
+                                                                            <input type="text" class="form-control" id="salario" placeholder="Salario">
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="salud" class="form-label fw-bold text-dark">Salud</label>
+                                                                            <input type="text" class="form-control" id="salud" placeholder="Salud">
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="salario_total" class="form-label fw-bold text-dark">Salario Total</label>
+                                                                            <input type="text" class="form-control bg-info bg-opacity-10 border-2 border-info text-center text-white fw-bold" id="salario_total" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="saldo_total" class="form-label fw-bold text-dark">Saldo Total</label>
+                                                                            <input type="text" class="form-control" id="saldo_total" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="deducciones" class="form-label fw-bold text-dark">Deducciones</label>
+                                                                            <input type="text" class="form-control" id="deducciones" placeholder="Deducciones">
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="saldo_libre" class="form-label fw-bold text-dark">Saldo Libre</label>
+                                                                            <input type="text" class="form-control bg-secondary bg-opacity-10 border-2 border-secondary text-center text-white fw-bold" id="saldo_libre" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="porcentaje" class="form-label fw-bold text-dark">% Porcentaje</label>
+                                                                            <input type="text" class="form-control" id="porcentaje" step="0.01">
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="cuota_pagar" class="form-label fw-bold text-success">💰 Cuota a Pagar</label>
+                                                                            <input type="text" class="form-control bg-success bg-opacity-10 border-2 border-success text-center fw-bold text-white" id="cuota_pagar" readonly>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-
                                                             <!-- Tipo de proceso -->
                                                             <div class="mb-3">
-                                                                <label class="form-label fw-bold">Tipo de
+                                                                <label class="form-label fw-bold text-dark">Tipo de
                                                                     proceso</label>
                                                                 <div class="btn-group w-100" role="group">
                                                                     <input type="radio" class="btn-check"
@@ -1034,12 +1074,14 @@
                                                                         for="proceso_acuerdo_pago">Acuerdo de
                                                                         Pago</label>
                                                                 </div>
+                                                             
+
                                                             </div>
 
                                                             <!-- Juzgado -->
                                                             <div class="mb-3">
                                                                 <label for="juzgado"
-                                                                    class="form-label fw-bold">Juzgado</label>
+                                                                    class="form-label fw-bold text-dark">Juzgado</label>
                                                                 <div class="input-group">
                                                                     <span class="input-group-text"><i
                                                                             class="fas fa-balance-scale"></i></span>
@@ -1053,7 +1095,7 @@
                                                                 <div class="d-flex justify-content-between align-items-center toggle-header"
                                                                     onclick="toggleCard(this)">
                                                                     <label
-                                                                        class="form-label fw-bold mb-0">Liquidador</label>
+                                                                        class="form-label fw-bold mb-0 text-dark">Liquidador</label>
                                                                     <i class="fas fa-chevron-down toggle-icon"></i>
                                                                 </div>
                                                                 <div class="toggle-content mt-2">
@@ -1078,7 +1120,7 @@
                                                                         class="liquidador-details">
                                                                         <div class="mb-2">
                                                                             <label for="nombre_liquidador"
-                                                                                class="form-label small">Nombre</label>
+                                                                                class="form-label small text-dark fw-bold">Nombre</label>
                                                                             <input type="text"
                                                                                 class="form-control form-control-sm"
                                                                                 id="nombre_liquidador"
@@ -1087,7 +1129,7 @@
                                                                         <div class="row g-2">
                                                                             <div class="col-md-6">
                                                                                 <label for="telefono_liquidador"
-                                                                                    class="form-label small">Teléfono</label>
+                                                                                    class="form-label small text-dark fw-bold">Teléfono</label>
                                                                                 <input type="text"
                                                                                     class="form-control form-control-sm"
                                                                                     id="telefono_liquidador"
@@ -1095,7 +1137,7 @@
                                                                             </div>
                                                                             <div class="col-md-6">
                                                                                 <label for="correo_liquidador"
-                                                                                    class="form-label small">Correo</label>
+                                                                                    class="form-label small text-dark fw-bold">Correo</label>
                                                                                 <input type="email"
                                                                                     class="form-control form-control-sm"
                                                                                     id="correo_liquidador"
@@ -1103,7 +1145,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mt-2">
-                                                                            <label class="form-label small">¿Ya se
+                                                                            <label class="form-label small text-dark fw-bold">¿Ya se
                                                                                 pagó?</label>
                                                                             <div class="btn-group btn-group-sm w-100"
                                                                                 role="group">
@@ -1134,7 +1176,7 @@
                                                         </div>
                                                         <div class="card-body">
                                                             <div class="mb-3">
-                                                                <label class="form-label fw-bold">Estado</label>
+                                                                <label class="form-label fw-bold text-dark">Estado</label>
                                                                 <div class="btn-group w-100" role="group">
                                                                     <input type="radio" class="btn-check" name="estado"
                                                                         id="estado_apto" value="APTO" autocomplete="off"
@@ -1152,7 +1194,7 @@
                                                             </div>
 
                                                             <div id="motivo_no_apto" style="display: none;">
-                                                                <label for="motivo" class="form-label small">Motivo del
+                                                                <label for="motivo" class="form-label small text-dark fw-bold">Motivo del
                                                                     NO APTO</label>
                                                                 <textarea
                                                                     class="form-control form-control-sm border border-secondary bg-light"
