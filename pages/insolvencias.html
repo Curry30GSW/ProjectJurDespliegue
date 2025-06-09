@@ -768,7 +768,8 @@
 
                                         <!-- Datos del cliente -->
                                         <div class="col-md-10 d-flex align-items-center">
-                                            <div class="card w-100 shadow-sm border-start border-5 border-info text-dark fw-bold">
+                                            <div
+                                                class="card w-100 shadow-sm border-start border-5 border-info text-dark fw-bold">
                                                 <div class="card-body py-3">
                                                     <div class="row">
                                                         <div class="col-md-4">
@@ -818,55 +819,88 @@
                                                                 Proceso</h6>
                                                         </div>
                                                         <div class="card-body">
-                                               <!-- Cuadernillo - Tarjeta estilo toggle -->
-                                                <div class="mb-3 toggle-card">
-                                                    <div class="d-flex justify-content-between align-items-center toggle-header" onclick="toggleCard(this)">
-                                                        <label class="form-label fw-bold mb-0 text-dark">Cuadernillo</label>
-                                                        <i class="fas fa-chevron-down toggle-icon"></i>
-                                                    </div>
-                                                    <div class="toggle-content mt-2">
-                                                        <div class="row">
-                                                            <div class="col-md-6 mb-2">
-                                                                <div class="btn-group btn-group-sm" role="group">
-                                                                    <input type="radio" class="btn-check" name="cuadernillo" id="cuadernillo_si" value="SI" autocomplete="off">
-                                                                    <label class="btn btn-outline-success" for="cuadernillo_si">Sí</label>
+                                                            <!-- Cuadernillo - Tarjeta estilo toggle -->
+                                                            <div class="mb-3 toggle-card">
+                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                                                    onclick="toggleCard(this)">
+                                                                    <label
+                                                                        class="form-label fw-bold mb-0 text-dark">Cuadernillo</label>
+                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                                                </div>
+                                                                <div class="toggle-content mt-2">
+                                                                    <div class="row align-items-center">
+                                                                        <div class="col-md-6 mb-2 d-flex flex-column">
+                                                                            <label
+                                                                                class="form-label fw-bold text-dark mb-1"></label>
+                                                                            <div class="btn-group btn-group-sm"
+                                                                                role="group">
+                                                                                <input type="radio" class="btn-check"
+                                                                                    name="cuadernillo"
+                                                                                    id="cuadernillo_si" value="SI"
+                                                                                    autocomplete="off">
+                                                                                <label class="btn btn-outline-success"
+                                                                                    for="cuadernillo_si">Sí</label>
 
-                                                                    <input type="radio" class="btn-check" name="cuadernillo" id="cuadernillo_no" value="NO" autocomplete="off">
-                                                                    <label class="btn btn-outline-danger" for="cuadernillo_no">No</label>
+                                                                                <input type="radio" class="btn-check"
+                                                                                    name="cuadernillo"
+                                                                                    id="cuadernillo_no" value="NO"
+                                                                                    autocomplete="off">
+                                                                                <label class="btn btn-outline-danger"
+                                                                                    for="cuadernillo_no">No</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 mb-2">
+                                                                            <label for="fecha_cuadernillo"
+                                                                                class="form-label fw-bold text-dark mb-1">Fecha
+                                                                                Cuadernillo</label>
+                                                                            <input type="date" class="form-control"
+                                                                                id="fecha_cuadernillo"
+                                                                                name="fecha_cuadernillo">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <!-- Radicación - Tarjeta estilo toggle -->
+                                                            <div class="mb-3 toggle-card">
+                                                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                                                    onclick="toggleCard(this)">
+                                                                    <label
+                                                                        class="form-label fw-bold mb-0 text-dark">Radicación</label>
+                                                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                                                </div>
+                                                                <div class="toggle-content mt-2">
+                                                                    <div class="row align-items-center">
+                                                                        <div class="col-md-6 mb-2 d-flex flex-column">
+                                                                            <label
+                                                                                class="form-label fw-bold text-dark mb-1"></label>
+                                                                            <div class="btn-group btn-group-sm"
+                                                                                role="group">
+                                                                                <input type="radio" class="btn-check"
+                                                                                    name="radicacion" id="radicacion_si"
+                                                                                    value="SI" autocomplete="off">
+                                                                                <label class="btn btn-outline-success"
+                                                                                    for="radicacion_si">Sí</label>
+
+                                                                                <input type="radio" class="btn-check"
+                                                                                    name="radicacion" id="radicacion_no"
+                                                                                    value="NO" autocomplete="off">
+                                                                                <label class="btn btn-outline-danger"
+                                                                                    for="radicacion_no">No</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 mb-2">
+                                                                            <label for="fecha_radicacion"
+                                                                                class="form-label fw-bold text-dark mb-1">Fecha
+                                                                                Radicación</label>
+                                                                            <input type="date" class="form-control"
+                                                                                id="fecha_radicacion"
+                                                                                name="fecha_radicacion">
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 mb-2">
-                                                                <label for="fecha_cuadernillo" class="form-label fw-bold text-dark">Fecha Cuadernillo</label>
-                                                                <input type="date" class="form-control" id="fecha_cuadernillo" name="fecha_cuadernillo">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Radicación - Tarjeta estilo toggle -->
-                                                <div class="mb-3 toggle-card">
-                                                    <div class="d-flex justify-content-between align-items-center toggle-header" onclick="toggleCard(this)">
-                                                        <label class="form-label fw-bold mb-0 text-dark">Radicación</label>
-                                                        <i class="fas fa-chevron-down toggle-icon"></i>
-                                                    </div>
-                                                    <div class="toggle-content mt-2">
-                                                        <div class="row">
-                                                            <div class="col-md-6 mb-2">
-                                                                <div class="btn-group btn-group-sm" role="group">
-                                                                    <input type="radio" class="btn-check" name="radicacion" id="radicacion_si" value="SI" autocomplete="off">
-                                                                    <label class="btn btn-outline-success" for="radicacion_si">Sí</label>
-
-                                                                    <input type="radio" class="btn-check" name="radicacion" id="radicacion_no" value="NO" autocomplete="off">
-                                                                    <label class="btn btn-outline-danger" for="radicacion_no">No</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6 mb-2">
-                                                                <label for="fecha_radicacion" class="form-label fw-bold text-dark">Fecha Radicación</label>
-                                                                <input type="date" class="form-control" id="fecha_radicacion" name="fecha_radicacion">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
 
                                                             <!-- Correcciones - Con campo dinámico -->
@@ -911,7 +945,8 @@
 
                                                             <!-- Acta de aceptación -->
                                                             <div class="mb-3">
-                                                                <label for="archivoPDF" class="form-label fw-bold text-dark">Acta
+                                                                <label for="archivoPDF"
+                                                                    class="form-label fw-bold text-dark">Acta
                                                                     de aceptación (PDF)</label>
                                                                 <div class="file-upload-container">
                                                                     <input type="file" class="form-control d-none"
@@ -989,32 +1024,51 @@
                                                         <div class="card-body">
                                                             <!-- Estado Desprendible -->
                                                             <div class="mb-3">
-                                                                <label for="desprendibleoPDF" class="form-label fw-bold text-dark">Desprendible (PDF)</label>
+                                                                <label for="desprendibleoPDF"
+                                                                    class="form-label fw-bold text-dark">Desprendible
+                                                                    (PDF)</label>
                                                                 <div class="file-upload-container">
-                                                                    <input type="file" class="form-control d-none" id="desprendibleoPDF" name="desprendibleoPDF" accept=".pdf">
-                                                                    <label for="desprendibleoPDF" class="file-upload-label">
+                                                                    <input type="file" class="form-control d-none"
+                                                                        id="desprendibleoPDF" name="desprendibleoPDF"
+                                                                        accept=".pdf">
+                                                                    <label for="desprendibleoPDF"
+                                                                        class="file-upload-label">
                                                                         <i class="fas fa-cloud-upload-alt me-2"></i>
-                                                                        <span class="file-upload-text">Seleccionar desprendible</span>
+                                                                        <span class="file-upload-text">Seleccionar
+                                                                            desprendible</span>
                                                                     </label>
-                                                                    <div class="file-name-display small mt-1" id="fileNameDisplay">
+                                                                    <div class="file-name-display small mt-1"
+                                                                        id="fileNameDisplay">
                                                                         Ningún archivo seleccionado
                                                                     </div>
                                                                 </div>
-                                                                <input type="hidden" id="desprendiblePDFUrl" name="desprendiblePDFUrl">
+                                                                <input type="hidden" id="desprendiblePDFUrl"
+                                                                    name="desprendiblePDFUrl">
 
-                                                                <label class="form-label fw-bold text-dark">Estado Desprendible</label>
+                                                                <label class="form-label fw-bold text-dark">Estado
+                                                                    Desprendible</label>
                                                                 <div class="d-flex flex-wrap gap-2">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="desprendible" id="desprendible_parcial" value="PARCIAL">
-                                                                        <label class="form-check-label badge bg-secondary" for="desprendible_parcial">Parcial</label>
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="desprendible"
+                                                                            id="desprendible_parcial" value="PARCIAL">
+                                                                        <label
+                                                                            class="form-check-label badge bg-secondary"
+                                                                            for="desprendible_parcial">Parcial</label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="desprendible" id="desprendible_limpio" value="LIMPIO">
-                                                                        <label class="form-check-label badge bg-success" for="desprendible_limpio">Limpio</label>
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="desprendible" id="desprendible_limpio"
+                                                                            value="LIMPIO">
+                                                                        <label class="form-check-label badge bg-success"
+                                                                            for="desprendible_limpio">Limpio</label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="desprendible" id="desprendible_deudas" value="DEUDAS">
-                                                                        <label class="form-check-label badge bg-danger" for="desprendible_deudas">Deudas</label>
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="desprendible" id="desprendible_deudas"
+                                                                            value="DEUDAS">
+                                                                        <label class="form-check-label badge bg-danger"
+                                                                            for="desprendible_deudas">Deudas</label>
                                                                     </div>
                                                                 </div>
 
@@ -1022,40 +1076,76 @@
                                                                 <div id="calculadora-parcial" style="display: none;">
                                                                     <div class="row">
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="salario" class="form-label fw-bold text-dark">Salario</label>
-                                                                            <input type="text" class="form-control" id="salario" placeholder="Salario">
+                                                                            <label for="salario"
+                                                                                class="form-label fw-bold text-dark">Salario</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="salario" placeholder="Salario">
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="salud" class="form-label fw-bold text-dark">Salud</label>
-                                                                            <input type="text" class="form-control" id="salud" placeholder="Salud">
+                                                                            <label for="salud"
+                                                                                class="form-label fw-bold text-dark">Salud</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="salud" placeholder="Salud">
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="salario_total" class="form-label fw-bold text-dark">Salario Total</label>
-                                                                            <input type="text" class="form-control bg-info bg-opacity-10 border-2 border-info text-center text-white fw-bold" id="salario_total" readonly>
+                                                                            <label for="salario_total"
+                                                                                class="form-label fw-bold text-dark">Salario
+                                                                                Total</label>
+                                                                            <input type="text"
+                                                                                class="form-control bg-info bg-opacity-10 border-2 border-info text-center text-white fw-bold"
+                                                                                id="salario_total" readonly>
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="saldo_total" class="form-label fw-bold text-dark">Saldo Total</label>
-                                                                            <input type="text" class="form-control" id="saldo_total" readonly>
+                                                                            <label for="saldo_total"
+                                                                                class="form-label fw-bold text-dark">Saldo
+                                                                                Total</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="saldo_total" readonly>
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="deducciones" class="form-label fw-bold text-dark">Deducciones</label>
-                                                                            <input type="text" class="form-control" id="deducciones" placeholder="Deducciones">
+                                                                            <label for="deducciones"
+                                                                                class="form-label fw-bold text-dark">Deducciones</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="deducciones"
+                                                                                placeholder="Deducciones">
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="saldo_libre" class="form-label fw-bold text-dark">Saldo Libre</label>
-                                                                            <input type="text" class="form-control bg-secondary bg-opacity-10 border-2 border-secondary text-center text-white fw-bold" id="saldo_libre" readonly>
+                                                                            <label for="saldo_libre"
+                                                                                class="form-label fw-bold text-dark">Saldo
+                                                                                Libre</label>
+                                                                            <input type="text"
+                                                                                class="form-control bg-secondary bg-opacity-10 border-2 border-secondary text-center text-white fw-bold"
+                                                                                id="saldo_libre" readonly>
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="porcentaje" class="form-label fw-bold text-dark">% Porcentaje</label>
-                                                                            <input type="text" class="form-control" id="porcentaje" step="0.01">
+                                                                            <label for="porcentaje"
+                                                                                class="form-label fw-bold text-dark">%
+                                                                                Porcentaje</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="porcentaje" step="0.01">
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
-                                                                            <label for="cuota_pagar" class="form-label fw-bold text-success">💰 Cuota a Pagar</label>
-                                                                            <input type="text" class="form-control bg-success bg-opacity-10 border-2 border-success text-center fw-bold text-white" id="cuota_pagar" readonly>
+                                                                            <label for="cuota_pagar"
+                                                                                class="form-label fw-bold text-success">💰
+                                                                                Cuota a Pagar</label>
+                                                                            <input type="text"
+                                                                                class="form-control bg-success bg-opacity-10 border-2 border-success text-center fw-bold text-white"
+                                                                                id="cuota_pagar" readonly>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <!-- Observaciones -->
+                                                            <div class="mb-3">
+                                                                <label for="observaciones_desprendible"
+                                                                    class="form-label fw-bold text-dark">Observaciones</label>
+                                                                <textarea
+                                                                    class="form-control form-control-sm border border-secondary bg-light"
+                                                                    id="observaciones_desprendible"
+                                                                    name="observaciones_desprendible" rows="3"
+                                                                    placeholder="Escribe aquí las observaciones del desprendible..."></textarea>
+                                                            </div>
+
                                                             <!-- Tipo de proceso -->
                                                             <div class="mb-3">
                                                                 <label class="form-label fw-bold text-dark">Tipo de
@@ -1074,7 +1164,7 @@
                                                                         for="proceso_acuerdo_pago">Acuerdo de
                                                                         Pago</label>
                                                                 </div>
-                                                             
+
 
                                                             </div>
 
@@ -1145,7 +1235,9 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mt-2">
-                                                                            <label class="form-label small text-dark fw-bold">¿Ya se
+                                                                            <label
+                                                                                class="form-label small text-dark fw-bold">¿Ya
+                                                                                se
                                                                                 pagó?</label>
                                                                             <div class="btn-group btn-group-sm w-100"
                                                                                 role="group">
@@ -1176,7 +1268,8 @@
                                                         </div>
                                                         <div class="card-body">
                                                             <div class="mb-3">
-                                                                <label class="form-label fw-bold text-dark">Estado</label>
+                                                                <label
+                                                                    class="form-label fw-bold text-dark">Estado</label>
                                                                 <div class="btn-group w-100" role="group">
                                                                     <input type="radio" class="btn-check" name="estado"
                                                                         id="estado_apto" value="APTO" autocomplete="off"
@@ -1194,7 +1287,9 @@
                                                             </div>
 
                                                             <div id="motivo_no_apto" style="display: none;">
-                                                                <label for="motivo" class="form-label small text-dark fw-bold">Motivo del
+                                                                <label for="motivo"
+                                                                    class="form-label small text-dark fw-bold">Motivo
+                                                                    del
                                                                     NO APTO</label>
                                                                 <textarea
                                                                     class="form-control form-control-sm border border-secondary bg-light"
@@ -1212,8 +1307,7 @@
                                     <!-- Asesor a cargo -->
                                     <div class="mt-4 text-end">
                                         <span class="fw-bold text-secondary">Asesor a Cargo: <span id="asesorNombre"
-                                                class="text-dark">[Nombre del
-                                                Asesor]</span></span>
+                                                class="text-dark"></span></span>
                                     </div>
                                 </form>
                             </div>
@@ -1349,6 +1443,7 @@
             const nombreUsuario = sessionStorage.getItem('nombreUsuario');
 
             document.getElementById('nombreUsuario').innerText = nombreUsuario;
+            document.getElementById('asesorNombre').innerText = nombreUsuario;
 
         });
     </script>

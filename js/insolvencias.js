@@ -301,7 +301,7 @@ function limpiarModalInsolvencia() {
     // document.querySelectorAll('#modalCrearInsolvencia .toggle-content').forEach(toggle => {
     //     toggle.style.display = 'none';
     // });
-        // Limpiar campos de la calculadora parcial
+    // Limpiar campos de la calculadora parcial
     const idsCalculadora = [
         'salario',
         'salud',
@@ -355,7 +355,9 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
 
     const id_cliente = document.getElementById('inputIdCliente').value;
     const cuadernillo = document.querySelector('input[name="cuadernillo"]:checked')?.value === 'SI' ? 1 : 0;
+    const fecha_cuadernillo = document.getElementById('fecha_cuadernillo')?.value || '';
     const radicacion = document.querySelector('input[name="radicacion"]:checked')?.value === 'SI' ? 1 : 0;
+    const fecha_radicacion = document.getElementById('fecha_radicacion')?.value || '';
 
     const correccionesRadio = document.querySelector('input[name="correciones"]:checked')?.value;
     const correcciones = correccionesRadio === 'SI'
@@ -364,24 +366,42 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
 
     const archivoPDF = document.getElementById('archivoPDF').files[0];
     const audienciasVisibles = document.querySelector('input[name="audiencias"]:checked')?.value === 'Sí';
-    const desprendible = document.querySelector('input[name="desprendible"]:checked')?.value || '';
     const tipo_proceso = document.querySelector('input[name="tipo_proceso"]:checked')?.value || '';
     const juzgado = document.getElementById('juzgado')?.value.trim() || '';
     const liquidador = document.querySelector('input[name="liquidador"]:checked')?.value === 'Sí' ? 1 : 0;
     const terminacion = document.querySelector('input[name="estado"]:checked')?.value || '';
 
+    const desprendible_estado = document.querySelector('input[name="desprendible"]:checked')?.value || '';
+    const desprendiblePDFUrl = document.getElementById('desprendiblePDFUrl').files[0]
+    const observaciones_desprendible = document.getElementById('observaciones_desprendible')?.value.trim() || '';
 
+    let datosParcial = null;
+
+    if (desprendible_estado === 'PARCIAL') {
+        datosParcial = {
+            cuota_pagar: document.getElementById('cuota_pagar')?.value || ''
+        };
+    }
+    const desprendibleData = {
+        estado: desprendible_estado,
+        desprendible: desprendiblePDFUrl,
+        obs_desprendible: observaciones_desprendible,
+        datos_parcial: datosParcial
+    };
 
     const formData = new FormData();
     formData.append('id_cliente', id_cliente);
     formData.append('cuadernillo', cuadernillo);
+    formData.append('fecha_cuadernillo', fecha_cuadernillo);
     formData.append('radicacion', radicacion);
+    formData.append('fecha_radicacion', fecha_radicacion);
     formData.append('correcciones', correcciones);
     formData.append('desprendible', desprendible);
     formData.append('tipo_proceso', tipo_proceso);
     formData.append('juzgado', juzgado);
     formData.append('liquidador', liquidador);
     formData.append('terminacion', terminacion);
+    formData.append('datos_desprendible', JSON.stringify(desprendibleData));
 
     if (archivoPDF) {
         formData.append('archivoPDF', archivoPDF);
@@ -451,7 +471,9 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     // Generar resumen de previsualización
     let resumen = `
         <strong>Cuadernillo:</strong> ${cuadernillo ? 'Sí' : 'No'}<br>
+        <strong>Fecha Cuadernillo:</strong> ${fecha_cuadernillo || 'N/A'}<br>
         <strong>Radicación:</strong> ${radicacion ? 'Sí' : 'No'}<br>
+        <strong>Fecha Radicación:</strong> ${fecha_radicacion || 'N/A'}<br>
         <strong>Correcciones:</strong> ${correcciones || 'No'}<br>
         <strong>Desprendible:</strong> ${desprendible}<br>
         <strong>Tipo de Proceso:</strong> ${tipo_proceso}<br>
@@ -743,31 +765,31 @@ function formatearPeso(valor) {
 }
 
 
- const radioParcial = document.getElementById("desprendible_parcial");
-    const radioOtros = document.querySelectorAll('input[name="desprendible"]:not(#desprendible_parcial)');
-    const seccionParcial = document.getElementById("calculadora-parcial");
+const radioParcial = document.getElementById("desprendible_parcial");
+const radioOtros = document.querySelectorAll('input[name="desprendible"]:not(#desprendible_parcial)');
+const seccionParcial = document.getElementById("calculadora-parcial");
 
-    const salario = document.getElementById("salario");
-    const salud = document.getElementById("salud");
-    const salario_total = document.getElementById("salario_total");
-    const saldo_total = document.getElementById("saldo_total");
-    const deducciones = document.getElementById("deducciones");
-    const saldo_libre = document.getElementById("saldo_libre");
-    const porcentaje = document.getElementById("porcentaje");
-    const cuota_pagar = document.getElementById("cuota_pagar");
+const salario = document.getElementById("salario");
+const salud = document.getElementById("salud");
+const salario_total = document.getElementById("salario_total");
+const saldo_total = document.getElementById("saldo_total");
+const deducciones = document.getElementById("deducciones");
+const saldo_libre = document.getElementById("saldo_libre");
+const porcentaje = document.getElementById("porcentaje");
+const cuota_pagar = document.getElementById("cuota_pagar");
 
-    function formatCurrency(value) {
-        const number = parseFloat(value);
-        if (isNaN(number)) return "";
-        return '$' + number.toLocaleString('en-US', { maximumFractionDigits: 0 });
+function formatCurrency(value) {
+    const number = parseFloat(value);
+    if (isNaN(number)) return "";
+    return '$' + number.toLocaleString('en-US', { maximumFractionDigits: 0 });
 
-    }
+}
 
-    function unformatCurrency(value) {
-        return parseFloat(value.replace(/[^0-9.-]+/g, "")) || 0;
-    }
+function unformatCurrency(value) {
+    return parseFloat(value.replace(/[^0-9.-]+/g, "")) || 0;
+}
 
-   function calcular() {
+function calcular() {
     const sal = unformatCurrency(salario.value);
     const salu = unformatCurrency(salud.value);
     const ded = unformatCurrency(deducciones.value);
@@ -805,17 +827,17 @@ function applyCurrencyFormatting(input) {
 }
 
 
-    [salario, salud, deducciones].forEach(applyCurrencyFormatting);
-    porcentaje.addEventListener("input", calcular);
+[salario, salud, deducciones].forEach(applyCurrencyFormatting);
+porcentaje.addEventListener("input", calcular);
 
-    radioParcial.addEventListener("change", () => {
-        if (radioParcial.checked) {
-            seccionParcial.style.display = "block";
-        }
-    });
+radioParcial.addEventListener("change", () => {
+    if (radioParcial.checked) {
+        seccionParcial.style.display = "block";
+    }
+});
 
-    radioOtros.forEach(radio => {
-        radio.addEventListener("change", () => {
-            seccionParcial.style.display = "none";
-        });
+radioOtros.forEach(radio => {
+    radio.addEventListener("change", () => {
+        seccionParcial.style.display = "none";
     });
+});
