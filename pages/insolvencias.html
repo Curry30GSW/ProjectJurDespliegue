@@ -284,9 +284,6 @@
                                                     ESTADO</th>
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    FECHA VINCULACIÓN</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     ACCIONES</th>
                                             </tr>
                                         </thead>
@@ -813,13 +810,13 @@
                                                 <div class="col-md-6">
                                                     <!-- Sección de Documentos -->
                                                     <div class="card shadow-sm mb-4">
-                                                        <div class="card-header bg-success text-white">
+                                                        <div class="card-header bg-primary text-white">
                                                             <h6 class="mb-0 text-white"><i
                                                                     class="fas fa-file-alt me-2"></i>Documentos del
                                                                 Proceso</h6>
                                                         </div>
                                                         <div class="card-body">
-                                                            <!-- Cuadernillo - Tarjeta estilo toggle -->
+                                                            <!-- Cuadernillo -->
                                                             <div class="mb-3 toggle-card">
                                                                 <div class="d-flex justify-content-between align-items-center toggle-header"
                                                                     onclick="toggleCard(this)">
@@ -829,27 +826,23 @@
                                                                 </div>
                                                                 <div class="toggle-content mt-2">
                                                                     <div class="row align-items-center">
-                                                                        <div class="col-md-6 mb-2 d-flex flex-column">
+                                                                        <div class="col-md-6 mb-2">
                                                                             <label
-                                                                                class="form-label fw-bold text-dark mb-1"></label>
-                                                                            <div class="btn-group btn-group-sm"
-                                                                                role="group">
-                                                                                <input type="radio" class="btn-check"
-                                                                                    name="cuadernillo"
-                                                                                    id="cuadernillo_si" value="SI"
-                                                                                    autocomplete="off">
-                                                                                <label class="btn btn-outline-success"
-                                                                                    for="cuadernillo_si">Sí</label>
-
-                                                                                <input type="radio" class="btn-check"
-                                                                                    name="cuadernillo"
-                                                                                    id="cuadernillo_no" value="NO"
-                                                                                    autocomplete="off">
-                                                                                <label class="btn btn-outline-danger"
-                                                                                    for="cuadernillo_no">No</label>
+                                                                                class="form-label fw-bold text-dark mb-1">¿Realizado?</label>
+                                                                            <div>
+                                                                                <label><input type="radio"
+                                                                                        name="cuadernillo" value="SI"
+                                                                                        onchange="mostrarFecha('cuadernillo', true)">
+                                                                                    Sí</label>
+                                                                                <label><input type="radio"
+                                                                                        name="cuadernillo" value="NO"
+                                                                                        onchange="mostrarFecha('cuadernillo', false)">
+                                                                                    No</label>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-6 mb-2">
+                                                                        <div class="col-md-6 mb-2"
+                                                                            id="fecha_cuadernillo_container"
+                                                                            style="display: none;">
                                                                             <label for="fecha_cuadernillo"
                                                                                 class="form-label fw-bold text-dark mb-1">Fecha
                                                                                 Cuadernillo</label>
@@ -859,10 +852,9 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                             </div>
 
-                                                            <!-- Radicación - Tarjeta estilo toggle -->
+                                                            <!-- Radicación -->
                                                             <div class="mb-3 toggle-card">
                                                                 <div class="d-flex justify-content-between align-items-center toggle-header"
                                                                     onclick="toggleCard(this)">
@@ -872,25 +864,23 @@
                                                                 </div>
                                                                 <div class="toggle-content mt-2">
                                                                     <div class="row align-items-center">
-                                                                        <div class="col-md-6 mb-2 d-flex flex-column">
+                                                                        <div class="col-md-6 mb-2">
                                                                             <label
-                                                                                class="form-label fw-bold text-dark mb-1"></label>
-                                                                            <div class="btn-group btn-group-sm"
-                                                                                role="group">
-                                                                                <input type="radio" class="btn-check"
-                                                                                    name="radicacion" id="radicacion_si"
-                                                                                    value="SI" autocomplete="off">
-                                                                                <label class="btn btn-outline-success"
-                                                                                    for="radicacion_si">Sí</label>
-
-                                                                                <input type="radio" class="btn-check"
-                                                                                    name="radicacion" id="radicacion_no"
-                                                                                    value="NO" autocomplete="off">
-                                                                                <label class="btn btn-outline-danger"
-                                                                                    for="radicacion_no">No</label>
+                                                                                class="form-label fw-bold text-dark mb-1">¿Realizada?</label>
+                                                                            <div>
+                                                                                <label><input type="radio"
+                                                                                        name="radicacion" value="SI"
+                                                                                        onchange="mostrarFecha('radicacion', true)">
+                                                                                    Sí</label>
+                                                                                <label><input type="radio"
+                                                                                        name="radicacion" value="NO"
+                                                                                        onchange="mostrarFecha('radicacion', false)">
+                                                                                    No</label>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-6 mb-2">
+                                                                        <div class="col-md-6 mb-2"
+                                                                            id="fecha_radicacion_container"
+                                                                            style="display: none;">
                                                                             <label for="fecha_radicacion"
                                                                                 class="form-label fw-bold text-dark mb-1">Fecha
                                                                                 Radicación</label>
@@ -912,28 +902,19 @@
                                                                     <i class="fas fa-chevron-down toggle-icon"></i>
                                                                 </div>
                                                                 <div class="toggle-content mt-2">
-                                                                    <div class="btn-group btn-group-sm mb-2"
-                                                                        role="group">
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="correcciones" id="correcciones_si"
-                                                                            value="SI" autocomplete="off"
+                                                                    <label><input type="radio" name="correcciones"
+                                                                            value="SI"
                                                                             onchange="mostrarCampoCorrecciones()">
-                                                                        <label class="btn btn-outline-success"
-                                                                            for="correcciones_si">Sí</label>
-
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="correcciones" id="correcciones_no"
-                                                                            value="NO" autocomplete="off"
+                                                                        Sí</label>
+                                                                    <label><input type="radio" name="correcciones"
+                                                                            value="NO"
                                                                             onchange="ocultarCampoCorrecciones()">
-                                                                        <label class="btn btn-outline-danger"
-                                                                            for="correcciones_no">No</label>
-                                                                    </div>
+                                                                        No</label>
                                                                     <div id="campoDetalleCorrecciones"
                                                                         style="display: none;">
                                                                         <label for="detalleCorrecciones"
                                                                             class="form-label small text-muted">Detalle
-                                                                            de
-                                                                            correcciones:</label>
+                                                                            de correcciones:</label>
                                                                         <textarea
                                                                             class="form-control form-control-sm border border-secondary bg-light"
                                                                             id="detalleCorrecciones"
@@ -969,7 +950,7 @@
 
                                                     <!-- Sección de Audiencias -->
                                                     <div class="card shadow-sm">
-                                                        <div class="card-header bg-info text-white">
+                                                        <div class="card-header bg-primary text-white">
                                                             <h6 class="mb-0 text-white"><i
                                                                     class="fas fa-gavel me-2"></i>Audiencias
                                                             </h6>
@@ -1016,7 +997,7 @@
                                                 <div class="col-md-6">
                                                     <!-- Sección de Estado del Proceso -->
                                                     <div class="card shadow-sm mb-4">
-                                                        <div class="card-header bg-warning text-white">
+                                                        <div class="card-header bg-primary text-white">
                                                             <h6 class="mb-0 text-white"><i
                                                                     class="fas fa-clipboard-check me-2"></i>Estado
                                                                 del Proceso</h6>
@@ -1024,21 +1005,21 @@
                                                         <div class="card-body">
                                                             <!-- Estado Desprendible -->
                                                             <div class="mb-3">
-                                                                <label for="desprendibleoPDF"
+                                                                <label for="desprendiblePDF"
                                                                     class="form-label fw-bold text-dark">Desprendible
                                                                     (PDF)</label>
                                                                 <div class="file-upload-container">
                                                                     <input type="file" class="form-control d-none"
-                                                                        id="desprendibleoPDF" name="desprendibleoPDF"
+                                                                        id="desprendiblePDF" name="desprendiblePDF"
                                                                         accept=".pdf">
-                                                                    <label for="desprendibleoPDF"
+                                                                    <label for="desprendiblePDF"
                                                                         class="file-upload-label">
                                                                         <i class="fas fa-cloud-upload-alt me-2"></i>
                                                                         <span class="file-upload-text">Seleccionar
                                                                             desprendible</span>
                                                                     </label>
                                                                     <div class="file-name-display small mt-1"
-                                                                        id="fileNameDisplay">
+                                                                        id="desprendibleFileNameDisplay">
                                                                         Ningún archivo seleccionado
                                                                     </div>
                                                                 </div>
@@ -1262,7 +1243,7 @@
 
                                                     <!-- Sección de Estado Final -->
                                                     <div class="card shadow-sm">
-                                                        <div class="card-header bg-danger text-white">
+                                                        <div class="card-header bg-primary text-white">
                                                             <h6 class="mb-0 text-white "><i
                                                                     class="fas fa-flag me-2"></i>PROCESO FINALIZADO</h6>
                                                         </div>

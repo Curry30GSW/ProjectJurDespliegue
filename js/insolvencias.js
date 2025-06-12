@@ -127,9 +127,6 @@ const mostrar = (clientes) => {
             <td class="align-middle text-center text-sm">
                 <p class="badge badge-sm ${estadoClase}">${estadoTexto}</p>
             </td>
-            <td class="align-middle text-center">
-                <p class="text-secondary text-xs font-weight-normal">${fechaFormateada}</p>
-            </td>
           <td class="align-middle">
                 <div class="d-flex justify-content-center gap-2">
                     ${botonCrear}
@@ -235,6 +232,7 @@ function limpiarModalInsolvencia() {
         select.selectedIndex = 0;
     });
 
+
     // Ocultar campos condicionales
     const camposOcultar = [
         'campoDetalleCorrecciones',
@@ -297,11 +295,6 @@ function limpiarModalInsolvencia() {
         el.classList.remove('is-valid');
     });
 
-    // Opcional: Cerrar toggles si los hay
-    // document.querySelectorAll('#modalCrearInsolvencia .toggle-content').forEach(toggle => {
-    //     toggle.style.display = 'none';
-    // });
-    // Limpiar campos de la calculadora parcial
     const idsCalculadora = [
         'salario',
         'salud',
@@ -322,6 +315,29 @@ function limpiarModalInsolvencia() {
     const calculadora = document.getElementById('calculadora-parcial');
     if (calculadora) calculadora.style.display = 'none';
 
+    // Limpiar radios y fechas de Cuadernillo y Radicación
+    const radiosExtras = ['cuadernillo', 'radicacion', 'correcciones'];
+    radiosExtras.forEach(name => {
+        const radios = document.querySelectorAll(`#modalCrearInsolvencia input[name="${name}"]`);
+        radios.forEach(radio => radio.checked = false);
+    });
+
+    // Limpiar fechas y ocultar contenedores de fechas
+    const fechasExtras = ['cuadernillo', 'radicacion'];
+    fechasExtras.forEach(item => {
+        const fechaInput = document.getElementById(`fecha_${item}`);
+        const fechaContainer = document.getElementById(`fecha_${item}_container`);
+        if (fechaInput) fechaInput.value = '';
+        if (fechaContainer) fechaContainer.style.display = 'none';
+    });
+
+    // Ocultar campo y limpiar textarea de correcciones
+    const campoCorrecciones = document.getElementById('campoDetalleCorrecciones');
+    if (campoCorrecciones) campoCorrecciones.style.display = 'none';
+
+    const detalleCorrecciones = document.getElementById('detalleCorrecciones');
+    if (detalleCorrecciones) detalleCorrecciones.value = '';
+
 }
 
 
@@ -331,7 +347,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     const radiosObligatorios = [
         'cuadernillo',
         'radicacion',
-        'correciones',
+        'correcciones',
         'audiencias',
         'desprendible',
         'tipo_proceso',
@@ -359,7 +375,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     const radicacion = document.querySelector('input[name="radicacion"]:checked')?.value === 'SI' ? 1 : 0;
     const fecha_radicacion = document.getElementById('fecha_radicacion')?.value || '';
 
-    const correccionesRadio = document.querySelector('input[name="correciones"]:checked')?.value;
+    const correccionesRadio = document.querySelector('input[name="correcciones"]:checked')?.value;
     const correcciones = correccionesRadio === 'SI'
         ? document.getElementById('detalleCorrecciones').value.trim()
         : '';
@@ -372,7 +388,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     const terminacion = document.querySelector('input[name="estado"]:checked')?.value || '';
 
     const desprendible_estado = document.querySelector('input[name="desprendible"]:checked')?.value || '';
-    const desprendiblePDFUrl = document.getElementById('desprendiblePDFUrl').files[0]
+    const desprendiblePDFUrl = document.getElementById('desprendiblePDF').files[0];
     const observaciones_desprendible = document.getElementById('observaciones_desprendible')?.value.trim() || '';
 
     let datosParcial = null;
@@ -384,7 +400,6 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     }
     const desprendibleData = {
         estado: desprendible_estado,
-        desprendible: desprendiblePDFUrl,
         obs_desprendible: observaciones_desprendible,
         datos_parcial: datosParcial
     };
@@ -396,12 +411,16 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     formData.append('radicacion', radicacion);
     formData.append('fecha_radicacion', fecha_radicacion);
     formData.append('correcciones', correcciones);
-    formData.append('desprendible', desprendible);
     formData.append('tipo_proceso', tipo_proceso);
     formData.append('juzgado', juzgado);
     formData.append('liquidador', liquidador);
     formData.append('terminacion', terminacion);
     formData.append('datos_desprendible', JSON.stringify(desprendibleData));
+
+    if (desprendiblePDFUrl) {
+        formData.append('desprendiblePDF', desprendiblePDFUrl);
+    }
+
 
     if (archivoPDF) {
         formData.append('archivoPDF', archivoPDF);
@@ -475,7 +494,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         <strong>Radicación:</strong> ${radicacion ? 'Sí' : 'No'}<br>
         <strong>Fecha Radicación:</strong> ${fecha_radicacion || 'N/A'}<br>
         <strong>Correcciones:</strong> ${correcciones || 'No'}<br>
-        <strong>Desprendible:</strong> ${desprendible}<br>
+        <strong>Desprendible:</strong> ${desprendibleData}<br>
         <strong>Tipo de Proceso:</strong> ${tipo_proceso}<br>
         <strong>Juzgado:</strong> ${juzgado || 'N/A'}<br>
         <strong>Liquidador:</strong> ${liquidador ? 'Sí' : 'No'}<br>
@@ -517,7 +536,6 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         cancelButtonColor: '#d33'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Solo aquí se envía al backend
             fetch('http://localhost:3000/api/actualizar-insolvencias', {
                 method: 'PUT',
                 body: formData
@@ -576,58 +594,141 @@ document.addEventListener('click', async function (e) {
 });
 
 function cargarDatosEnFormulario(cliente) {
-    document.getElementById('inputIdCliente').value = cliente.id_cliente;
+    console.log("Datos del cliente recibidos CLIENTE:", cliente);
 
+    // Datos básicos del cliente (ya funcionan)
+    document.getElementById('idModal').textContent = cliente.id_cliente || '---';
+    document.getElementById('inputIdCliente').value = cliente.id_cliente || '';
+    const nombreCompleto = `${cliente.nombres || ''} ${cliente.apellidos || ''}`.trim();
+    document.getElementById('detalleNombreCliente').textContent = nombreCompleto || '---';
+    document.getElementById('detalleTipoDocumento').textContent = cliente.cedula ? `Cédula: ${cliente.cedula}` : '---';
+    document.getElementById('telefonoModal').textContent = cliente.telefono || '---';
+    document.getElementById('emailModal').textContent = cliente.correo || '---';
+    document.getElementById('direccionModal').textContent = cliente.direccion || '---';
+    document.getElementById('ciudadModal').textContent = cliente.ciudad || '---';
+    const fechaVinculo = cliente.fecha_vinculo ? new Date(cliente.fecha_vinculo).toLocaleDateString() : '---';
+    document.getElementById('vinculacionModal').textContent = fechaVinculo;
+
+    // Foto de perfil
+    const foto = document.getElementById('fotoperfilModal');
+    if (foto) {
+        foto.src = cliente.foto_perfil ? `http://localhost:3000${cliente.foto_perfil}` : '../assets/img/avatar.png';
+        foto.onerror = function () {
+            this.src = '../assets/img/avatar.png';
+        };
+    }
+
+    // Cuadernillo y Radicación con fechas
     const cuadernilloValor = cliente.cuadernillo ? 'SI' : 'NO';
-    const cuadernilloInput = document.querySelector(`input[name="cuadernillo"][value="${cuadernilloValor}"]`);
-    if (cuadernilloInput) cuadernilloInput.checked = true;
+    document.querySelector(`input[name="cuadernillo"][value="${cuadernilloValor}"]`).checked = true;
+    if (cliente.cuadernillo && cliente.fecha_cuadernillo) {
+        document.getElementById('fecha_cuadernillo').value = cliente.fecha_cuadernillo.split('T')[0];
+        document.getElementById('fecha_cuadernillo_container').style.display = 'block';
+    }
 
     const radicacionValor = cliente.radicacion ? 'SI' : 'NO';
-    const radicacionInput = document.querySelector(`input[name="radicacion"][value="${radicacionValor}"]`);
-    if (radicacionInput) radicacionInput.checked = true;
+    document.querySelector(`input[name="radicacion"][value="${radicacionValor}"]`).checked = true;
+    if (cliente.radicacion && cliente.fecha_radicacion) {
+        document.getElementById('fecha_radicacion').value = cliente.fecha_radicacion.split('T')[0];
+        document.getElementById('fecha_radicacion_container').style.display = 'block';
+    }
 
+    // Correcciones
     if (cliente.correcciones && cliente.correcciones.trim() !== '') {
-        document.querySelector(`input[name="correciones"][value="SI"]`).checked = true;
+        document.querySelector(`input[name="correcciones"][value="SI"]`).checked = true;
         document.getElementById('detalleCorrecciones').value = cliente.correcciones;
+        document.getElementById('campoDetalleCorrecciones').style.display = 'block';
     } else {
-        document.querySelector(`input[name="correciones"][value="NO"]`).checked = true;
-        document.getElementById('detalleCorrecciones').value = '';
+        document.querySelector(`input[name="correcciones"][value="NO"]`).checked = true;
     }
 
-    if (cliente.audiencias && cliente.audiencias.length > 0) {
-        document.querySelector(`input[name="audiencias"][value="Sí"]`).checked = true;
-        renderizarAudiencias(cliente.audiencias);
-    } else {
-        document.querySelector(`input[name="audiencias"][value="No"]`).checked = true;
-        document.getElementById('listaAudiencias').innerHTML = '';
+    // Desprendible
+    if (cliente.estado_desprendible) {
+        document.querySelector(`input[name="desprendible"][value="${cliente.estado_desprendible}"]`).checked = true;
+
+        // Mostrar calculadora parcial si es necesario
+        if (cliente.estado_desprendible === 'PARCIAL') {
+            document.getElementById('calculadora-parcial').style.display = 'block';
+            // Aquí deberías cargar los datos de la calculadora si los tienes
+        }
     }
 
-    const desprendibleValor = cliente.desprendible ? cliente.desprendible.toUpperCase() : '';
-    const desprendibleInput = document.querySelector(`input[name="desprendible"][value="${desprendibleValor}"]`);
-    if (desprendibleInput) desprendibleInput.checked = true;
+    // Mostrar nombre del archivo de desprendible si existe
+    if (cliente.ruta_desprendible) {
+        const fileName = cliente.ruta_desprendible.split('/').pop();
+        document.getElementById('desprendibleFileNameDisplay').textContent = fileName;
+        document.getElementById('desprendiblePDFUrl').value = cliente.ruta_desprendible;
+    }
 
-    const inputTipoProceso = document.querySelector(`input[name="tipo_proceso"][value="${cliente.tipo_proceso}"]`);
-    if (inputTipoProceso) inputTipoProceso.checked = true;
+    // Observaciones del desprendible
+    if (cliente.obs_desprendible) {
+        document.getElementById('observaciones_desprendible').value = cliente.obs_desprendible;
+    }
 
+    // Cuota a pagar
+    if (cliente.cuota_pagar) {
+        document.getElementById('cuota_pagar').value = cliente.cuota_pagar;
+    }
+
+    // Tipo de proceso
+    if (cliente.tipo_proceso) {
+        document.querySelector(`input[name="tipo_proceso"][value="${cliente.tipo_proceso}"]`).checked = true;
+    }
+
+    // Juzgado
     document.getElementById('juzgado').value = cliente.juzgado || '';
 
-    document.querySelector(`input[name="liquidador"][value="${cliente.liquidador ? 'Sí' : 'No'}"]`).checked = true;
-
-    document.querySelector(`input[name="estado"][value="${cliente.terminacion}"]`).checked = true;
-
-    if (cliente.terminacion === 'NO APTO') {
-        document.getElementById('motivo').value = cliente.motivo_insolvencia || '';
+    // Estado del proceso
+    if (cliente.terminacion) {
+        document.querySelector(`input[name="estado"][value="${cliente.terminacion}"]`).checked = true;
+        if (cliente.terminacion === 'NO APTO' && cliente.motivo_insolvencia) {
+            document.getElementById('motivo').value = cliente.motivo_insolvencia;
+            document.getElementById('motivo_no_apto').style.display = 'block';
+        }
     }
 
-    if (cliente.liquidador) {
-        document.getElementById('nombre_liquidador').value = cliente.nombre_liquidador || '';
-        document.getElementById('telefono_liquidador').value = cliente.telefono_liquidador || '';
-        document.getElementById('correo_liquidador').value = cliente.correo_liquidador || '';
-
-        const inputPagoLiquidador = document.querySelector(`input[name="pago_liquidador"][value="${cliente.pago_liquidador}"]`);
-        if (inputPagoLiquidador) inputPagoLiquidador.checked = true;
+    // Acta de aceptación
+    if (cliente.acta_aceptacion) {
+        const fileName = cliente.acta_aceptacion.split('/').pop();
+        document.getElementById('fileNameDisplay').textContent = fileName;
+        document.getElementById('archivoPDFUrl').value = cliente.acta_aceptacion;
     }
+
+    // Cargar audiencias
+    if (cliente.audiencias && cliente.audiencias.length > 0) {
+        // Activar el botón de "Sí"
+        document.getElementById('audiencias_si').checked = true;
+        mostrarAudiencias();
+
+        // Limpiar audiencias anteriores
+        const listaAudiencias = document.getElementById('listaAudiencias');
+        listaAudiencias.innerHTML = '';
+
+        cliente.audiencias.forEach((audienciaObj, index) => {
+            const div = document.createElement('div');
+            div.classList.add('mb-2');
+
+            const audiencia = audienciaObj.audiencia || '---';
+            const fecha = audienciaObj.fecha_audiencias
+                ? new Date(audienciaObj.fecha_audiencias).toLocaleDateString()
+                : '---';
+
+            div.innerHTML = `
+            <div class="border rounded p-2 bg-light">
+                <strong>Audiencia:</strong> ${audiencia}<br>
+                <strong>Fecha:</strong> ${fecha}
+            </div>
+        `;
+
+            listaAudiencias.appendChild(div);
+        });
+    } else {
+        document.getElementById('audiencias_no').checked = true;
+        ocultarAudiencias();
+    }
+
 }
+
 
 
 
@@ -658,6 +759,9 @@ document.getElementById('archivoPDF').addEventListener('change', function (e) {
     const fileName = e.target.files[0] ? e.target.files[0].name : 'Ningún archivo seleccionado';
     document.getElementById('fileNameDisplay').textContent = fileName;
 });
+
+
+
 
 // Funciones para audiencias (similar a las anteriores pero con estilos mejorados)
 function agregarAudiencia() {
@@ -756,6 +860,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.getElementById('desprendiblePDF');
+    const fileNameDisplay = document.getElementById('desprendibleFileNameDisplay');
+    const uploadLabel = document.querySelector('.file-upload-container label[for="desprendiblePDF"]');
+
+    if (fileInput && fileNameDisplay && uploadLabel) {
+        fileInput.addEventListener('change', function (e) {
+            if (this.files.length > 0) {
+                // Archivo seleccionado
+                const fileName = this.files[0].name;
+                fileNameDisplay.textContent = fileName;
+                uploadLabel.classList.add('has-file');
+                uploadLabel.querySelector('.file-upload-text').textContent = 'Archivo seleccionado';
+            } else {
+                // Sin archivo
+                fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+                uploadLabel.classList.remove('has-file');
+                uploadLabel.querySelector('.file-upload-text').textContent = 'Seleccionar desprendible';
+            }
+        });
+    } else {
+        console.error("Elementos no encontrados. Verifica los IDs en el HTML.");
+    }
+});
+
 function formatearPeso(valor) {
     return valor.toLocaleString('es-CO', {
         style: 'currency',
@@ -841,3 +970,18 @@ radioOtros.forEach(radio => {
         seccionParcial.style.display = "none";
     });
 });
+
+function mostrarFecha(tipo, mostrar) {
+    const container = document.getElementById(`fecha_${tipo}_container`);
+    if (container) {
+        container.style.display = mostrar ? 'block' : 'none';
+    }
+}
+
+function mostrarCampoCorrecciones() {
+    document.getElementById("campoDetalleCorrecciones").style.display = "block";
+}
+
+function ocultarCampoCorrecciones() {
+    document.getElementById("campoDetalleCorrecciones").style.display = "none";
+}
