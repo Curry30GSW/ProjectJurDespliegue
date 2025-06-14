@@ -338,6 +338,24 @@ function limpiarModalInsolvencia() {
     const detalleCorrecciones = document.getElementById('detalleCorrecciones');
     if (detalleCorrecciones) detalleCorrecciones.value = '';
 
+    const fechaCuadernillo = document.getElementById('fecha_cuadernillo');
+    if (fechaCuadernillo) {
+        fechaCuadernillo.readOnly = false;
+        fechaCuadernillo.style.backgroundColor = '';
+        fechaCuadernillo.value = '';
+    }
+
+    const fechaRadicacion = document.getElementById('fecha_radicacion');
+    if (fechaRadicacion) {
+        fechaRadicacion.readOnly = false;
+        fechaRadicacion.style.backgroundColor = '';
+        fechaRadicacion.value = '';
+    }
+
+    // Ocultar contenedores
+    document.getElementById('fecha_cuadernillo_container').style.display = 'none';
+    document.getElementById('fecha_radicacion_container').style.display = 'none';
+
 }
 
 
@@ -595,6 +613,7 @@ document.addEventListener('click', async function (e) {
 
 function cargarDatosEnFormulario(cliente) {
     console.log("Datos del cliente recibidos CLIENTE:", cliente);
+    limpiarModalInsolvencia();
 
     // Datos básicos del cliente (ya funcionan)
     document.getElementById('idModal').textContent = cliente.id_cliente || '---';
@@ -621,16 +640,42 @@ function cargarDatosEnFormulario(cliente) {
     // Cuadernillo y Radicación con fechas
     const cuadernilloValor = cliente.cuadernillo ? 'SI' : 'NO';
     document.querySelector(`input[name="cuadernillo"][value="${cuadernilloValor}"]`).checked = true;
-    if (cliente.cuadernillo && cliente.fecha_cuadernillo) {
-        document.getElementById('fecha_cuadernillo').value = cliente.fecha_cuadernillo.split('T')[0];
+
+    if (cliente.cuadernillo) {
+        const fechaCuadernilloInput = document.getElementById('fecha_cuadernillo');
         document.getElementById('fecha_cuadernillo_container').style.display = 'block';
+
+        if (cliente.fecha_cuadernillo) {
+            // Si ya existe fecha en BD: mostrar como solo lectura
+            fechaCuadernilloInput.value = cliente.fecha_cuadernillo.split('T')[0];
+            fechaCuadernilloInput.readOnly = true;
+            fechaCuadernilloInput.style.backgroundColor = '#e9ecef';
+        } else {
+            // Si no hay fecha en BD: dejar editable para nueva fecha
+            fechaCuadernilloInput.value = '';
+            fechaCuadernilloInput.readOnly = false;
+            fechaCuadernilloInput.style.backgroundColor = '';
+        }
     }
 
     const radicacionValor = cliente.radicacion ? 'SI' : 'NO';
     document.querySelector(`input[name="radicacion"][value="${radicacionValor}"]`).checked = true;
-    if (cliente.radicacion && cliente.fecha_radicacion) {
-        document.getElementById('fecha_radicacion').value = cliente.fecha_radicacion.split('T')[0];
+
+    if (cliente.radicacion) {
+        const fechaRadicacionInput = document.getElementById('fecha_radicacion');
         document.getElementById('fecha_radicacion_container').style.display = 'block';
+
+        if (cliente.fecha_radicacion) {
+            // Si ya existe fecha en BD: mostrar como solo lectura
+            fechaRadicacionInput.value = cliente.fecha_radicacion.split('T')[0];
+            fechaRadicacionInput.readOnly = true;
+            fechaRadicacionInput.style.backgroundColor = '#e9ecef';
+        } else {
+            // Si no hay fecha en BD: dejar editable para nueva fecha
+            fechaRadicacionInput.value = '';
+            fechaRadicacionInput.readOnly = false;
+            fechaRadicacionInput.style.backgroundColor = '';
+        }
     }
 
     // Correcciones

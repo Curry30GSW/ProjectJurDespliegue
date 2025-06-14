@@ -39,6 +39,48 @@
       background-color: #fff !important;
       color: #000 !important;
     }
+
+    .file-upload-container {
+      position: relative;
+    }
+
+    .file-upload-label {
+      display: block;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border: 1px dashed #adb5bd;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .file-upload-label:hover {
+      background-color: #e9ecef;
+      border-color: #6c757d;
+    }
+
+    .file-upload-text {
+      font-weight: 500;
+    }
+
+    .file-name-display {
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    /* ESTILO CUANDO TIENE ARCHIVO - IMPORTANTE */
+    .file-upload-label.has-file {
+      background-color: #d1e7dd !important;
+      border-color: #badbcc !important;
+      color: #0f5132 !important;
+      border-style: solid !important;
+    }
+
+    .file-upload-label i,
+    .file-upload-label span {
+      pointer-events: none;
+    }
   </style>
 
 </head>
@@ -210,8 +252,20 @@
                           class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
                       </div>
                       <label class="fw-bold fs-5 d-block mb-3">Foto de perfil</label>
-                      <input class="form-control" type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*"
-                        onchange="mostrarVistaPrevia(event)">
+
+                      <!-- Contenedor de carga de archivo con el mismo estilo -->
+                      <div class="file-upload-container w-50 mx-auto">
+                        <input type="file" class="form-control d-none" id="fotoPerfil" name="fotoPerfil"
+                          accept="image/*" onchange="mostrarVistaPrevia(event)">
+                        <label for="fotoPerfil" class="file-upload-label">
+                          <i class="fas fa-camera me-2"></i>
+                          <span class="file-upload-text">Seleccionar foto</span>
+                        </label>
+                        <div class="file-name-display small mt-1" id="fotoPerfilFileNameDisplay">
+                          Ninguna foto seleccionada
+                        </div>
+                      </div>
+
                       <input type="hidden" id="fotoPerfilUrl" name="fotoPerfilUrl">
                     </div>
                   </div>
@@ -219,7 +273,7 @@
                   <!-- SECCIÓN: DATOS FINANCIEROS -->
                   <div class="card mb-4 shadow-sm">
                     <div
-                      class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+                      class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
                       <span>DATOS FINANCIEROS</span>
                       <i class="fas fa-money-bill-wave"></i>
                     </div>
@@ -227,12 +281,23 @@
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Salario</label>
                         <input type="text" class="form-control" name="ingresos" id="ingresos"
-                          oninput="formatearMoneda(this)">
+                          placeholder="Ingrese Salario Cliente" oninput="formatearMoneda(this)">
                       </div>
                       <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Adjuntar Desprendible</label>
-                        <input type="file" id="desprendible" class="form-control" name="desprendible"
-                          accept="application/pdf">
+                        <label for="desprendible" class="form-label fw-bold text-dark">Desprendible
+                          (PDF)</label>
+                        <div class="file-upload-container">
+                          <input type="file" class="form-control d-none" id="desprendible" name="desprendible"
+                            accept=".pdf">
+                          <label for="desprendible" class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt me-2"></i>
+                            <span class="file-upload-text">Seleccionar
+                              desprendible</span>
+                          </label>
+                          <div class="file-name-display small mt-1" id="desprendibleFileNameDisplay">
+                            Ningún archivo seleccionado
+                          </div>
+                        </div>
                         <input type="hidden" id="desprendibleUrl" name="desprendibleUrl">
                       </div>
 
@@ -248,29 +313,47 @@
 
                       <!-- Campo de "Adjuntar PDF de Bienes Inmuebles" -->
                       <div class="col-md-6 mb-3" id="bienInmuebleInputs" style="display: none;">
-                        <label class="form-label fw-bold text-dark">Adjuntar Bienes Inmuebles (PDF)</label>
-                        <input type="file" id="bienes_inmuebles_pdf" class="form-control" name="bienes_inmuebles_pdf"
-                          accept="application/pdf" multiple>
+                        <label for="bienes_inmuebles_pdf" class="form-label fw-bold text-dark">Bienes Inmuebles
+                          (PDF)</label>
+                        <div class="file-upload-container">
+                          <input type="file" class="form-control d-none" id="bienes_inmuebles_pdf"
+                            name="bienes_inmuebles_pdf" accept=".pdf">
+                          <label for="bienes_inmuebles_pdf" class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt me-2"></i>
+                            <span class="file-upload-text">Seleccionar Bienes</span>
+                          </label>
+                          <div class="file-name-display small mt-1" id="bienesInmueblesFileNameDisplay">
+                            Ningún archivo seleccionado
+                          </div>
+                        </div>
                         <input type="hidden" id="bienesInmueblesUrls" name="bienesInmueblesUrls">
-                        <small class="text-muted">Puedes agregar varios archivos PDF.</small>
                       </div>
 
                       <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Data Crédito</label>
-                        <select class="form-select" name="data_credito" id="data_credito"
-                          onchange="toggleDataCreditoInput()">
-                          <option value="no">No</option>
-                          <option value="si">Sí</option>
-                        </select>
+                        <label class="form-label fw-bold text-dark">Valor Cuota</label>
+                        <input type="text" class="form-control" name="Cuota" id="Cuota"
+                          placeholder="Ingrese Cuota Real a Pagar" oninput="formatearMoneda(this)">
                       </div>
 
                       <!-- Adjuntar Data-Crédito -->
-                      <div class="col-md-6 mb-3" id="dataCreditoInput" style="display: none;">
-                        <label class="form-label fw-bold text-dark">Adjuntar Data-Crédito (PDF)</label>
-                        <input type="file" id="data_credito_pdf" class="form-control" name="data_credito_pdf"
-                          accept="application/pdf">
-                        <input type="hidden" id="dataCreditoPdfUrl" name="dataCreditoPdfUrl">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Porcentaje</label>
+                        <input type="text" class="form-control" name="porcentaje" id="porcentaje"
+                          placeholder="Ingrese Porcentaje Couta Real">
                       </div>
+
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Valor Insolvencia</label>
+                        <input type="text" class="form-control" name="vinsolvencia" id="vinsolvencia "
+                          placeholder="Ingrese Valor Insolvencia" oninput="formatearMoneda(this)">
+                      </div>
+
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Número Cuotas</label>
+                        <input type="text" class="form-control" name="ncuota" id="ncuota"
+                          placeholder="Ingrese Número de Cuotas">
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -279,7 +362,7 @@
                 <div class="col-md-8">
                   <div class="card mb-4 shadow-sm">
                     <div
-                      class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+                      class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
                       <span>INFORMACIÓN PERSONAL</span>
                       <i class="fas fa-user"></i>
                     </div>
@@ -287,32 +370,45 @@
                       <!-- Nombre y Apellidos -->
                       <div class="col-md-6 mb-3">
                         <label for="nombre" class="form-label fw-bold text-dark">Nombres</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre">
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej: Juan Carlos">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label for="apellidos" class="form-label fw-bold text-dark">Apellidos</label>
-                        <input type="text" class="form-control" id="apellidos" name="apellidos">
+                        <input type="text" class="form-control" id="apellidos" name="apellidos"
+                          placeholder="Ej: Pérez López">
                       </div>
 
                       <!-- Cédula y PDF -->
                       <div class="col-md-6 mb-3">
                         <label for="cedula" class="form-label fw-bold text-dark">Cédula</label>
-                        <input type="text" class="form-control" id="cedula" name="cedula">
+                        <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ej: 1234567890">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label for="archivoPDF" class="form-label fw-bold text-dark">Adjuntar Cedula (PDF)</label>
-                        <input type="file" class="form-control" id="archivoPDF" name="archivoPDF" accept=".pdf">
+                        <div class="file-upload-container">
+                          <input type="file" class="form-control d-none" id="archivoPDF" name="archivoPDF"
+                            accept=".pdf">
+                          <label for="archivoPDF" class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt me-2"></i>
+                            <span class="file-upload-text">Seleccionar Cedúla</span>
+                          </label>
+                          <div class="file-name-display small mt-1" id="cedulaFileNameDisplay">
+                            Ningún archivo seleccionado
+                          </div>
+                        </div>
                         <input type="hidden" id="archivoPDFUrl" name="archivoPDFUrl">
                       </div>
 
                       <!-- Dirección y Teléfono -->
                       <div class="col-md-6 mb-3">
                         <label for="direccion" class="form-label fw-bold text-dark">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion">
+                        <input type="text" class="form-control" id="direccion" name="direccion"
+                          placeholder="Ej: Cra 45 #26-85">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label for="telefono" class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono">
+                        <input type="text" class="form-control" id="telefono" name="telefono"
+                          placeholder="Ej: 3001234567">
                       </div>
 
                       <!-- Sexo y Otro -->
@@ -327,7 +423,8 @@
                       </div>
                       <div class="col-md-6 mb-3" id="campoOtroSexo" style="display: none;">
                         <label for="otroSexo" class="form-label fw-bold text-dark">¿Cuál?</label>
-                        <input type="text" class="form-control" id="otroSexo" name="otroSexo">
+                        <input type="text" class="form-control" id="otroSexo" name="otroSexo"
+                          placeholder="Especifique su género">
                       </div>
 
                       <!-- Fecha de nacimiento y Edad -->
@@ -338,21 +435,23 @@
                       </div>
                       <div class="col-md-6 mb-3">
                         <label for="edad" class="form-label fw-bold text-dark">Edad</label>
-                        <input type="number" class="form-control" id="edad" name="edad" readonly>
+                        <input type="number" class="form-control" id="edad" name="edad" readonly
+                          placeholder="Se calculará automáticamente">
                       </div>
 
                       <!-- Ciudad, Correo, Barrio -->
                       <div class="col-md-6 mb-3">
                         <label for="ciudad" class="form-label fw-bold text-dark">Ciudad</label>
-                        <input type="text" class="form-control" id="ciudad" name="ciudad">
+                        <input type="text" class="form-control" id="ciudad" name="ciudad" placeholder="Ej: Bogotá">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label for="correo" class="form-label fw-bold text-dark">Correo</label>
-                        <input type="email" class="form-control" id="correo" name="correo">
+                        <input type="email" class="form-control" id="correo" name="correo"
+                          placeholder="Ej: ejemplo@correo.com">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label for="barrio" class="form-label fw-bold text-dark">Barrio</label>
-                        <input type="text" class="form-control" id="barrio" name="barrio">
+                        <input type="text" class="form-control" id="barrio" name="barrio" placeholder="Ej: Chapinero">
                       </div>
 
                       <div class="col-md-6 mb-3">
@@ -380,18 +479,20 @@
                       <!-- Campos si está ACTIVO -->
                       <div class="col-md-6 mb-3" id="campoEmpresa" style="display: none;">
                         <label for="empresa" class="form-label fw-bold text-dark">Empresa</label>
-                        <input type="text" class="form-control" id="empresa" name="empresa">
+                        <input type="text" class="form-control" id="empresa" name="empresa" placeholder="Ej: Acme Corp">
                       </div>
 
                       <div class="col-md-6 mb-3" id="campoCargo" style="display: none;">
                         <label for="cargo" class="form-label fw-bold text-dark">Cargo</label>
-                        <input type="text" class="form-control" id="cargo" name="cargo">
+                        <input type="text" class="form-control" id="cargo" name="cargo"
+                          placeholder="Ej: Gerente de Ventas">
                       </div>
 
                       <!-- Campo si es PENSIONADO -->
                       <div class="col-md-6 mb-3" id="campoPagaduria" style="display: none;">
                         <label for="pagaduria" class="form-label fw-bold text-dark">Pagaduría</label>
-                        <input type="text" class="form-control" id="pagaduria" name="pagaduria">
+                        <input type="text" class="form-control" id="pagaduria" name="pagaduria"
+                          placeholder="Ej: Colpensiones">
                       </div>
                     </div>
                   </div>
@@ -419,9 +520,9 @@
                 <!-- Columna derecha (Referencias) -->
                 <div class="col-md-8">
                   <!-- SECCIÓN: REFERENCIAS FAMILIARES -->
-                  <div class="card mb-4 shadow-sm">
+                  <div class="card mb-4 shadow-sm" id="referencias-familiares">
                     <div
-                      class="card-header bg-info text-white fw-bold d-flex justify-content-between align-items-center">
+                      class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
                       <span>REFERENCIAS FAMILIARES</span>
                       <i class="fas fa-users"></i>
                     </div>
@@ -429,16 +530,17 @@
                       <!-- Fila 1 -->
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia1">
+                        <input type="text" class="form-control" name="referencia1" placeholder="Ej: María González">
                       </div>
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia1">
+                        <input type="text" class="form-control" name="telefono_referencia1"
+                          placeholder="Ej: 3001234567">
                       </div>
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Parentesco</label>
-                        <select class="form-control" name="parentesco1">
-                          <option disabled selected>Seleccione Parentesco</option>
+                        <select class="form-select" name="parentesco1">
+                          <option value="" disabled selected hidden>Seleccione parentesco</option>
                           <option value="Padre">Padre</option>
                           <option value="Madre">Madre</option>
                           <option value="Hermano(a)">Hermano(a)</option>
@@ -457,16 +559,17 @@
                       <!-- Fila 2 -->
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia2">
+                        <input type="text" class="form-control" name="referencia2" placeholder="Ej: Carlos Rodríguez">
                       </div>
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia2">
+                        <input type="text" class="form-control" name="telefono_referencia2"
+                          placeholder="Ej: 3109876543">
                       </div>
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Parentesco</label>
-                        <select class="form-control" name="parentesco2">
-                          <option disabled selected>Seleccione Parentesco</option>
+                        <select class="form-select" name="parentesco2">
+                          <option value="" disabled selected hidden>Seleccione parentesco</option>
                           <option value="Padre">Padre</option>
                           <option value="Madre">Madre</option>
                           <option value="Hermano(a)">Hermano(a)</option>
@@ -485,16 +588,17 @@
                       <!-- Fila 3 (opcional) -->
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia3">
+                        <input type="text" class="form-control" name="referencia3" placeholder="Ej: Ana Martínez">
                       </div>
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia3">
+                        <input type="text" class="form-control" name="telefono_referencia3"
+                          placeholder="Ej: 3204567890">
                       </div>
                       <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold text-dark">Parentesco</label>
-                        <select class="form-control" name="parentesco3">
-                          <option disabled selected>Seleccione Parentesco</option>
+                        <select class="form-select" name="parentesco3">
+                          <option value="" disabled selected hidden>Seleccione parentesco</option>
                           <option value="Padre">Padre</option>
                           <option value="Madre">Madre</option>
                           <option value="Hermano(a)">Hermano(a)</option>
@@ -513,9 +617,9 @@
                   </div>
 
                   <!-- SECCIÓN: REFERENCIAS PERSONALES -->
-                  <div class="card mb-4 shadow-sm">
+                  <div class="card mb-4 shadow-sm" id="referencias-personales">
                     <div
-                      class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center">
+                      class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
                       <span>REFERENCIAS PERSONALES</span>
                       <i class="fas fa-address-book"></i>
                     </div>
@@ -523,31 +627,34 @@
                       <!-- Referencia 1 (obligatoria) -->
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia1">
+                        <input type="text" class="form-control" name="referencia1" placeholder="Ej: Jorge Pérez">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia1">
+                        <input type="text" class="form-control" name="telefono_referencia1"
+                          placeholder="Ej: 3156789012">
                       </div>
 
                       <!-- Referencia 2 (obligatoria) -->
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia2">
+                        <input type="text" class="form-control" name="referencia2" placeholder="Ej: Luisa Fernández">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia2">
+                        <input type="text" class="form-control" name="telefono_referencia2"
+                          placeholder="Ej: 3189012345">
                       </div>
 
                       <!-- Referencia 3 (opcional) -->
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia3">
+                        <input type="text" class="form-control" name="referencia3" placeholder="Ej: Pedro Sánchez">
                       </div>
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia3">
+                        <input type="text" class="form-control" name="telefono_referencia3"
+                          placeholder="Ej: 3007654321">
                       </div>
                     </div>
                   </div>

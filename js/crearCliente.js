@@ -44,9 +44,6 @@ function toggleBienesInmueblesInput() {
   }
 }
 
-function toggleDataCreditoInput() {
-  toggleCampoPorValor('data_credito', 'dataCreditoInput', 'si');
-}
 
 function mostrarVistaPrevia(event) {
   const input = event.target;
@@ -65,30 +62,20 @@ function mostrarVistaPrevia(event) {
   }
 }
 
-function obtenerReferenciasPersonales() {
-  const personales = [];
-  const container = document.querySelector('.card:has(.card-header.bg-success)');
-  for (let i = 1; i <= 3; i++) {
-    const nombre = container.querySelector(`input[name=referencia${i}]`)?.value.trim();
-    const telefono = container.querySelector(`input[name=telefono_referencia${i}]`)?.value.trim();
-
-    if (nombre && telefono) {
-      personales.push({
-        personal_nombre: nombre,
-        personal_telefono: telefono
-      });
-    }
-  }
-  return personales;
-}
-
 function obtenerReferenciasFamiliares() {
   const familiares = [];
-  const container = document.querySelector('.card:has(.card-header.bg-info)');
+  // Cambiar a un selector más confiable
+  const container = document.querySelector('#referencias-familiares'); // Agrega este ID al HTML
+
+  if (!container) {
+    console.error('No se encontró el contenedor de referencias familiares');
+    return familiares;
+  }
+
   for (let i = 1; i <= 3; i++) {
-    const nombre = container.querySelector(`input[name=referencia${i}]`)?.value.trim();
-    const telefono = container.querySelector(`input[name=telefono_referencia${i}]`)?.value.trim();
-    const parentesco = container.querySelector(`select[name=parentesco${i}]`)?.value.trim();
+    const nombre = container.querySelector(`input[name="referencia${i}"]`)?.value.trim();
+    const telefono = container.querySelector(`input[name="telefono_referencia${i}"]`)?.value.trim();
+    const parentesco = container.querySelector(`select[name="parentesco${i}"]`)?.value;
 
     if (nombre && telefono && parentesco && parentesco !== 'Seleccione Parentesco') {
       familiares.push({
@@ -99,6 +86,30 @@ function obtenerReferenciasFamiliares() {
     }
   }
   return familiares;
+}
+
+// Versión equivalente para referencias personales
+function obtenerReferenciasPersonales() {
+  const personales = [];
+  const container = document.querySelector('#referencias-personales'); // Agrega este ID al HTML
+
+  if (!container) {
+    console.error('No se encontró el contenedor de referencias personales');
+    return personales;
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const nombre = container.querySelector(`input[name="referencia${i}"]`)?.value.trim();
+    const telefono = container.querySelector(`input[name="telefono_referencia${i}"]`)?.value.trim();
+
+    if (nombre && telefono) {
+      personales.push({
+        personal_nombre: nombre,
+        personal_telefono: telefono
+      });
+    }
+  }
+  return personales;
 }
 
 // Calcular edad desde fecha de nacimiento
@@ -205,22 +216,6 @@ function validarCamposObligatorios(form) {
     }
   });
 
-  // Validar data crédito si está marcado como "Sí"
-  const dataCredito = document.getElementById('data_credito');
-  const dataCreditoPdf = document.getElementById('data_credito_pdf');
-  const dataCreditoUrl = document.getElementById('dataCreditoPdfUrl');
-
-  if (dataCredito && dataCredito.value === 'si') {
-    if ((!dataCreditoPdf || !dataCreditoPdf.files[0]) && (!dataCreditoUrl || !dataCreditoUrl.value)) {
-      camposFaltantes.push('Data crédito (PDF)');
-      if (dataCreditoPdf) {
-        dataCreditoPdf.classList.add('is-invalid');
-      }
-    } else {
-      if (dataCreditoPdf) dataCreditoPdf.classList.remove('is-invalid');
-    }
-  }
-
   // Validar bienes inmuebles si está marcado como "Sí"
   const bienesInmuebles = document.getElementById('bienes_inmuebles');
   const bienesInmueblesInput = document.getElementById('bienesInmuebles');
@@ -238,17 +233,16 @@ function validarCamposObligatorios(form) {
   }
 
   // Validar referencias familiares (mínimo 2)
-  const refFamiliaresCompletas = obtenerReferenciasFamiliares();
-  if (!refFamiliaresCompletas) {
+  const refFamiliares = obtenerReferenciasFamiliares();
+  if (refFamiliares.length < 2) {
     camposFaltantes.push('Referencias familiares (mínimo 2 completas)');
   }
 
   // Validar referencias personales (mínimo 2)
-  const refPersonalesCompletas = obtenerReferenciasPersonales();
-  if (!refPersonalesCompletas) {
+  const refPersonales = obtenerReferenciasPersonales();
+  if (refPersonales.length < 2) {
     camposFaltantes.push('Referencias personales (mínimo 2 completas)');
   }
-
   return camposFaltantes;
 }
 
@@ -391,7 +385,6 @@ async function handleFormSubmit(e) {
       { id: 'fotoPerfil', type: 'fotoPerfil', target: 'fotoPerfilUrl' },
       { id: 'archivoPDF', type: 'cedulaPdf', target: 'archivoPDFUrl' },
       { id: 'desprendible', type: 'desprendible', target: 'desprendibleUrl' },
-      { id: 'data_credito_pdf', type: 'dataCredito', target: 'dataCreditoPdfUrl' },
       { id: 'bienes_inmuebles_pdf', type: 'bienesInmuebles', target: 'bienesInmueblesUrls' }
     ];
 
@@ -434,9 +427,12 @@ async function handleFormSubmit(e) {
       fotoPerfilUrl: form.fotoPerfilUrl.value,
       archivoPDFUrl: form.archivoPDFUrl.value,
       desprendibleUrl: form.desprendibleUrl.value,
-      data_credPdf: form.dataCreditoPdfUrl.value,
       bienes: form.bienesInmuebles.value,
       bienes_inmuebles: form.bienesInmueblesUrls.value,
+      valor_cuota: form.Cuota.value.replace(/\D/g, ''),
+      porcentaje: form.porcentaje.value.replace(',', '.').replace(/[^\d.]/g, ''),
+      valor_insolvencia: form.vinsolvencia.value.replace(/\D/g, ''),
+      numero_cuotas: form.ncuota.value,
       asesor: sessionStorage.getItem('nombreUsuario') || 'Nombre por defecto',
       referencias_personales: obtenerReferenciasPersonales(),
       referencias_familiares: obtenerReferenciasFamiliares()
@@ -488,7 +484,6 @@ function inicializarFormulario() {
   });
 
   document.getElementById('bienesInmuebles')?.addEventListener('change', toggleBienesInmueblesInput);
-  document.getElementById('data_credito')?.addEventListener('change', toggleDataCreditoInput);
   document.getElementById('fechaNacimiento')?.addEventListener('change', calcularEdad);
   document.getElementById('ingresos')?.addEventListener('input', function () {
     formatearMoneda(this);
@@ -497,3 +492,62 @@ function inicializarFormulario() {
 
 // Iniciar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', inicializarFormulario);
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Función genérica para manejar la visualización de archivos
+  function setupFileInput(inputId, displayId, labelSelector, defaultText = 'Seleccionar archivo', selectedText = 'Archivo seleccionado') {
+    const fileInput = document.getElementById(inputId);
+    const fileNameDisplay = document.getElementById(displayId);
+    const uploadLabel = document.querySelector(labelSelector);
+
+    if (fileInput && fileNameDisplay && uploadLabel) {
+      fileInput.addEventListener('change', function (e) {
+        if (this.files.length > 0) {
+          // Archivo seleccionado
+          const fileName = this.files[0].name;
+          fileNameDisplay.textContent = fileName;
+          uploadLabel.classList.add('has-file');
+          uploadLabel.querySelector('.file-upload-text').textContent = selectedText;
+        } else {
+          // Sin archivo
+          fileNameDisplay.textContent = inputId === 'fotoPerfil' ? 'Ninguna foto seleccionada' : 'Ningún archivo seleccionado';
+          uploadLabel.classList.remove('has-file');
+          uploadLabel.querySelector('.file-upload-text').textContent = defaultText;
+        }
+      });
+    }
+  }
+
+  // Configurar todos los campos de archivo
+  setupFileInput(
+    'desprendible',
+    'desprendibleFileNameDisplay',
+    '.file-upload-container label[for="desprendible"]',
+    'Seleccionar desprendible',
+    'Desprendible seleccionado'
+  );
+
+  setupFileInput(
+    'bienes_inmuebles_pdf',
+    'bienesInmueblesFileNameDisplay',
+    '.file-upload-container label[for="bienes_inmuebles_pdf"]',
+    'Subir Bienes Inmuebles',
+    'Documento seleccionado'
+  );
+
+  setupFileInput(
+    'archivoPDF',
+    'cedulaFileNameDisplay',
+    '.file-upload-container label[for="archivoPDF"]',
+    'Subir Cédula PDF',
+    'Cédula seleccionada'
+  );
+
+  setupFileInput(
+    'fotoPerfil',
+    'fotoPerfilFileNameDisplay',
+    '.file-upload-container label[for="fotoPerfil"]',
+    'Seleccionar foto',
+    'Foto seleccionada'
+  );
+});
