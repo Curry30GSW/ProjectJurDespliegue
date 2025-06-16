@@ -197,8 +197,9 @@ function llenarModalDetalle(cliente, fotoUrl) {
     } else {
         document.getElementById('detalleVinculacion').textContent = 'No registrado';
     }
-    document.getElementById('detalleNombre').value = cliente.nombres || 'No registrado';
-    document.getElementById('detalleApellidos').value = cliente.apellidos || 'No registrado';
+    const nombreCompleto = `${cliente.nombres || ''} ${cliente.apellidos || ''}`.trim();
+    document.getElementById('detalleNombreCompleto').innerText = nombreCompleto || 'No registrado';
+
     document.getElementById('detalleCedula').value = cliente.cedula || 'No registrado';
     document.getElementById('detalleTelefono').value = cliente.telefono || 'No registrado';
     document.getElementById('detalleCorreo').value = cliente.correo || 'No registrado';
@@ -235,6 +236,16 @@ function llenarModalDetalle(cliente, fotoUrl) {
     document.getElementById('detalleEmpresa').value = cliente.empresa || 'No registrado';
     document.getElementById('detalleCargo').value = cliente.cargo || 'No registrado';
     document.getElementById('detallePagaduria').value = cliente.pagaduria || 'No registrado';
+    document.getElementById('detalleCuota').value = cliente.valor_cuota ?
+        '$' + parseInt(cliente.valor_cuota).toLocaleString('es-CO') : 'No registrado';
+
+    document.getElementById('detallePorcentaje').value = cliente.porcentaje ?
+        cliente.porcentaje + '%' : 'No registrado';
+
+    document.getElementById('detalleInsolvencia').value = cliente.valor_insolvencia ?
+        '$' + parseInt(cliente.valor_insolvencia).toLocaleString('es-CO') : 'No registrado';
+
+    document.getElementById('detalleNCuotas').value = cliente.numero_cuotas || 'No registrado';
 
     // Mostrar/ocultar campos según situación laboral
     if (cliente.laboral == 1) {

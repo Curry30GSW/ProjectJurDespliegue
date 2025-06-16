@@ -728,7 +728,8 @@
                 <div class="modal-dialog modal-xl modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header bg-dark text-white">
-                            <h5 class="modal-title" id="modalCrearInsolvenciaLabel">Crear Insolvencia</h5>
+                            <h5 class="modal-title text-white font-weight-bold" id="modalCrearInsolvenciaLabel">Crear
+                                Insolvencia</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Cerrar"></button>
                         </div>
@@ -1100,8 +1101,8 @@
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
                                                                             <label for="porcentaje"
-                                                                                class="form-label fw-bold text-dark">%
-                                                                                Porcentaje</label>
+                                                                                class="form-label fw-bold text-dark">
+                                                                                Porcentaje %</label>
                                                                             <input type="text" class="form-control"
                                                                                 id="porcentaje" step="0.01">
                                                                         </div>
@@ -1112,6 +1113,27 @@
                                                                             <input type="text"
                                                                                 class="form-control bg-success bg-opacity-10 border-2 border-success text-center fw-bold text-white"
                                                                                 id="cuota_pagar" readonly>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Sección visible solo si es LIMPIO -->
+                                                                <div id="calculadora-limpio" style="display: none;">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="porcentaje_limpio"
+                                                                                class="form-label fw-bold text-dark">
+                                                                                Porcentaje %</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="porcentaje_limpio" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-2">
+                                                                            <label for="cuota_limpio"
+                                                                                class="form-label fw-bold text-success">💰
+                                                                                Cuota a Pagar</label>
+                                                                            <input type="text"
+                                                                                class="form-control bg-success bg-opacity-10 border-2 border-success text-center fw-bold text-white"
+                                                                                id="cuota_limpio" readonly>
                                                                         </div>
                                                                     </div>
                                                                 </div>

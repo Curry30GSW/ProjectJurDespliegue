@@ -103,6 +103,8 @@ const mostrar = (clientes) => {
             data-ciudad="${cliente.ciudad}"
             data-foto="${cliente.foto_perfil}"
             data-fecha="${fechaFormateada}"
+            data-porcentaje="${cliente.porcentaje ?? ''}"
+            data-cuota="${cliente.valor_cuota ?? ''}"
             ${procesoIniciado ? 'disabled' : ''}>
             Crear Insolvencia
         </button>`;
@@ -150,7 +152,6 @@ const mostrar = (clientes) => {
 
 };
 
-// Agrega esto después de tu función mostrar()
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
         window.location.href = '../pages/login.html';
@@ -173,7 +174,11 @@ document.addEventListener('DOMContentLoaded', () => {
             ciudad: $(this).data('ciudad'),
             foto: $(this).data('foto'),
             fecha: $(this).data('fecha'),
+            porcentaje: $(this).data('porcentaje'),
+            valor_cuota: $(this).data('cuota')
         };
+        console.log("un cliente rebelde:", cliente);
+
 
         // Llenar el modal con los datos
         $('#idModal').text(String(cliente.id_cliente));
@@ -185,6 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
         $('#direccionModal').text(cliente.direccion ?? '---');
         $('#ciudadModal').text(cliente.ciudad ?? '---');
         $('#vinculacionModal').text(cliente.fecha ?? '---');
+        $('#inputIdCliente').val(String(cliente.id_cliente));
+        $('#inputIdCliente').data('porcentaje', cliente.porcentaje);
+        $('#inputIdCliente').data('cuota', cliente.valor_cuota);
 
 
         // Actualizar foto de perfil
@@ -356,6 +364,16 @@ function limpiarModalInsolvencia() {
     document.getElementById('fecha_cuadernillo_container').style.display = 'none';
     document.getElementById('fecha_radicacion_container').style.display = 'none';
 
+    // Limpiar calculadora de LIMPIO
+    const camposCalculadoraLimpio = ['porcentaje_limpio', 'cuota_limpio'];
+    camposCalculadoraLimpio.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) campo.value = '';
+    });
+
+    const calculadoraLimpio = document.getElementById('calculadora-limpio');
+    if (calculadoraLimpio) calculadoraLimpio.style.display = 'none';
+
 }
 
 
@@ -414,6 +432,10 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     if (desprendible_estado === 'PARCIAL') {
         datosParcial = {
             cuota_pagar: document.getElementById('cuota_pagar')?.value || ''
+        };
+    } else if (desprendible_estado === 'LIMPIO') {
+        datosParcial = {
+            cuota_pagar: document.getElementById('cuota_limpio')?.value || ''
         };
     }
     const desprendibleData = {
@@ -691,12 +713,25 @@ function cargarDatosEnFormulario(cliente) {
     if (cliente.estado_desprendible) {
         document.querySelector(`input[name="desprendible"][value="${cliente.estado_desprendible}"]`).checked = true;
 
-        // Mostrar calculadora parcial si es necesario
+        const calculadoraParcial = document.getElementById('calculadora-parcial');
+        const calculadoraLimpio = document.getElementById('calculadora-limpio');
+
+        // Oculta ambas por defecto
+        calculadoraParcial.style.display = 'none';
+        calculadoraLimpio.style.display = 'none';
+
         if (cliente.estado_desprendible === 'PARCIAL') {
-            document.getElementById('calculadora-parcial').style.display = 'block';
+            calculadoraParcial.style.display = 'block';
             // Aquí deberías cargar los datos de la calculadora si los tienes
+        } else if (cliente.estado_desprendible === 'LIMPIO') {
+            calculadoraLimpio.style.display = 'block';
+
+            // Aquí cargas los datos del JSON
+            document.getElementById('porcentaje_limpio').value = cliente.porcentaje + ' %';
+            document.getElementById('cuota_limpio').value = '$ ' + Number(cliente.valor_cuota).toLocaleString('es-CO');
         }
     }
+
 
     // Mostrar nombre del archivo de desprendible si existe
     if (cliente.ruta_desprendible) {
@@ -799,12 +834,6 @@ function toggleCard(element) {
     card.classList.toggle('active');
 }
 
-// Mostrar nombre de archivo seleccionado
-document.getElementById('archivoPDF').addEventListener('change', function (e) {
-    const fileName = e.target.files[0] ? e.target.files[0].name : 'Ningún archivo seleccionado';
-    document.getElementById('fileNameDisplay').textContent = fileName;
-});
-
 
 
 
@@ -881,53 +910,45 @@ function mostrarMotivo(mostrar) {
     document.getElementById('motivo_no_apto').style.display = mostrar ? 'block' : 'none';
 }
 
-
+//VISUAL DEL BOTÓN DE ADJUNTAR
 document.addEventListener('DOMContentLoaded', function () {
-    const fileInput = document.getElementById('archivoPDF');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const uploadLabel = document.querySelector('.file-upload-label');
+    // Configuración para archivo PDF (Cédula)
+    setupFileInput('archivoPDF', 'fileNameDisplay', '.file-upload-label', 'Seleccionar archivo');
 
-    if (fileInput) {
-        fileInput.addEventListener('change', function (e) {
-            if (this.files.length > 0) {
-                // Hay archivo seleccionado
-                const fileName = this.files[0].name;
-                fileNameDisplay.textContent = fileName;
-                uploadLabel.classList.add('has-file');
-                uploadLabel.querySelector('.file-upload-text').textContent = 'Archivo seleccionado';
-            } else {
-                // No hay archivo seleccionado
-                fileNameDisplay.textContent = 'Ningún archivo seleccionado';
-                uploadLabel.classList.remove('has-file');
-                uploadLabel.querySelector('.file-upload-text').textContent = 'Seleccionar archivo';
-            }
-        });
+    // Configuración para desprendible PDF
+    setupFileInput('desprendiblePDF', 'desprendibleFileNameDisplay', '.file-upload-container label[for="desprendiblePDF"]', 'Seleccionar desprendible');
+
+    // Función reutilizable para manejar la carga de archivos
+    function setupFileInput(inputId, displayId, labelSelector, defaultText) {
+        const fileInput = document.getElementById(inputId);
+        const fileNameDisplay = document.getElementById(displayId);
+        const uploadLabel = document.querySelector(labelSelector);
+
+        if (fileInput && fileNameDisplay && uploadLabel) {
+            fileInput.addEventListener('change', function (e) {
+                if (this.files.length > 0) {
+                    // Archivo seleccionado
+                    const fileName = this.files[0].name;
+                    fileNameDisplay.textContent = fileName;
+                    uploadLabel.classList.add('has-file');
+                    uploadLabel.querySelector('.file-upload-text').textContent = 'Archivo seleccionado';
+                } else {
+                    // Sin archivo
+                    fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+                    uploadLabel.classList.remove('has-file');
+                    uploadLabel.querySelector('.file-upload-text').textContent = defaultText;
+                }
+            });
+        } else {
+            console.error(`Elementos no encontrados para ${inputId}. Verifica los IDs en el HTML.`);
+        }
     }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const fileInput = document.getElementById('desprendiblePDF');
-    const fileNameDisplay = document.getElementById('desprendibleFileNameDisplay');
-    const uploadLabel = document.querySelector('.file-upload-container label[for="desprendiblePDF"]');
-
-    if (fileInput && fileNameDisplay && uploadLabel) {
-        fileInput.addEventListener('change', function (e) {
-            if (this.files.length > 0) {
-                // Archivo seleccionado
-                const fileName = this.files[0].name;
-                fileNameDisplay.textContent = fileName;
-                uploadLabel.classList.add('has-file');
-                uploadLabel.querySelector('.file-upload-text').textContent = 'Archivo seleccionado';
-            } else {
-                // Sin archivo
-                fileNameDisplay.textContent = 'Ningún archivo seleccionado';
-                uploadLabel.classList.remove('has-file');
-                uploadLabel.querySelector('.file-upload-text').textContent = 'Seleccionar desprendible';
-            }
-        });
-    } else {
-        console.error("Elementos no encontrados. Verifica los IDs en el HTML.");
-    }
+// Mostrar nombre de archivo seleccionado
+document.getElementById('archivoPDF').addEventListener('change', function (e) {
+    const fileName = e.target.files[0] ? e.target.files[0].name : 'Ningún archivo seleccionado';
+    document.getElementById('fileNameDisplay').textContent = fileName;
 });
 
 function formatearPeso(valor) {
@@ -939,9 +960,39 @@ function formatearPeso(valor) {
 }
 
 
+
 const radioParcial = document.getElementById("desprendible_parcial");
 const radioOtros = document.querySelectorAll('input[name="desprendible"]:not(#desprendible_parcial)');
 const seccionParcial = document.getElementById("calculadora-parcial");
+const radioLimpio = document.getElementById("desprendible_limpio");
+const seccionLimpio = document.getElementById("calculadora-limpio");
+document.querySelectorAll('input[name="desprendible"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        seccionParcial.style.display = 'none';
+        seccionLimpio.style.display = 'none';
+
+        if (this.value === 'PARCIAL') {
+            seccionParcial.style.display = 'block';
+        } else if (this.value === 'LIMPIO') {
+            seccionLimpio.style.display = 'block';
+
+            // Obtener porcentaje y cuota desde los inputs ocultos o del DOM
+            const porcentaje = $('#inputIdCliente').data('porcentaje');
+            const cuota = $('#inputIdCliente').data('cuota');
+
+            if (porcentaje && cuota) {
+                document.getElementById('porcentaje_limpio').value = porcentaje + ' %';
+                document.getElementById('cuota_limpio').value = '$ ' + Number(cuota).toLocaleString('es-CO');
+            } else {
+                document.getElementById('porcentaje_limpio').value = '';
+                document.getElementById('cuota_limpio').value = '';
+            }
+        }
+    });
+});
+
+
+
 
 const salario = document.getElementById("salario");
 const salud = document.getElementById("salud");

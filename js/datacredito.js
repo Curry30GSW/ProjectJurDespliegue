@@ -194,8 +194,8 @@ function llenarModalDetalle(cliente, fotoUrl) {
     } else {
         document.getElementById('detalleVinculacion').textContent = 'No registrado';
     }
-    document.getElementById('detalleNombre').value = cliente.nombres || 'No registrado';
-    document.getElementById('detalleApellidos').value = cliente.apellidos || 'No registrado';
+    const nombreCompleto = `${cliente.nombres || ''} ${cliente.apellidos || ''}`.trim();
+    document.getElementById('detalleNombreCompleto').innerText = nombreCompleto || 'No registrado';
     document.getElementById('detalleCedula').value = cliente.cedula || 'No registrado';
     document.getElementById('detalleTelefono').value = cliente.telefono || 'No registrado';
     document.getElementById('detalleCorreo').value = cliente.correo || 'No registrado';
@@ -393,6 +393,7 @@ document.addEventListener('click', function (event) {
 
         // Mostrar el nombre del cliente
         document.getElementById('nombreClienteModal').textContent = nombre;
+        document.getElementById('cedulaClienteModal').textContent = cedula;
 
         // Guardar la cédula en el input hidden
         document.getElementById('cedulaClienteSeleccionado').value = cedula;
@@ -557,3 +558,58 @@ async function cargarNotificaciones() {
 
 // Llamar al cargar la página
 window.addEventListener('DOMContentLoaded', cargarNotificaciones);
+
+
+const modalDataCredito = document.getElementById('modalDataCredito');
+
+modalDataCredito.addEventListener('hidden.bs.modal', function () {
+    // Limpiar el input file
+    const fileInput = document.getElementById('inputDatacredito');
+    const fileNameDisplay = document.getElementById('inputDatacreditoFileNameDisplay');
+    const uploadLabel = document.querySelector('.file-upload-container label[for="inputDatacredito"]');
+
+    if (fileInput) fileInput.value = ''; // Limpia el archivo
+    if (fileNameDisplay) fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+    if (uploadLabel) {
+        uploadLabel.classList.remove('has-file');
+        const textSpan = uploadLabel.querySelector('.file-upload-text');
+        if (textSpan) textSpan.textContent = 'Subir Datacrédito PDF';
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Función genérica para manejar la visualización de archivos
+    function setupFileInput(inputId, displayId, labelSelector, defaultText = 'Seleccionar archivo', selectedText = 'Archivo seleccionado') {
+        const fileInput = document.getElementById(inputId);
+        const fileNameDisplay = document.getElementById(displayId);
+        const uploadLabel = document.querySelector(labelSelector);
+
+        if (fileInput && fileNameDisplay && uploadLabel) {
+            fileInput.addEventListener('change', function (e) {
+                if (this.files.length > 0) {
+                    // Archivo seleccionado
+                    const fileName = this.files[0].name;
+                    fileNameDisplay.textContent = fileName;
+                    uploadLabel.classList.add('has-file');
+                    uploadLabel.querySelector('.file-upload-text').textContent = selectedText;
+                } else {
+                    // Sin archivo
+                    fileNameDisplay.textContent = inputId === 'fotoPerfil' ? 'Ninguna foto seleccionada' : 'Ningún archivo seleccionado';
+                    uploadLabel.classList.remove('has-file');
+                    uploadLabel.querySelector('.file-upload-text').textContent = defaultText;
+                }
+            });
+        }
+    }
+
+    // Configurar todos los campos de archivo
+    setupFileInput(
+        'inputDatacredito',
+        'inputDatacreditoFileNameDisplay',
+        '.file-upload-container label[for="inputDatacredito"]',
+        'Subir Datacrédito PDF',
+        'Archivo seleccionado'
+    );
+
+});

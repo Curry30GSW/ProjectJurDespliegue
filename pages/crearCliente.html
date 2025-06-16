@@ -93,7 +93,7 @@
         aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand px-4 py-3 m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
         target="_blank">
-        <img src="../assets/img/justicia.png" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <img src="../assets/img/justicia.png" class="navbar-brand-img" width="40" height="40" alt="main_logo">
         <span class="ms-1 text-sm text-dark">INICIO</span>
       </a>
     </div>
@@ -129,6 +129,15 @@
           <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">OPCIONES ADMINISTRADOR
           </h6>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="../pages/datacredito.html">
+            <i class="fa-solid fa-paperclip"></i>
+            <span class="nav-link-text ms-1">DataCrédito</span>
+          </a>
+        </li>
+
+
         <li class="nav-item">
           <a class="nav-link active bg-gradient-dark text-white" href="../pages/clientes.html">
             <i class="material-symbols-rounded opacity-5">person</i>
@@ -217,7 +226,13 @@
       </div>
 
       <div class="card card-body mx-2 mx-md-2 mt-n6">
-        <h5 class="mb-4">Crear Cliente</h5>
+        <div class="d-flex align-items-center mb-4">
+          <a href="/pages/clientes.html" class="btn btn-outline-dark">
+            <i class="fas fa-arrow-left me-1"></i> Volver
+          </a>
+          <h5 class="mb-0 ms-3">Crear Cliente</h5>
+        </div>
+
 
         <!-- Pestañas de navegación -->
         <div class="nav-wrapper position-relative end-0 mb-4">
@@ -503,8 +518,9 @@
             <!-- Pestaña de Referencias -->
             <div class="tab-pane fade" id="referencias" role="tabpanel">
               <div class="row">
-                <!-- Columna izquierda (Foto - solo visible en esta pestaña para consistencia) -->
+                <!-- Columna izquierda (Foto + Referencias Personales) -->
                 <div class="col-md-4">
+                  <!-- Foto de perfil -->
                   <div class="card mb-4 shadow-sm">
                     <div class="card-body text-center">
                       <div class="avatar avatar-xxl position-relative mb-3">
@@ -515,11 +531,54 @@
                       <small class="text-muted">Edite la foto en la pestaña de Información Personal</small>
                     </div>
                   </div>
+
+                  <!-- REFERENCIAS PERSONALES -->
+                  <div class="card mb-4 shadow-sm" id="referencias-personales">
+                    <div
+                      class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+                      <span>REFERENCIAS PERSONALES</span>
+                      <i class="fas fa-address-book"></i>
+                    </div>
+                    <div class="card-body row">
+                      <!-- Referencia 1 -->
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                        <input type="text" class="form-control" name="referencia1" placeholder="Ej: Jorge Pérez">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Teléfono</label>
+                        <input type="text" class="form-control" name="telefono_referencia1"
+                          placeholder="Ej: 3156789012">
+                      </div>
+
+                      <!-- Referencia 2 -->
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                        <input type="text" class="form-control" name="referencia2" placeholder="Ej: Luisa Fernández">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Teléfono</label>
+                        <input type="text" class="form-control" name="telefono_referencia2"
+                          placeholder="Ej: 3189012345">
+                      </div>
+
+                      <!-- Referencia 3 -->
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
+                        <input type="text" class="form-control" name="referencia3" placeholder="Ej: Pedro Sánchez">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Teléfono</label>
+                        <input type="text" class="form-control" name="telefono_referencia3"
+                          placeholder="Ej: 3007654321">
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
-                <!-- Columna derecha (Referencias) -->
+                <!-- Columna derecha (REFERENCIAS FAMILIARES) -->
                 <div class="col-md-8">
-                  <!-- SECCIÓN: REFERENCIAS FAMILIARES -->
                   <div class="card mb-4 shadow-sm" id="referencias-familiares">
                     <div
                       class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
@@ -615,55 +674,14 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- SECCIÓN: REFERENCIAS PERSONALES -->
-                  <div class="card mb-4 shadow-sm" id="referencias-personales">
-                    <div
-                      class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
-                      <span>REFERENCIAS PERSONALES</span>
-                      <i class="fas fa-address-book"></i>
-                    </div>
-                    <div class="card-body row">
-                      <!-- Referencia 1 (obligatoria) -->
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia1" placeholder="Ej: Jorge Pérez">
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia1"
-                          placeholder="Ej: 3156789012">
-                      </div>
-
-                      <!-- Referencia 2 (obligatoria) -->
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia2" placeholder="Ej: Luisa Fernández">
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia2"
-                          placeholder="Ej: 3189012345">
-                      </div>
-
-                      <!-- Referencia 3 (opcional) -->
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Nombre de Referencia</label>
-                        <input type="text" class="form-control" name="referencia3" placeholder="Ej: Pedro Sánchez">
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono_referencia3"
-                          placeholder="Ej: 3007654321">
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
+
               <div class="text-end">
                 <button type="submit" class="btn btn-dark">Guardar Cliente</button>
               </div>
             </div>
+
           </div>
 
           <!-- ASESOR A CARGO -->
