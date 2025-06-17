@@ -374,6 +374,67 @@ function limpiarModalInsolvencia() {
     const calculadoraLimpio = document.getElementById('calculadora-limpio');
     if (calculadoraLimpio) calculadoraLimpio.style.display = 'none';
 
+    const inputDesprendible = document.getElementById('desprendiblePDF');
+    if (inputDesprendible) {
+        inputDesprendible.value = '';
+
+        const uploadLabelDesprendible = document.querySelector('label[for="desprendiblePDF"]');
+        if (uploadLabelDesprendible) {
+            uploadLabelDesprendible.classList.remove('has-file');
+
+            const uploadText = uploadLabelDesprendible.querySelector('.file-upload-text');
+            if (uploadText) uploadText.textContent = 'Seleccionar desprendible';
+        }
+
+        const fileNameDisplayDesprendible = document.getElementById('desprendibleFileNameDisplay');
+        if (fileNameDisplayDesprendible) fileNameDisplayDesprendible.textContent = 'Ningún archivo seleccionado';
+    }
+
+    // Limpiar campo de Autoliquidador
+    const inputAutoliquidador = document.getElementById('archivoAutoliquidador');
+    if (inputAutoliquidador) {
+        inputAutoliquidador.value = '';
+
+        const uploadLabelAuto = document.querySelector('label[for="archivoAutoliquidador"]');
+        if (uploadLabelAuto) {
+            uploadLabelAuto.classList.remove('has-file'); // <-- Remueve clase visual si existe
+
+            const uploadText = uploadLabelAuto.querySelector('.file-upload-text');
+            if (uploadText) uploadText.textContent = 'Seleccionar archivo';
+        }
+
+        const fileNameDisplayAuto = document.getElementById('fileNameDisplayAutoliquidador');
+        if (fileNameDisplayAuto) fileNameDisplayAuto.textContent = 'Ningún archivo seleccionado';
+    }
+
+    const archivoAutoliquidadorUrl = document.getElementById('archivoAutoliquidadorUrl');
+    if (archivoAutoliquidadorUrl) archivoAutoliquidadorUrl.value = '';
+
+    const filePreviewAuto = document.getElementById('filePreviewAutoliquidador');
+    if (filePreviewAuto) filePreviewAuto.innerHTML = '';
+
+    // Función auxiliar para limpiar un input file y su UI
+    function limpiarCampoArchivo(inputId, labelSelector, fileNameId, defaultText, previewId = null) {
+        const input = document.getElementById(inputId);
+        const label = document.querySelector(labelSelector);
+        const fileNameDisplay = document.getElementById(fileNameId);
+        const previewContainer = previewId ? document.getElementById(previewId) : null;
+
+        if (input) input.value = '';
+        if (label) {
+            label.classList.remove('has-file');
+            const textSpan = label.querySelector('.file-upload-text');
+            if (textSpan) textSpan.textContent = defaultText;
+        }
+        if (fileNameDisplay) fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+        if (previewContainer) previewContainer.innerHTML = '';
+    }
+
+    // Limpiar todos los campos de archivos PDF
+    limpiarCampoArchivo('archivoPDF', '.file-upload-label[for="archivoPDF"]', 'fileNameDisplay', 'Seleccionar archivo', 'filePreviewActa');
+    limpiarCampoArchivo('desprendiblePDF', '.file-upload-label[for="desprendiblePDF"]', 'desprendibleFileNameDisplay', 'Seleccionar desprendible', 'filePreviewDesprendible');
+    limpiarCampoArchivo('archivoAutoliquidador', '.file-upload-label[for="archivoAutoliquidador"]', 'fileNameDisplayAutoliquidador', 'Seleccionar archivo', 'filePreviewAutoliquidador');
+
 }
 
 
@@ -417,6 +478,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         : '';
 
     const archivoPDF = document.getElementById('archivoPDF').files[0];
+    const archivoAutoliquidador = document.getElementById('archivoAutoliquidador')?.files[0];
     const audienciasVisibles = document.querySelector('input[name="audiencias"]:checked')?.value === 'Sí';
     const tipo_proceso = document.querySelector('input[name="tipo_proceso"]:checked')?.value || '';
     const juzgado = document.getElementById('juzgado')?.value.trim() || '';
@@ -426,6 +488,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
     const desprendible_estado = document.querySelector('input[name="desprendible"]:checked')?.value || '';
     const desprendiblePDFUrl = document.getElementById('desprendiblePDF').files[0];
     const observaciones_desprendible = document.getElementById('observaciones_desprendible')?.value.trim() || '';
+
 
     let datosParcial = null;
 
@@ -464,6 +527,10 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
 
     if (archivoPDF) {
         formData.append('archivoPDF', archivoPDF);
+    }
+
+    if (archivoAutoliquidador) {
+        formData.append('archivoAutoliquidador', archivoAutoliquidador);
     }
 
     if (audienciasVisibles) {
@@ -527,6 +594,8 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         formData.append('motivo_insolvencia', motivo);
     }
 
+
+
     // Generar resumen de previsualización
     let resumen = `
         <strong>Cuadernillo:</strong> ${cuadernillo ? 'Sí' : 'No'}<br>
@@ -534,7 +603,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         <strong>Radicación:</strong> ${radicacion ? 'Sí' : 'No'}<br>
         <strong>Fecha Radicación:</strong> ${fecha_radicacion || 'N/A'}<br>
         <strong>Correcciones:</strong> ${correcciones || 'No'}<br>
-        <strong>Desprendible:</strong> ${desprendibleData}<br>
+        <strong>Desprendible:</strong> Estado: ${desprendible_estado}, Observaciones: ${observaciones_desprendible || 'N/A'}, Cuota: ${datosParcial?.cuota_pagar || 'N/A'}<br>
         <strong>Tipo de Proceso:</strong> ${tipo_proceso}<br>
         <strong>Juzgado:</strong> ${juzgado || 'N/A'}<br>
         <strong>Liquidador:</strong> ${liquidador ? 'Sí' : 'No'}<br>
@@ -758,6 +827,20 @@ function cargarDatosEnFormulario(cliente) {
     // Juzgado
     document.getElementById('juzgado').value = cliente.juzgado || '';
 
+    // Autoliquidador: mostrar nombre del archivo y enlace si existe
+    if (cliente.autoliquidador) {
+        const fileName = cliente.autoliquidador.split('/').pop();
+        document.getElementById('fileNameDisplayAutoliquidador').textContent = fileName;
+        document.getElementById('archivoAutoliquidadorUrl').value = cliente.ruta_autoliquidador;
+
+        const filePreview = document.getElementById('filePreviewAutoliquidador');
+        filePreview.innerHTML = `
+            <a href="http://localhost:3000${cliente.autoliquidador}" target="_blank" class="btn btn-md btn-outline-info mt-2">
+                <i class="fas fa-eye me-1"></i> Ver archivo
+            </a>
+        `;
+    }
+
     // Estado del proceso
     if (cliente.terminacion) {
         document.querySelector(`input[name="estado"][value="${cliente.terminacion}"]`).checked = true;
@@ -829,6 +912,30 @@ function cargarDatosEnFormulario(cliente) {
         document.getElementById('liquidador_no').checked = true;
         mostrarDatosLiquidador(false); // Oculta los campos
     }
+
+    // Mostrar visualmente el archivo del desprendible
+    if (cliente.ruta_desprendible) {
+        const filePreview = document.getElementById('filePreviewDesprendible');
+        filePreview.innerHTML = `
+        <a href="http://localhost:3000${cliente.ruta_desprendible}" target="_blank" class="btn btn-outline-info btn-md" title="Ver desprendible">
+            <i class="fas fa-eye"></i> Ver Desprendible
+        </a>
+    `;
+    }
+
+    // Mostrar visualmente el archivo del acta de aceptación
+    if (cliente.acta_aceptacion) {
+        const filePreview = document.getElementById('filePreviewActa');
+        filePreview.innerHTML = `
+        <a href="http://localhost:3000${cliente.acta_aceptacion}" target="_blank" class="btn btn-outline-info btn-md" title="Ver acta de aceptación">
+            <i class="fas fa-eye"></i> Ver Acta
+        </a>
+    `;
+    }
+
+
+
+
 }
 
 
@@ -1192,40 +1299,74 @@ function mostrarMotivo(mostrar) {
     document.getElementById('motivo_no_apto').style.display = mostrar ? 'block' : 'none';
 }
 
-//VISUAL DEL BOTÓN DE ADJUNTAR
+// VISUAL DEL BOTÓN DE ADJUNTAR + PREVISUALIZACIÓN
 document.addEventListener('DOMContentLoaded', function () {
-    // Configuración para archivo PDF (Cédula)
-    setupFileInput('archivoPDF', 'fileNameDisplay', '.file-upload-label', 'Seleccionar archivo');
+    // Acta de Aceptación
+    setupFileInput(
+        'archivoPDF',
+        'fileNameDisplay',
+        '.file-upload-label[for="archivoPDF"]',
+        'Seleccionar archivo',
+        'filePreviewActa'
+    );
 
-    // Configuración para desprendible PDF
-    setupFileInput('desprendiblePDF', 'desprendibleFileNameDisplay', '.file-upload-container label[for="desprendiblePDF"]', 'Seleccionar desprendible');
+    // Desprendible
+    setupFileInput(
+        'desprendiblePDF',
+        'desprendibleFileNameDisplay',
+        '.file-upload-label[for="desprendiblePDF"]',
+        'Seleccionar desprendible',
+        'filePreviewDesprendible'
+    );
 
-    // Función reutilizable para manejar la carga de archivos
-    function setupFileInput(inputId, displayId, labelSelector, defaultText) {
+    // Autoliquidador con vista previa
+    setupFileInput(
+        'archivoAutoliquidador',
+        'fileNameDisplayAutoliquidador',
+        '.file-upload-label[for="archivoAutoliquidador"]',
+        'Seleccionar archivo',
+        'filePreviewAutoliquidador'
+    );
+
+    function setupFileInput(inputId, displayId, labelSelector, defaultText, previewContainerId = null) {
         const fileInput = document.getElementById(inputId);
         const fileNameDisplay = document.getElementById(displayId);
         const uploadLabel = document.querySelector(labelSelector);
+        const previewContainer = previewContainerId ? document.getElementById(previewContainerId) : null;
 
         if (fileInput && fileNameDisplay && uploadLabel) {
-            fileInput.addEventListener('change', function (e) {
+            fileInput.addEventListener('change', function () {
                 if (this.files.length > 0) {
-                    // Archivo seleccionado
-                    const fileName = this.files[0].name;
+                    const file = this.files[0];
+                    const fileName = file.name;
                     fileNameDisplay.textContent = fileName;
                     uploadLabel.classList.add('has-file');
                     uploadLabel.querySelector('.file-upload-text').textContent = 'Archivo seleccionado';
+
+                    // Si es PDF y hay contenedor de previsualización
+                    if (previewContainer && file.type === 'application/pdf') {
+                        const fileURL = URL.createObjectURL(file);
+                        previewContainer.innerHTML = `
+                            <iframe src="${fileURL}" width="100%" height="400px" style="border:1px solid #ccc; border-radius: 8px;"></iframe>
+                        `;
+                    } else if (previewContainer) {
+                        previewContainer.innerHTML = `<div class="text-danger small">Archivo no compatible para previsualización.</div>`;
+                    }
+
                 } else {
-                    // Sin archivo
                     fileNameDisplay.textContent = 'Ningún archivo seleccionado';
                     uploadLabel.classList.remove('has-file');
                     uploadLabel.querySelector('.file-upload-text').textContent = defaultText;
+                    if (previewContainer) {
+                        previewContainer.innerHTML = '';
+                    }
                 }
             });
-        } else {
-            console.error(`Elementos no encontrados para ${inputId}. Verifica los IDs en el HTML.`);
         }
     }
 });
+
+
 
 // Mostrar nombre de archivo seleccionado
 document.getElementById('archivoPDF').addEventListener('change', function (e) {
@@ -1363,3 +1504,47 @@ function mostrarCampoCorrecciones() {
 function ocultarCampoCorrecciones() {
     document.getElementById("campoDetalleCorrecciones").style.display = "none";
 }
+
+
+//OBSERVACIONES SCRIPT
+document.addEventListener('DOMContentLoaded', function () {
+    const textarea = document.getElementById('observaciones_desprendible');
+    const contador = document.getElementById('contadorCaracteres');
+
+    if (textarea && contador) {
+        textarea.addEventListener('input', function () {
+            const caracteres = this.value.length;
+            contador.textContent = caracteres;
+
+            // Cambiar estilo si se acerca al límite
+            if (caracteres > 100) {
+                contador.className = 'text-warning';
+            } else if (caracteres > 150) {
+                contador.className = 'text-danger';
+            } else {
+                contador.className = 'text-muted';
+            }
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const textareaCorrecciones = document.getElementById('detalleCorrecciones');
+    const contadorCorrecciones = document.getElementById('contadorCorrecciones');
+
+    if (textareaCorrecciones && contadorCorrecciones) {
+        textareaCorrecciones.addEventListener('input', function () {
+            const caracteres = this.value.length;
+            contadorCorrecciones.textContent = caracteres;
+
+            // Cambiar estilo si se acerca al límite
+            if (caracteres > 250) {
+                contadorCorrecciones.className = 'text-warning';
+            } else if (caracteres > 290) {
+                contadorCorrecciones.className = 'text-danger';
+            } else {
+                contadorCorrecciones.className = 'text-muted';
+            }
+        });
+    }
+});
