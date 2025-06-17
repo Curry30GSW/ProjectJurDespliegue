@@ -439,7 +439,7 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         };
     }
     const desprendibleData = {
-        estado: desprendible_estado,
+        estado_desprendible: desprendible_estado,
         obs_desprendible: observaciones_desprendible,
         datos_parcial: datosParcial
     };
@@ -634,7 +634,7 @@ document.addEventListener('click', async function (e) {
 });
 
 function cargarDatosEnFormulario(cliente) {
-    console.log("Datos del cliente recibidos CLIENTE:", cliente);
+    console.log("Datos del cliente recibidos CLIENTE EDIT:", cliente);
     limpiarModalInsolvencia();
 
     // Datos básicos del cliente (ya funcionan)
@@ -778,6 +778,7 @@ function cargarDatosEnFormulario(cliente) {
     if (cliente.audiencias && cliente.audiencias.length > 0) {
         // Activar el botón de "Sí"
         document.getElementById('audiencias_si').checked = true;
+        document.getElementById('audiencias_no').disabled = true; // ⛔ Deshabilitar el "No"
         mostrarAudiencias();
 
         // Limpiar audiencias anteriores
@@ -794,21 +795,47 @@ function cargarDatosEnFormulario(cliente) {
                 : '---';
 
             div.innerHTML = `
-            <div class="border rounded p-2 bg-light">
-                <strong>Audiencia:</strong> ${audiencia}<br>
-                <strong>Fecha:</strong> ${fecha}
-            </div>
-        `;
+                <div class="border rounded p-2 bg-light">
+                    <strong>Audiencia:</strong> ${audiencia}<br>
+                    <strong>Fecha:</strong> ${fecha}
+                </div>
+            `;
 
             listaAudiencias.appendChild(div);
         });
     } else {
         document.getElementById('audiencias_no').checked = true;
+        document.getElementById('audiencias_no').disabled = false; // ✅ Asegurar que esté habilitado
         ocultarAudiencias();
     }
 
+    // Liquidador
+    if (cliente.nombre_liquidador || cliente.telefono_liquidador || cliente.correo_liquidador) {
+        // Marcar "Sí"
+        document.getElementById('liquidador_si').checked = true;
+        mostrarDatosLiquidador(true); // Muestra los campos del liquidador
+
+        document.getElementById('nombre_liquidador').value = cliente.nombre_liquidador || '';
+        document.getElementById('telefono_liquidador').value = cliente.telefono_liquidador || '';
+        document.getElementById('correo_liquidador').value = cliente.correo_liquidador || '';
+
+        if (cliente.pago_liquidador === 'Sí') {
+            document.getElementById('pago_si').checked = true;
+        } else if (cliente.pago_liquidador === 'No') {
+            document.getElementById('pago_no').checked = true;
+        }
+
+    } else {
+        document.getElementById('liquidador_no').checked = true;
+        mostrarDatosLiquidador(false); // Oculta los campos
+    }
 }
 
+
+function mostrarDatosLiquidador(mostrar) {
+    const contenedor = document.getElementById('datos_liquidador');
+    contenedor.style.display = mostrar ? 'block' : 'none';
+}
 
 
 
@@ -835,7 +862,262 @@ function toggleCard(element) {
 }
 
 
+document.querySelector('#tablaClientes tbody').addEventListener('click', function (e) {
+    const boton = e.target.closest('.ver-detalle');
+    if (boton) {
+        const cedula = boton.getAttribute('data-cedula');
+        const fila = boton.closest('tr');
+        const foto = fila.querySelector('.foto-cliente')?.getAttribute('data-src');
 
+        fetch(`http://localhost:3000/api/clientes/${cedula}`)
+            .then(response => response.json())
+            .then(cliente => {
+                // Llenar datos en el modal
+                llenarModalDetalle(cliente, foto);
+
+                // Mostrar el modal
+                const modal = new bootstrap.Modal(document.getElementById('modalVerDetalle'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error al obtener los detalles:', error);
+                mostrarError('Error al cargar los datos del cliente');
+            });
+    }
+});
+
+function llenarModalDetalle(cliente, fotoUrl) {
+
+
+    // Foto de perfil
+    const fotoPerfil = document.getElementById('detalleFotoPerfil');
+    fotoPerfil.src = cliente.foto_perfil
+        ? `http://localhost:3000${cliente.foto_perfil}`
+        : (fotoUrl || '../assets/img/avatar.png');
+
+
+    // Datos personales
+    document.getElementById('detalleID').textContent = cliente.id_cliente || 'No registrado';
+    const vinculo = cliente.fecha_vinculo;
+
+    if (vinculo) {
+        const fecha = new Date(vinculo);
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = fecha.toLocaleString('es-CO', { month: 'short' }).replace('.', '');
+        const mesFormateado = mes.charAt(0).toUpperCase() + mes.slice(1).toLowerCase(); // Ene, Feb, Mar, etc.
+        const anio = fecha.getFullYear();
+
+        document.getElementById('detalleVinculacion').textContent = `${dia}/${mesFormateado}/${anio}`;
+    } else {
+        document.getElementById('detalleVinculacion').textContent = 'No registrado';
+    }
+    const nombreCompleto = `${cliente.nombres || ''} ${cliente.apellidos || ''}`.trim();
+    document.getElementById('detalleNombreCompleto').innerText = nombreCompleto || 'No registrado';
+
+    document.getElementById('detalleCedula').value = cliente.cedula || 'No registrado';
+    document.getElementById('detalleTelefono').value = cliente.telefono || 'No registrado';
+    document.getElementById('detalleCorreo').value = cliente.correo || 'No registrado';
+    document.getElementById('detalleDireccion').value = cliente.direccion || 'No registrado';
+    document.getElementById('detalleCiudad').value = cliente.ciudad || 'No registrado';
+    document.getElementById('detalleBarrio').value = cliente.barrio || 'No registrado';
+    document.getElementById('detalleSexo').value = cliente.sexo || 'No registrado';
+
+    if (cliente.fecha_nac) {
+        const fecha = new Date(cliente.fecha_nac);
+
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = fecha.toLocaleString('es-CO', { month: 'short' });
+        const anio = fecha.getFullYear();
+
+        const mesFormateado = mes.charAt(0).toUpperCase() + mes.slice(1).replace('.', '');
+
+        const fechaFormateada = `${dia}/${mesFormateado}/${anio}`;
+        document.getElementById('detalleFechaNacimiento').value = fechaFormateada;
+    } else {
+        document.getElementById('detalleFechaNacimiento').value = 'No registrado';
+    }
+
+    document.getElementById('detalleEdad').value = cliente.edad || 'No registrado';
+    document.getElementById('detalleEstCivil').value = cliente.estado_civil || 'No registrado';
+
+    // Datos financieros
+    document.getElementById('detalleSalario').value = cliente.salario ?
+        '$' + cliente.salario.toLocaleString('es-CO') : 'No registrado';
+
+    const situacionLaboral = cliente.laboral == 1 ? 'ACTIVO' : 'PENSIONADO';
+    document.getElementById('detalleSituacionLaboral').value = situacionLaboral;
+
+    document.getElementById('detalleEmpresa').value = cliente.empresa || 'No registrado';
+    document.getElementById('detalleCargo').value = cliente.cargo || 'No registrado';
+    document.getElementById('detallePagaduria').value = cliente.pagaduria || 'No registrado';
+    document.getElementById('detalleCuota').value = cliente.valor_cuota ?
+        '$' + parseInt(cliente.valor_cuota).toLocaleString('es-CO') : 'No registrado';
+
+    document.getElementById('detallePorcentaje').value = cliente.porcentaje ?
+        cliente.porcentaje + '%' : 'No registrado';
+
+    document.getElementById('detalleInsolvencia').value = cliente.valor_insolvencia ?
+        '$' + parseInt(cliente.valor_insolvencia).toLocaleString('es-CO') : 'No registrado';
+
+    document.getElementById('detalleNCuotas').value = cliente.numero_cuotas || 'No registrado';
+
+    // Mostrar/ocultar campos según situación laboral
+    if (cliente.laboral == 1) {
+        document.getElementById('detalleEmpresaContainer').style.display = 'block';
+        document.getElementById('detalleCargoContainer').style.display = 'block';
+        document.getElementById('detallePagaduriaContainer').style.display = 'none';
+    } else {
+        document.getElementById('detalleEmpresaContainer').style.display = 'none';
+        document.getElementById('detalleCargoContainer').style.display = 'none';
+        document.getElementById('detallePagaduriaContainer').style.display = 'block';
+    }
+
+    // Documentos PDF
+    actualizarBotonPDF('detalleCedulaPDF', cliente.cedula_pdf, 'Ver Cédula');
+    actualizarBotonPDF('detalleDesprendible', cliente.desprendible, 'Ver Desprendible');
+
+    actualizarBotonPDF('detalleBienesInmuebles', cliente.bienes, 'Ver Bienes');
+    actualizarBotonPDF('detalleDataCredito', cliente.datacred, 'Ver DataCredito');
+
+    // Bienes inmuebles
+    const bienesInmueblesDiv = document.getElementById('detalleBienesInmuebles');
+    if (cliente.bienes === "1" && cliente.bienes_inmuebles) {
+        bienesInmueblesDiv.innerHTML = `
+         <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.bienes_inmuebles}', '_blank')">
+            Ver Documento de Bienes
+        </button>`;
+    } else if (cliente.bienes === "1") {
+        bienesInmueblesDiv.innerHTML = `
+        <span class="text-success fw-bold">El cliente reporta tener bienes inmuebles</span>
+        <small class="text-muted d-block">(Los documentos deben ser consultados)</small>`;
+    } else {
+        bienesInmueblesDiv.innerHTML = '<span class="text-muted">El cliente no reporta bienes inmuebles</span>';
+    }
+
+
+    // Data crédito
+    const dataCreditoDiv = document.getElementById('detalleDataCredito');
+    if (cliente.datacred === "1" && cliente.data_credPdf) {
+        dataCreditoDiv.innerHTML = `
+        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.data_credPdf}', '_blank')">
+            Ver Reporte de DataCrédito
+        </button>`;
+    } else if (cliente.datacred === "1") {
+        dataCreditoDiv.innerHTML = `
+        <span class="text-success fw-bold">El cliente tiene data crédito registrado</span>
+        <small class="text-muted d-block">(El documento debe ser consultado)</small>`;
+    } else {
+        dataCreditoDiv.innerHTML = '<span class="text-muted">El cliente no tiene data crédito registrado</span>';
+    }
+
+
+    // Asesor
+    document.getElementById('detalleAsesor').value = cliente.asesor || 'No asignado';
+
+    // Fecha de vinculación
+    if (cliente.fecha_vinculo) {
+        const fecha = new Date(cliente.fecha_vinculo);
+
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const mes = fecha.toLocaleString('es-CO', { month: 'short' }); // ejemplo: "may."
+        const anio = fecha.getFullYear();
+
+        // Quitar el punto final en el mes (si lo tiene)
+        const mesFormateado = mes.charAt(0).toUpperCase() + mes.slice(1).replace('.', '');
+
+        const fechaFormateada = `${dia}/${mesFormateado}/${anio}`;
+        document.getElementById('detalleFechaVinculo').value = fechaFormateada;
+    } else {
+        document.getElementById('detalleFechaVinculo').value = 'No registrada';
+    }
+
+
+    // Estado del cliente
+    const estadoCliente = cliente.estado == 0 ? 'Activo' : 'Inactivo';
+    document.getElementById('detalleEstadoCliente').value = estadoCliente;
+
+    // Motivo de retiro (si aplica)
+    document.getElementById('detalleMotivoRetiro').value = cliente.motivo_retiro || 'No aplica';
+
+
+    // Llenar referencias familiares
+    if (cliente.referencias_familiares) {
+        const refsFamiliares = cliente.referencias_familiares;
+
+        for (let i = 0; i < 3; i++) {
+            const nombreInput = document.getElementById(`detalleRefFam${i + 1}`);
+            const telInput = document.getElementById(`detalleRefFamTel${i + 1}`);
+            const parentescoInput = document.getElementById(`detalleRefFamParentesco${i + 1}`);
+
+            if (refsFamiliares[i]) {
+                nombreInput.value = refsFamiliares[i].familia_nombre || '';
+                telInput.value = refsFamiliares[i].familia_telefono || '';
+                parentescoInput.value = refsFamiliares[i].parentesco || '';
+
+                // Mostrar el campo por si estaba oculto
+                nombreInput.parentElement.style.display = '';
+                telInput.parentElement.style.display = '';
+                parentescoInput.parentElement.style.display = '';
+            } else {
+                // Limpiar y ocultar campos si no hay datos
+                nombreInput.value = '';
+                telInput.value = '';
+                parentescoInput.value = '';
+
+                nombreInput.parentElement.style.display = 'none';
+                telInput.parentElement.style.display = 'none';
+                parentescoInput.parentElement.style.display = 'none';
+            }
+        }
+    }
+
+    // Llenar referencias personales
+    if (cliente.referencias_personales) {
+        const refsPersonales = cliente.referencias_personales;
+
+        for (let i = 0; i < 3; i++) {
+            const nombreInput = document.getElementById(`detalleRefPer${i + 1}`);
+            const telInput = document.getElementById(`detalleRefPerTel${i + 1}`);
+
+            if (refsPersonales[i]) {
+                nombreInput.value = refsPersonales[i].personal_nombre || '';
+                telInput.value = refsPersonales[i].personal_telefono || '';
+
+                nombreInput.parentElement.style.display = '';
+                telInput.parentElement.style.display = '';
+            } else {
+                nombreInput.value = '';
+                telInput.value = '';
+
+                nombreInput.parentElement.style.display = 'none';
+                telInput.parentElement.style.display = 'none';
+            }
+        }
+    }
+
+}
+
+const modal = document.getElementById('modalVerDetalle');
+const ModalSeen = document.getElementById('modalVerDetalle');
+
+function actualizarBotonPDF(elementId, url, textoBoton) {
+    const elemento = document.getElementById(elementId);
+    if (url) {
+        const fullUrl = url.startsWith('http') ? url : `http://localhost:3000${url}`;
+        elemento.innerHTML = `
+            <a href="${fullUrl}" target="_blank" class="btn btn-danger btn-lg">
+                <i class="fas fa-file-pdf me-1"></i> ${textoBoton}
+            </a>
+        `;
+    } else {
+        elemento.innerHTML = '<span class="text-muted">No hay documento adjunto</span>';
+    }
+}
+
+function mostrarError(mensaje) {
+    console.error(mensaje);
+    alert(mensaje);
+}
 
 // Funciones para audiencias (similar a las anteriores pero con estilos mejorados)
 function agregarAudiencia() {
