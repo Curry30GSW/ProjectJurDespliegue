@@ -495,36 +495,61 @@ document.addEventListener('DOMContentLoaded', inicializarFormulario);
 
 document.addEventListener('DOMContentLoaded', function () {
   // Función genérica para manejar la visualización de archivos
-  function setupFileInput(inputId, displayId, labelSelector, defaultText = 'Seleccionar archivo', selectedText = 'Archivo seleccionado') {
+  function setupFileInput(inputId, displayId, labelSelector, defaultText = 'Seleccionar archivo', selectedText = 'Archivo seleccionado', previewContainerId = null, previewFrameId = null) {
     const fileInput = document.getElementById(inputId);
     const fileNameDisplay = document.getElementById(displayId);
     const uploadLabel = document.querySelector(labelSelector);
+    const previewContainer = previewContainerId ? document.getElementById(previewContainerId) : null;
+    const previewFrame = previewFrameId ? document.getElementById(previewFrameId) : null;
 
     if (fileInput && fileNameDisplay && uploadLabel) {
       fileInput.addEventListener('change', function (e) {
         if (this.files.length > 0) {
-          // Archivo seleccionado
           const fileName = this.files[0].name;
+          const fileURL = URL.createObjectURL(this.files[0]);
+
           fileNameDisplay.textContent = fileName;
           uploadLabel.classList.add('has-file');
           uploadLabel.querySelector('.file-upload-text').textContent = selectedText;
+
+          if (previewFrame && previewContainer) {
+            previewFrame.src = fileURL;
+            previewContainer.style.display = 'block';
+          }
+
         } else {
-          // Sin archivo
           fileNameDisplay.textContent = inputId === 'fotoPerfil' ? 'Ninguna foto seleccionada' : 'Ningún archivo seleccionado';
           uploadLabel.classList.remove('has-file');
           uploadLabel.querySelector('.file-upload-text').textContent = defaultText;
+
+          if (previewFrame && previewContainer) {
+            previewFrame.src = '';
+            previewContainer.style.display = 'none';
+          }
         }
       });
     }
   }
 
-  // Configurar todos los campos de archivo
+
+  setupFileInput(
+    'archivoPDF',
+    'cedulaFileNameDisplay',
+    '.file-upload-container label[for="archivoPDF"]',
+    'Subir Cédula PDF',
+    'Cédula seleccionada',
+    'cedulaPreviewContainer',
+    'cedulaPreview'
+  );
+
   setupFileInput(
     'desprendible',
     'desprendibleFileNameDisplay',
     '.file-upload-container label[for="desprendible"]',
     'Seleccionar desprendible',
-    'Desprendible seleccionado'
+    'Desprendible seleccionado',
+    'desprendiblePreviewContainer',
+    'desprendiblePreview'
   );
 
   setupFileInput(
@@ -532,16 +557,11 @@ document.addEventListener('DOMContentLoaded', function () {
     'bienesInmueblesFileNameDisplay',
     '.file-upload-container label[for="bienes_inmuebles_pdf"]',
     'Subir Bienes Inmuebles',
-    'Documento seleccionado'
+    'Documento seleccionado',
+    'bienesInmueblesPreviewContainer',
+    'bienesInmueblesPreview'
   );
 
-  setupFileInput(
-    'archivoPDF',
-    'cedulaFileNameDisplay',
-    '.file-upload-container label[for="archivoPDF"]',
-    'Subir Cédula PDF',
-    'Cédula seleccionada'
-  );
 
   setupFileInput(
     'fotoPerfil',

@@ -25,6 +25,49 @@
   <!-- DataTables con Bootstrap 5 -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
   <link href="../assets/css/stilos.css" rel="stylesheet" />
+  <style>
+    .file-upload-container {
+      position: relative;
+    }
+
+    .file-upload-label {
+      display: block;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border: 1px dashed #adb5bd;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .file-upload-label:hover {
+      background-color: #e9ecef;
+      border-color: #6c757d;
+    }
+
+    .file-upload-text {
+      font-weight: 500;
+    }
+
+    .file-name-display {
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    /* ESTILO CUANDO TIENE ARCHIVO - IMPORTANTE */
+    .file-upload-label.has-file {
+      background-color: #d1e7dd !important;
+      border-color: #badbcc !important;
+      color: #0f5132 !important;
+      border-style: solid !important;
+    }
+
+    .file-upload-label i,
+    .file-upload-label span {
+      pointer-events: none;
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -975,120 +1018,157 @@
                 </ul>
 
                 <div class="tab-content pt-3">
-                  <!-- Pestaña de Datos Personales -->
+                  <!-- Pestaña de Datos Personales - Editar -->
                   <div class="tab-pane fade show active" id="editar-datos-personales" role="tabpanel">
                     <div class="row">
-                      <!-- Columna izquierda (Foto y Documentos) -->
+                      <!-- Columna izquierda -->
                       <div class="col-md-4">
-                        <!-- Foto de perfil -->
-                        <div class="text-center mb-4 p-3 bg-light rounded-3 shadow-sm">
-                          <img id="editarFotoPerfil" src="../assets/img/avatar.png" alt="Foto de perfil"
-                            class="rounded-circle shadow mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                          <input type="file" id="inputFotoPerfil" name="foto_perfil" class="form-control d-none"
-                            accept="image/*">
-                          <h6 class="fw-bold text-muted mt-2">FOTO DE PERFIL</h6>
-                          <button type="button" class="btn btn-sm btn-dark"
-                            onclick="document.getElementById('inputFotoPerfil').click()">
-                            Cambiar Foto
-                          </button>
+                        <!-- Tarjeta de Foto de Perfil -->
+                        <div class="card border-0 shadow-sm mb-3">
+                          <div class="card-body text-center p-4">
+                            <!-- ID del Cliente -->
+                            <div class="mb-3">
+                              <span class="fw-bold text-muted">ID CLIENTE:</span>
+                              <span id="editarID" class="fw-bold text-info d-block fs-5">---</span>
+                            </div>
+
+                            <!-- Foto de perfil -->
+                            <div class="mb-3">
+                              <img id="editarFotoPerfil" src="../assets/img/avatar.png" alt="Foto de perfil"
+                                class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                              <h6 class="fw-bold text-muted mt-2 mb-0">FOTO DE PERFIL</h6>
+                            </div>
+
+                            <!-- Nombre completo -->
+                            <div class="mb-3">
+                              <span id="editarNombreCompleto" class="fs-6 text-dark fw-bold d-block">---</span>
+                            </div>
+
+                            <!-- Botón Cambiar Foto -->
+                            <div class="mb-3">
+                              <input type="file" id="inputFotoPerfil" name="foto_perfil" class="form-control d-none"
+                                accept="image/*">
+                              <button type="button" class="btn btn-sm btn-dark"
+                                onclick="document.getElementById('inputFotoPerfil').click()">Cambiar Foto</button>
+                            </div>
+
+                            <!-- Fecha de vinculación -->
+                            <div class="small text-muted mt-3 pt-3 border-top">
+                              Vinculación: <span id="editarFechaVinculo" class="text-dark font-weight-bold">---</span>
+                            </div>
+
+                          </div>
                         </div>
 
-                        <!-- Documentos adjuntos -->
-                        <div class="card mb-4 border-0 shadow-sm">
+                        <!-- Tarjeta de Documentos -->
+                        <div class="card border-0 shadow-sm">
                           <div class="card-header bg-dark text-white fw-bold">
-                            <i class="fas fa-file-pdf me-2"></i>Documentos Adjuntos
+                            <i class="fas fa-file-alt me-2"></i>Documentos Adjuntos
                           </div>
                           <div class="card-body">
                             <div class="mb-3">
-                              <label class="form-label fw-bold d-block">Cédula PDF:</label>
-                              <input type="file" id="inputCedulaPDF" class="form-control mb-2" accept=".pdf">
-                              <div id="editarCedulaPDF" class="d-flex align-items-center">
-                                <!-- Botón PDF se insertará aquí -->
+                              <label class="form-label fw-bold d-block mb-2">Cédula PDF</label>
+
+                              <!-- Estilo del botón de carga -->
+                              <label for="cedulaPDF" class="file-upload-label">
+                                <i class="fas fa-paperclip me-2"></i>
+                                <span class="file-upload-text">Seleccionar Cédula</span>
+                              </label>
+                              <input type="file" id="cedulaPDF" accept=".pdf" class="d-none">
+
+                              <!-- Nombre del archivo -->
+                              <div id="cedulaFileNameDisplay" class="small text-muted mt-2">Ningún archivo seleccionado
                               </div>
+
+                              <!-- Previsualización PDF -->
+                              <div id="filePreviewCedula" class="mt-3"></div>
+
+                              <!-- Botón para ver la Cédula PDF -->
+                              <button id="verCedulaPDF" type="button" class="btn btn-outline-danger btn-md mt-2 d-none">
+                                <i class="fas fa-eye me-1"></i> Ver Cédula PDF
+                              </button>
+
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      <!-- Columna derecha (Datos personales) -->
+                      <!-- Columna derecha -->
                       <div class="col-md-8">
-                        <div class="card border-0 shadow-sm h-100">
-                          <div class="card-header bg-primary text-white fw-bold">
-                            <i class="fas fa-user me-2"></i>Información Personal
+                        <div class="card border-0 shadow-sm">
+                          <div class="card-header bg-dark text-white fw-bold p-2">
+                            <i class="fas fa-user me-2"></i>Editar Datos del Cliente
                           </div>
-                          <div class="card-body">
-                            <div class="row g-4">
-                              <!-- Fila 1 -->
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Nombres</label>
-                                  <input type="text" class="form-control" id="editarNombre" required>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Apellidos</label>
-                                  <input type="text" class="form-control" id="editarApellidos" required>
-                                </div>
-                              </div>
+                          <div class="card-body py-2">
+                            <div class="row g-2">
 
                               <!-- Fila 2 -->
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Cédula</label>
-                                  <input type="text" class="form-control" id="editarCedula" disabled>
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Cédula</label>
+                                <input type="text" class="form-control form-control-sm" id="editarCedula" disabled>
                               </div>
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Teléfono</label>
-                                  <input type="text" class="form-control" id="editarTelefono" required>
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Teléfono</label>
+                                <input type="text" class="form-control form-control-sm" id="editarTelefono" required>
                               </div>
 
                               <!-- Fila 3 -->
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Correo electrónico</label required>
-                                  <input type="email" class="form-control" id="editarCorreo">
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Correo</label>
+                                <input type="email" class="form-control form-control-sm" id="editarCorreo">
                               </div>
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Dirección</label>
-                                  <input type="text" class="form-control" id="editarDireccion" required>
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Dirección</label>
+                                <input type="text" class="form-control form-control-sm" id="editarDireccion" required>
                               </div>
 
                               <!-- Fila 4 -->
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Ciudad</label>
-                                  <input type="text" class="form-control" id="editarCiudad" required>
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Ciudad</label>
+                                <input type="text" class="form-control form-control-sm" id="editarCiudad" required>
                               </div>
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Barrio</label>
-                                  <input type="text" class="form-control" id="editarBarrio" required>
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Barrio</label>
+                                <input type="text" class="form-control form-control-sm" id="editarBarrio">
+                              </div>
+
+                              <!-- Fila 5 -->
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Sexo</label>
+                                <input type="text" class="form-control form-control-sm" id="editarSexo">
+                              </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Nacimiento</label>
+                                <input type="date" class="form-control form-control-sm" id="editarFechaNacimiento">
+                              </div>
+
+                              <!-- Fila 6 -->
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Edad</label>
+                                <input type="text" class="form-control form-control-sm" id="editarEdad" readonly>
+                              </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Estado Civil</label>
+                                <input type="text" class="form-control form-control-sm" id="editarEstCivil">
                               </div>
 
                               <!-- Fila 7 -->
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Estado</label>
-                                  <select class="form-select" id="editarEstado">
-                                    <option value="0">Activo</option>
-                                    <option value="1">Inactivo</option>
-                                  </select>
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Asesor</label>
+                                <input type="text" class="form-control form-control-sm" id="editarAsesor">
                               </div>
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="form-label fw-bold">Motivo de Retiro</label>
-                                  <input type="text" class="form-control" id="editarMotivoRetiro" disabled>
-                                </div>
+                              <div class="col-6">
+                                <label class="form-label small fw-bold text-muted">Estado</label>
+                                <select class="form-select form-select-sm" id="editarEstadoCliente">
+                                  <option value="0">Activo</option>
+                                  <option value="1">Inactivo</option>
+                                </select>
+                              </div>
+
+                              <!-- Fila 8 -->
+                              <div class="col-12">
+                                <label class="form-label small fw-bold text-muted">Motivo Retiro</label>
+                                <input type="text" class="form-control form-control-sm" id="editarMotivoRetiro">
                               </div>
                             </div>
                           </div>
@@ -1097,66 +1177,161 @@
                     </div>
                   </div>
 
+
                   <!-- Pestaña de Datos Financieros -->
                   <div class="tab-pane fade" id="editar-financieros" role="tabpanel">
-                    <div class="row">
+                    <div class="row g-3">
+                      <!-- Columna izquierda - Datos financieros básicos -->
                       <div class="col-md-6">
-                        <div class="mb-3">
-                          <label for="editarSalario" class="form-label fw-bold">Salario:</label>
-                          <input type="text" class="form-control" id="editarSalario" name="salario" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="editarSituacionLaboral" class="form-label fw-bold">Situación Laboral:</label>
-                          <select class="form-select" id="editarSituacionLaboral" name="situacion_laboral" required>
-                            <option value="">Seleccione...</option>
-                            <option value="ACTIVO">ACTIVO</option>
-                            <option value="PENSIONADO">PENSIONADO</option>
-                          </select>
-                        </div>
+                        <div class="card h-100">
+                          <div class="card-header bg-dark text-white">
+                            <i class="fas fa-chart-line me-2"></i>Información Financiera
+                          </div>
+                          <div class="card-body">
+                            <div class="row g-3">
+                              <!-- Primera fila -->
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="form-label fw-bold text-muted small">Salario</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="editarSalario" name="salario" required>
+                                  </div>
+                                </div>
+                              </div>
 
-                        <div class="mb-3" id="editarEmpresaContainer">
-                          <label for="editarEmpresa" class="form-label fw-bold">Empresa:</label>
-                          <input type="text" class="form-control" id="editarEmpresa" name="empresa" disabled>
-                        </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="form-label fw-bold text-muted small">Situación Laboral</label>
+                                  <select class="form-select" id="editarSituacionLaboral" name="situacion_laboral"
+                                    required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="ACTIVO">ACTIVO</option>
+                                    <option value="PENSIONADO">PENSIONADO</option>
+                                  </select>
+                                </div>
+                              </div>
 
-                        <div class="mb-3" id="editarCargoContainer">
-                          <label for="editarCargo" class="form-label fw-bold">Cargo:</label>
-                          <input type="text" class="form-control" id="editarCargo" name="cargo" disabled>
-                        </div>
+                              <!-- Segunda fila -->
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="form-label fw-bold text-muted small">Valor Cuota</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="editarCuota" name="valor_cuota">
+                                  </div>
+                                </div>
+                              </div>
 
-                        <div class="mb-3" id="editarPagaduriaContainer">
-                          <label for="editarPagaduria" class="form-label fw-bold">Pagaduría:</label>
-                          <input type="text" class="form-control" id="editarPagaduria" name="pagaduria" disabled>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="form-label fw-bold text-muted small">Porcentaje</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="editarPorcentaje" name="porcentaje">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <!-- Tercera fila -->
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="form-label fw-bold text-muted small">Valor Insolvencia</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="editarInsolvencia"
+                                      name="valor_insolvencia">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="form-label fw-bold text-muted small">N° Cuotas</label>
+                                  <input type="number" class="form-control" id="editarNCuotas" name="n_cuotas">
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Información laboral dinámica -->
+                            <div class="mt-4" id="editarInfoLaboral">
+                              <div class="mb-3" id="editarEmpresaContainer">
+                                <label class="form-label fw-bold text-muted small">Empresa</label>
+                                <input type="text" class="form-control" id="editarEmpresa" name="empresa" disabled>
+                              </div>
+                              <div class="mb-3" id="editarCargoContainer">
+                                <label class="form-label fw-bold text-muted small">Cargo</label>
+                                <input type="text" class="form-control" id="editarCargo" name="cargo" disabled>
+                              </div>
+                              <div class="mb-3" id="editarPagaduriaContainer">
+                                <label class="form-label fw-bold text-muted small">Pagaduría</label>
+                                <input type="text" class="form-control" id="editarPagaduria" name="pagaduria" disabled>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
+                      <!-- Columna derecha - Documentos -->
                       <div class="col-md-6">
-                        <!-- Documentos financieros -->
-                        <div class="card">
-                          <div class="card-header bg-warning text-dark">
+                        <div class="card h-100">
+                          <div class="card-header bg-dark text-white">
                             <i class="fas fa-file-upload me-2"></i>Subir Documentos Financieros
                           </div>
                           <div class="card-body">
-                            <div class="mb-3">
-                              <label for="editarDesprendible" class="form-label fw-bold">Desprendible de Pago:</label>
-                              <input type="file" class="form-control" id="editarDesprendible" name="desprendible_pago"
-                                accept=".pdf">
-                            </div>
+                            <div class="document-list">
 
-                            <div class="mb-3" id="editarBienesInmueblesContainer">
-                              <label for="editarBienesInmuebles" class="form-label fw-bold">Bienes Inmuebles:</label>
-                              <input type="file" class="form-control" id="editarBienesInmuebles"
-                                name="bienes_inmuebles[]" accept=".pdf" multiple>
-                            </div>
+                              <!-- Desprendible de Pago -->
+                              <div class="document-item mb-3 p-3 border rounded bg-light">
+                                <label for="desprendiblePDF" class="form-label fw-bold text-dark">Desprendible
+                                  (PDF)</label>
+                                <div class="file-upload-container">
+                                  <input type="file" class="form-control d-none" id="desprendiblePDF"
+                                    name="desprendiblePDF" accept=".pdf">
+                                  <label for="desprendiblePDF"
+                                    class="file-upload-label d-flex align-items-center gap-2 p-2 bg-white border rounded cursor-pointer">
+                                    <i class="fas fa-cloud-upload-alt text-secondary"></i>
+                                    <span class="file-upload-text">Seleccionar desprendible</span>
+                                  </label>
+                                  <div class="file-name-display small mt-2 text-muted" id="desprendibleFileNameDisplay">
+                                    Ningún archivo seleccionado
+                                  </div>
+                                  <input type="hidden" id="desprendiblePDFUrl" name="desprendiblePDFUrl">
+                                  <div id="filePreviewDesprendible" class="mt-2"></div>
+                                </div>
 
-                            <div class="mb-3" id="editarDataCreditoContainer">
-                              <label for="editarDataCredito" class="form-label fw-bold">Data Crédito:</label>
-                              <input type="file" class="form-control" id="editarDataCredito" name="data_credito"
-                                accept=".pdf">
+                                <button id="verDesprendible" type="button" class="btn btn-outline-danger mt-2 d-none">
+                                  <i class="fas fa-eye me-1"></i> Ver Desprendible
+                                </button>
+                              </div>
+
+                              <!-- Bienes Inmuebles -->
+                              <div class="document-item mb-3 p-3 border rounded bg-light">
+                                <label for="bienesInmueblesPDF" class="form-label fw-bold text-dark">Bienes Inmuebles
+                                  (PDF)</label>
+                                <div class="file-upload-container">
+                                  <input type="file" class="form-control d-none" id="bienesInmueblesPDF"
+                                    name="bienesInmuebles[]" accept=".pdf" multiple>
+                                  <label for="bienesInmueblesPDF"
+                                    class="file-upload-label d-flex align-items-center gap-2 p-2 bg-white border rounded cursor-pointer">
+                                    <i class="fas fa-cloud-upload-alt text-secondary"></i>
+                                    <span class="file-upload-text">Seleccionar archivos</span>
+                                  </label>
+                                  <div class="file-name-display small mt-2 text-muted"
+                                    id="bienesInmueblesFileNameDisplay">
+                                    Ningún archivo seleccionado
+                                  </div>
+                                  <input type="hidden" id="bienesInmueblesPDFUrl" name="bienesInmueblesPDFUrl">
+                                  <div id="filePreviewBienesInmuebles" class="mt-2"></div>
+                                </div>
+
+                                <button id="verBienesInmuebles" type="button"
+                                  class="btn btn-outline-danger mt-2 d-none">
+                                  <i class="fas fa-eye me-1"></i> Ver Bienes Inmuebles
+                                </button>
+                              </div>
+
                             </div>
                           </div>
                         </div>
                       </div>
+
                     </div>
                   </div>
 
@@ -1380,7 +1555,11 @@
       document.getElementById('nombreUsuario').innerText = nombreUsuario;
 
     });
+
+
+
   </script>
+
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->

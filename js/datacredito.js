@@ -575,35 +575,57 @@ modalDataCredito.addEventListener('hidden.bs.modal', function () {
         const textSpan = uploadLabel.querySelector('.file-upload-text');
         if (textSpan) textSpan.textContent = 'Subir Datacrédito PDF';
     }
+
+    // También limpiar la vista previa del PDF
+    const previewContainer = document.getElementById('pdfPreviewContainer');
+    const previewFrame = document.getElementById('pdfPreview');
+    if (previewContainer) previewContainer.style.display = 'none';
+    if (previewFrame) previewFrame.src = '';
 });
 
 
+
 document.addEventListener('DOMContentLoaded', function () {
-    // Función genérica para manejar la visualización de archivos
     function setupFileInput(inputId, displayId, labelSelector, defaultText = 'Seleccionar archivo', selectedText = 'Archivo seleccionado') {
         const fileInput = document.getElementById(inputId);
         const fileNameDisplay = document.getElementById(displayId);
         const uploadLabel = document.querySelector(labelSelector);
+        const previewContainer = document.getElementById('pdfPreviewContainer');
+        const previewFrame = document.getElementById('pdfPreview');
 
         if (fileInput && fileNameDisplay && uploadLabel) {
-            fileInput.addEventListener('change', function (e) {
+            fileInput.addEventListener('change', function () {
                 if (this.files.length > 0) {
-                    // Archivo seleccionado
-                    const fileName = this.files[0].name;
+                    const file = this.files[0];
+                    const fileName = file.name;
+
+                    // Mostrar nombre del archivo
                     fileNameDisplay.textContent = fileName;
                     uploadLabel.classList.add('has-file');
                     uploadLabel.querySelector('.file-upload-text').textContent = selectedText;
+
+                    // Validar que sea PDF
+                    if (file.type === "application/pdf") {
+                        const fileURL = URL.createObjectURL(file);
+                        previewFrame.src = fileURL;
+                        previewContainer.style.display = 'block';
+                    } else {
+                        previewContainer.style.display = 'none';
+                        previewFrame.src = '';
+                    }
+
                 } else {
-                    // Sin archivo
-                    fileNameDisplay.textContent = inputId === 'fotoPerfil' ? 'Ninguna foto seleccionada' : 'Ningún archivo seleccionado';
+                    fileNameDisplay.textContent = 'Ningún archivo seleccionado';
                     uploadLabel.classList.remove('has-file');
                     uploadLabel.querySelector('.file-upload-text').textContent = defaultText;
+
+                    previewContainer.style.display = 'none';
+                    previewFrame.src = '';
                 }
             });
         }
     }
 
-    // Configurar todos los campos de archivo
     setupFileInput(
         'inputDatacredito',
         'inputDatacreditoFileNameDisplay',
@@ -611,5 +633,4 @@ document.addEventListener('DOMContentLoaded', function () {
         'Subir Datacrédito PDF',
         'Archivo seleccionado'
     );
-
 });

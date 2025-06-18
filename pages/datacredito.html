@@ -797,6 +797,12 @@
                                     class="d-none">
                             </div>
 
+                            <!-- Previsualización del PDF -->
+                            <div class="mt-3" id="pdfPreviewContainer" style="display: none;">
+                                <label class="form-label">Vista previa:</label>
+                                <iframe id="pdfPreview" width="100%" height="400px" class="border rounded"></iframe>
+                            </div>
+
                             <!-- Advertencia minimalista -->
                             <div class="small text-muted mt-2">
                                 <i class="fas fa-info-circle me-1"></i> Solo se aceptan archivos PDF (máx. 5MB)
@@ -818,42 +824,41 @@
 
             <div class="modal fade" id="modalMoverArea" tabindex="-1" aria-labelledby="modalMoverAreaLabel"
                 aria-hidden="true">
-                <div class="modal-dialog modal-md modal-dialog-centered">
-                    <div class="modal-content shadow rounded-4 border-0">
-                        <div class="modal-header bg-dark text-white position-relative">
-                            <h5 class="modal-title font-weight-bold text-white text-center w-100">
-                                Mover cliente a otra área
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3"
-                                data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content border-0 rounded-3 shadow-sm">
+                        <div class="modal-header border-0 bg-white px-3">
+                            <h6 class="modal-title mx-auto fw-semibold">Mover cliente a otra área</h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
                         </div>
-                        <div class="modal-body bg-light">
-                            <div
-                                class="alert alert-secondary d-flex align-items-start gap-2 p-3 mb-4 rounded-2 shadow-sm">
-                                <div>
-                                    <div class="fw-bold text-white" style="font-size: 1.1rem;">Cliente seleccionado:
-                                    </div>
-                                    <span id="nombreClienteArea" class="text-white fw-semibold"
-                                        style="font-size: 1.2rem;"></span>
-                                    <input type="hidden" id="cedulaClienteArea">
-                                </div>
+
+                        <div class="modal-body px-3 pb-2">
+                            <div class="mb-3 text-center">
+                                <small class="text-muted">Cliente seleccionado:</small><br>
+                                <span id="nombreClienteArea" class="fw-semibold"></span>
+                                <input type="hidden" id="cedulaClienteArea">
                             </div>
-                            <label for="selectNuevaArea" class="form-label fw-bold">Seleccione el área:</label>
-                            <select id="selectNuevaArea" class="form-select mt-1">
-                                <option value="">-- Seleccione --</option>
-                                <option value="CREDITOS">Créditos</option>
-                                <option value="EMBARGOS">Embargos</option>
-                                <option value="INSOLVENCIAS">Insolvencias</option>
-                            </select>
+
+                            <div class="mb-3">
+                                <label for="selectNuevaArea" class="form-label mb-1">Área de destino</label>
+                                <select id="selectNuevaArea" class="form-select form-select-sm">
+                                    <option value="">-- Seleccione --</option>
+                                    <option value="CREDITOS">Créditos</option>
+                                    <option value="EMBARGOS">Embargos</option>
+                                    <option value="INSOLVENCIAS">Insolvencias</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="modal-footer bg-white">
-                            <button type="button" class="btn btn-primary w-100" id="btnConfirmarMoverArea">
-                                <i class="fas fa-share me-2"></i> Confirmar movimiento
+
+                        <div class="modal-footer border-0 px-3 pt-0 pb-3">
+                            <button type="button" class="btn btn-success w-100 btn-md" id="btnConfirmarMoverArea">
+                                <i class="fas fa-share me-1"></i> Trasladar
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+
 
 
 

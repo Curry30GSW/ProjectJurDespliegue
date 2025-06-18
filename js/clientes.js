@@ -409,30 +409,31 @@ function mostrarError(mensaje) {
 $(document).on('click', '.editar-cliente', function () {
     const cedula = $(this).data('cedula');
 
+
     // Obtener datos del cliente desde la API
     $.get(`http://localhost:3000/api/clientes/${cedula}`, function (cliente) {
+        console.log('Datos completos del cliente recibidos:', cliente);
         const salarioFormateado = new Intl.NumberFormat('es-CO', {
             style: 'currency',
             currency: 'COP',
             minimumFractionDigits: 0
         }).format(cliente.salario);
         // Habilitar/deshabilitar motivo de retiro según estado
-        $('#editarEstado').change(function () {
-            if ($(this).val() === '1') { // Inactivo
+        $('#editarEstadoCliente').change(function () {
+            if ($(this).val() === '1') {
                 $('#editarMotivoRetiro').prop('disabled', false);
-                // Si viene el motivo de retiro, lo carga en el input
                 if (cliente.motivo_retiro) {
                     $('#editarMotivoRetiro').val(cliente.motivo_retiro);
                 }
-            } else { // Activo
-                $('#editarMotivoRetiro').prop('disabled', true);
-                $('#editarMotivoRetiro').val('');
+            } else {
+                $('#editarMotivoRetiro').prop('disabled', true).val('');
             }
         });
 
+
         // Llenar el formulario con los datos del cliente
-        $('#editarNombre').val(cliente.nombres);
-        $('#editarApellidos').val(cliente.apellidos);
+        $('#editarID').text(cliente.id_cliente);
+        $('#editarNombreCompleto').text(`${cliente.nombres} ${cliente.apellidos}`);
         $('#editarCedula').val(cliente.cedula);
         $('#editarTelefono').val(cliente.telefono);
         $('#editarCorreo').val(cliente.correo);
@@ -440,6 +441,9 @@ $(document).on('click', '.editar-cliente', function () {
         $('#editarCiudad').val(cliente.ciudad);
         $('#editarBarrio').val(cliente.barrio);
         $('#editarSexo').val(cliente.sexo);
+        $('#editarEdad').val(cliente.edad);
+        $('#editarEstCivil').val(cliente.estado_civil);
+        $('#editarAsesor').val(cliente.asesor);
         $('#editarSalario').val(salarioFormateado);
         $('#editarEmpresa').val(cliente.empresa);
         $('#editarCargo').val(cliente.cargo);
@@ -449,7 +453,19 @@ $(document).on('click', '.editar-cliente', function () {
         } else {
             $('#editarSituacionLaboral').val('PENSIONADO').trigger('change');
         }
-        $('#editarEstado').val(cliente.estado.toString()).trigger('change');
+        const formatoPesos = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0
+        });
+
+        $('#editarCuota').val(formatoPesos.format(cliente.valor_cuota));
+        $('#editarPorcentaje').val(cliente.porcentaje + '%');
+        $('#editarInsolvencia').val(formatoPesos.format(cliente.valor_insolvencia));
+
+        $('#editarNCuotas').val(cliente.numero_cuotas)
+        $('#editarEstadoCliente').val(cliente.estado.toString()).trigger('change');
+
 
 
 
@@ -499,6 +515,56 @@ $(document).on('click', '.editar-cliente', function () {
         if (cliente.foto_perfil) {
             $('#editarFotoPerfil').attr('src', `http://localhost:3000${cliente.foto_perfil}`);
         }
+
+        // Mostrar botón para ver Desprendible si existe
+        if (cliente.desprendible) {
+            $('#verDesprendible')
+                .removeClass('d-none')
+                .off('click')
+                .on('click', function () {
+                    window.open(`http://localhost:3000${cliente.desprendible}`, '_blank');
+                });
+        } else {
+            $('#verDesprendible').addClass('d-none');
+        }
+
+        // Mostrar botón para ver Bienes Inmuebles si existe
+        if (cliente.bienes_inmuebles && cliente.bienes_inmuebles.length > 0) {
+            $('#verBienesInmuebles')
+                .removeClass('d-none')
+                .off('click')
+                .on('click', function () {
+                    // Si hay varios archivos, puedes abrir todos o uno solo, aquí se abre el primero como ejemplo:
+                    window.open(`http://localhost:3000${cliente.bienes_inmuebles}`, '_blank');
+                });
+        } else {
+            $('#verBienesInmuebles').addClass('d-none');
+        }
+
+        if (cliente.cedula_pdf) {
+            $('#verCedulaPDF')
+                .removeClass('d-none')
+                .off('click')
+                .on('click', function () {
+                    window.open(`http://localhost:3000${cliente.cedula_pdf}`, '_blank');
+                });
+        } else {
+            $('#verCedulaPDF').addClass('d-none');
+        }
+
+        // Formatear la fecha de nacimiento a YYYY-MM-DD
+        if (cliente.fecha_nac) {
+            const fechaNacimiento = new Date(cliente.fecha_nac);
+            const fechaFormateada = fechaNacimiento.toISOString().split('T')[0];
+            $('#editarFechaNacimiento').val(fechaFormateada);
+        }
+
+        if (cliente.fecha_vinculo) {
+            const fechaVinculo = new Date(cliente.fecha_vinculo);
+            const fechaFormateada = fechaVinculo.toISOString().split('T')[0];
+            $('#editarFechaVinculo').text(fechaFormateada);
+        }
+
 
         // Mostrar el modal
         $('#modalEditarCliente').modal('show');
@@ -695,3 +761,68 @@ modal.addEventListener('hidden.bs.modal', function () {
     const tabInstance = new bootstrap.Tab(firstTab);
     tabInstance.show();
 })
+
+
+// VISUAL DEL BOTÓN DE ADJUNTAR + PREVISUALIZACIÓN
+document.addEventListener('DOMContentLoaded', function () {
+    setupFileInput(
+        'bienesInmueblesPDF',
+        'bienesInmueblesFileNameDisplay',
+        '.file-upload-label[for="bienesInmueblesPDF"]',
+        'Seleccionar archivos',
+        'filePreviewBienesInmuebles'
+    );
+
+    setupFileInput(
+        'desprendiblePDF',
+        'desprendibleFileNameDisplay',
+        '.file-upload-label[for="desprendiblePDF"]',
+        'Seleccionar desprendible',
+        'filePreviewDesprendible'
+    );
+
+    setupFileInput(
+        'cedulaPDF',
+        'cedulaFileNameDisplay',
+        '.file-upload-label[for="cedulaPDF"]',
+        'Seleccionar Cédula',
+        'filePreviewCedula'
+    );
+
+    function setupFileInput(inputId, displayId, labelSelector, defaultText, previewContainerId = null) {
+        const fileInput = document.getElementById(inputId);
+        const fileNameDisplay = document.getElementById(displayId);
+        const uploadLabel = document.querySelector(labelSelector);
+        const previewContainer = previewContainerId ? document.getElementById(previewContainerId) : null;
+
+        if (fileInput && fileNameDisplay && uploadLabel) {
+            fileInput.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    const fileName = file.name;
+                    fileNameDisplay.textContent = fileName;
+                    uploadLabel.classList.add('has-file');
+                    uploadLabel.querySelector('.file-upload-text').textContent = 'Archivo seleccionado';
+
+                    // Si es PDF y hay contenedor de previsualización
+                    if (previewContainer && file.type === 'application/pdf') {
+                        const fileURL = URL.createObjectURL(file);
+                        previewContainer.innerHTML = `
+                            <iframe src="${fileURL}" width="100%" height="400px" style="border:1px solid #ccc; border-radius: 8px;"></iframe>
+                        `;
+                    } else if (previewContainer) {
+                        previewContainer.innerHTML = `<div class="text-danger small">Archivo no compatible para previsualización.</div>`;
+                    }
+
+                } else {
+                    fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+                    uploadLabel.classList.remove('has-file');
+                    uploadLabel.querySelector('.file-upload-text').textContent = defaultText;
+                    if (previewContainer) {
+                        previewContainer.innerHTML = '';
+                    }
+                }
+            });
+        }
+    }
+});
