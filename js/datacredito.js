@@ -451,8 +451,7 @@ document.getElementById('btnConfirmarDatacredito').addEventListener('click', asy
 
             await Swal.fire({
                 icon: 'success',
-                title: 'Documento subido',
-                text: result.message,
+                title: 'Documento Cargado Exitosamente',
                 confirmButtonColor: '#198754'
             });
 

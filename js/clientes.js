@@ -75,7 +75,7 @@ const mostrar = (clientes) => {
 
     clientes.forEach((cliente) => {
 
-        const estadoTexto = cliente.estado == 0 ? "Activo" : "Inactivo";
+        const estadoTexto = cliente.estado == 0 ? "ACTIVO" : "INACTIVO";
         const estadoClase = cliente.estado == 0 ? "bg-gradient-success" : "bg-gradient-danger";
 
         // Formatear la fecha para mostrar en el formato 13/May/2025
@@ -319,11 +319,11 @@ function llenarModalDetalle(cliente, fotoUrl) {
 
 
     // Estado del cliente
-    const estadoCliente = cliente.estado == 0 ? 'Activo' : 'Inactivo';
+    const estadoCliente = cliente.estado == 0 ? 'ACTIVO' : 'INACTIVO';
     document.getElementById('detalleEstadoCliente').value = estadoCliente;
 
     // Motivo de retiro (si aplica)
-    document.getElementById('detalleMotivoRetiro').value = cliente.motivo_retiro || 'No aplica';
+    document.getElementById('detalleMotivoRetiro').value = cliente.motivo_retiro || 'NO APLICA';
 
 
     // Llenar referencias familiares

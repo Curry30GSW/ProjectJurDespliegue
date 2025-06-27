@@ -19,13 +19,13 @@ function mostrarCamposTrabajo(valor) {
   document.getElementById('ingresos').disabled = !esActivo;
 
   // Reiniciar campos de pagadurías
-for (let i = 2; i <= 4; i++) {
-  document.getElementById(`grupoPagaduria${i}`).style.display = 'none';
-  document.getElementById(`grupoValor${i}`).style.display = 'none';
-  document.getElementById(`grupoDescuento${i}`).style.display = 'none'; // <- esta línea corregida
-  document.getElementById(`pagaduria${i}`).value = '';
-  document.getElementById(`valor${i}`).value = '';
-}
+  for (let i = 2; i <= 4; i++) {
+    document.getElementById(`grupoPagaduria${i}`).style.display = 'none';
+    document.getElementById(`grupoValor${i}`).style.display = 'none';
+    document.getElementById(`grupoDescuento${i}`).style.display = 'none'; // <- esta línea corregida
+    document.getElementById(`pagaduria${i}`).value = '';
+    document.getElementById(`valor${i}`).value = '';
+  }
 }
 
 
@@ -119,8 +119,7 @@ function mostrarVistaPrevia(event) {
 
 function obtenerReferenciasFamiliares() {
   const familiares = [];
-  // Cambiar a un selector más confiable
-  const container = document.querySelector('#referencias-familiares'); // Agrega este ID al HTML
+  const container = document.querySelector('#referencias-familiares');
 
   if (!container) {
     console.error('No se encontró el contenedor de referencias familiares');
@@ -128,11 +127,11 @@ function obtenerReferenciasFamiliares() {
   }
 
   for (let i = 1; i <= 3; i++) {
-    const nombre = container.querySelector(`input[name="referencia${i}"]`)?.value.trim();
-    const telefono = container.querySelector(`input[name="telefono_referencia${i}"]`)?.value.trim();
-    const parentesco = container.querySelector(`select[name="parentesco${i}"]`)?.value;
+    const nombre = container.querySelector(`input[name="referencia${i}"]`)?.value.trim().toUpperCase();
+    const telefono = container.querySelector(`input[name="telefono_referencia${i}"]`)?.value.trim().toUpperCase();
+    const parentesco = container.querySelector(`select[name="parentesco${i}"]`)?.value.toUpperCase();
 
-    if (nombre && telefono && parentesco && parentesco !== 'Seleccione Parentesco') {
+    if (nombre && telefono && parentesco && parentesco !== 'SELECCIONE PARENTESCO') {
       familiares.push({
         familia_nombre: nombre,
         familia_telefono: telefono,
@@ -146,7 +145,7 @@ function obtenerReferenciasFamiliares() {
 // Versión equivalente para referencias personales
 function obtenerReferenciasPersonales() {
   const personales = [];
-  const container = document.querySelector('#referencias-personales'); // Agrega este ID al HTML
+  const container = document.querySelector('#referencias-personales');
 
   if (!container) {
     console.error('No se encontró el contenedor de referencias personales');
@@ -154,8 +153,8 @@ function obtenerReferenciasPersonales() {
   }
 
   for (let i = 1; i <= 3; i++) {
-    const nombre = container.querySelector(`input[name="referencia${i}"]`)?.value.trim();
-    const telefono = container.querySelector(`input[name="telefono_referencia${i}"]`)?.value.trim();
+    const nombre = container.querySelector(`input[name="referencia${i}"]`)?.value.trim().toUpperCase();
+    const telefono = container.querySelector(`input[name="telefono_referencia${i}"]`)?.value.trim().toUpperCase();
 
     if (nombre && telefono) {
       personales.push({
@@ -166,6 +165,7 @@ function obtenerReferenciasPersonales() {
   }
   return personales;
 }
+
 
 // Calcular edad desde fecha de nacimiento
 function calcularEdad() {
@@ -227,7 +227,11 @@ function validarCamposObligatorios(form) {
     { id: 'ciudad', nombre: 'Ciudad' },
     { id: 'correo', nombre: 'Correo Electronico' },
     { id: 'barrio', nombre: 'Barrio' },
-    { id: 'ingresos', nombre: 'Salario' }
+    { id: 'ingresos', nombre: 'Salario' },
+    { id: 'Cuota', nombre: 'Valor Cuota' },
+    { id: 'porcentaje', nombre: 'Porcentaje Cuota Real' },
+    { id: 'vinsolvencia', nombre: 'Valor Insolvencia' },
+    { id: 'ncuota', nombre: 'Número de Cuotas' }
   ];
 
   const archivosObligatorios = [
@@ -237,11 +241,12 @@ function validarCamposObligatorios(form) {
 
   const camposFaltantes = [];
   const camposInvalidos = [];
+  const LIMITE_MB = 5 * 1024 * 1024;
 
   // Validar campos obligatorios de texto
   camposObligatorios.forEach(campo => {
     const elemento = document.getElementById(campo.id);
-    if (!elemento || !elemento.value) {
+    if (!elemento || !elemento.value.trim()) {
       camposFaltantes.push(campo.nombre);
       if (elemento) {
         elemento.classList.add('is-invalid');
@@ -251,23 +256,39 @@ function validarCamposObligatorios(form) {
     }
   });
 
+  // Validar correo electrónico con expresión regular
+  const correoInput = document.getElementById('correo');
+  const correoValor = correoInput?.value.trim();
+  if (correoValor && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoValor)) {
+    camposInvalidos.push('Correo electrónico con formato inválido');
+    correoInput.classList.add('is-invalid');
+  }
+
   // Validar archivos obligatorios
   archivosObligatorios.forEach(archivo => {
     const fileInput = document.getElementById(archivo.id);
     const urlInput = document.getElementById(archivo.campoUrl);
 
-    // Verificar si no hay archivo seleccionado ni URL previa
     if ((!fileInput || !fileInput.files[0]) && (!urlInput || !urlInput.value)) {
       camposFaltantes.push(archivo.nombre);
       if (fileInput) {
         fileInput.classList.add('is-invalid');
       }
     } else {
-      if (fileInput) fileInput.classList.remove('is-invalid');
+      if (fileInput && fileInput.files[0]) {
+        if (fileInput.files[0].size > LIMITE_MB) {
+          camposInvalidos.push(`${archivo.nombre} supera los 5MB`);
+          fileInput.classList.add('is-invalid');
+        } else {
+          fileInput.classList.remove('is-invalid');
+        }
+      } else {
+        if (fileInput) fileInput.classList.remove('is-invalid');
+      }
     }
   });
 
-  // Validar bienes inmuebles si está marcado como "Sí"
+  // Validar bienes inmuebles
   const bienesInmuebles = document.getElementById('bienes_inmuebles');
   const bienesInmueblesInput = document.getElementById('bienesInmuebles');
   const bienesInmueblesUrls = document.getElementById('bienesInmueblesUrls');
@@ -279,23 +300,55 @@ function validarCamposObligatorios(form) {
         bienesInmueblesInput.classList.add('is-invalid');
       }
     } else {
-      if (bienesInmueblesInput) bienesInmueblesInput.classList.remove('is-invalid');
+      if (bienesInmueblesInput && bienesInmueblesInput.files[0]) {
+        if (bienesInmueblesInput.files[0].size > LIMITE_MB) {
+          camposInvalidos.push('Documento de bienes inmuebles supera los 5MB');
+          bienesInmueblesInput.classList.add('is-invalid');
+        } else {
+          bienesInmueblesInput.classList.remove('is-invalid');
+        }
+      } else {
+        if (bienesInmueblesInput) bienesInmueblesInput.classList.remove('is-invalid');
+      }
     }
   }
 
-  // Validar referencias familiares (mínimo 2)
+  // Referencias familiares y personales
   const refFamiliares = obtenerReferenciasFamiliares();
   if (refFamiliares.length < 2) {
     camposFaltantes.push('Referencias familiares (mínimo 2 completas)');
   }
 
-  // Validar referencias personales (mínimo 2)
   const refPersonales = obtenerReferenciasPersonales();
   if (refPersonales.length < 2) {
     camposFaltantes.push('Referencias personales (mínimo 2 completas)');
   }
-  return camposFaltantes;
+
+  // Mostrar alerta si hay errores
+  if (camposFaltantes.length > 0 || camposInvalidos.length > 0) {
+    let mensaje = '';
+    if (camposFaltantes.length > 0) {
+      mensaje += `<strong>Campos obligatorios faltantes:</strong><ul>` + camposFaltantes.map(c => `<li>${c}</li>`).join('') + `</ul>`;
+    }
+    if (camposInvalidos.length > 0) {
+      mensaje += `<strong>Errores encontrados:</strong><ul>` + camposInvalidos.map(c => `<li>${c}</li>`).join('') + `</ul>`;
+    }
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Revisa el formulario',
+      html: mensaje,
+      confirmButtonText: 'Aceptar'
+    });
+  }
+
+  // Devolver ambos resultados
+  return {
+    camposFaltantes,
+    camposInvalidos
+  };
 }
+
 
 // ==========================
 // MANEJO DEL FORMULARIO 
@@ -385,25 +438,37 @@ async function enviarDatosCliente(formValues) {
   }
 }
 
+
+
 // Función principal para manejar el envío del formulario
 async function handleFormSubmit(e) {
   e.preventDefault();
   const form = e.target;
   const submitBtn = form.querySelector('button[type="submit"]');
 
-  // Configurar estado de carga
+  // Estado de carga
   const originalText = submitBtn.innerHTML;
   submitBtn.disabled = true;
   submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
 
   try {
-    // 1. Validar campos obligatorios (incluyendo archivos)
-    const camposFaltantes = validarCamposObligatorios(form);
+    // 1. Validar campos obligatorios e inválidos
+    const resultado = validarCamposObligatorios(form);
 
-    if (camposFaltantes.length > 0) {
+    if (resultado.camposFaltantes.length || resultado.camposInvalidos.length) {
+      const mensajes = [];
+
+      if (resultado.camposFaltantes.length) {
+        mensajes.push(`<strong>Campos obligatorios faltantes:</strong><ul>${resultado.camposFaltantes.map(campo => `<li>${campo}</li>`).join('')}</ul>`);
+      }
+
+      if (resultado.camposInvalidos.length) {
+        mensajes.push(`<strong>Errores en los siguientes campos:</strong><ul>${resultado.camposInvalidos.map(campo => `<li>${campo}</li>`).join('')}</ul>`);
+      }
+
       Swal.fire({
-        title: 'Campos incompletos',
-        html: `<div class="text-start">Los siguientes campos son obligatorios:<ul class="mt-2">${camposFaltantes.map(campo => `<li>${campo}</li>`).join('')}</ul></div>`,
+        title: 'Validación incompleta',
+        html: `<div class="text-start">${mensajes.join('<br><br>')}</div>`,
         icon: 'error',
         confirmButtonText: 'Entendido'
       });
@@ -413,9 +478,10 @@ async function handleFormSubmit(e) {
       return;
     }
 
+
     const cedula = form.cedula.value;
 
-    // Verificar si la cédula ya está registrada
+    // 2. Verificar si la cédula ya está registrada
     const cedulaExiste = await verificarCedula(cedula);
     if (cedulaExiste) {
       Swal.fire({
@@ -424,13 +490,77 @@ async function handleFormSubmit(e) {
         icon: 'error',
         confirmButtonText: 'Entendido'
       });
-
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
-      return; // Detener la ejecución si la cédula ya existe
+      return;
     }
 
-    // 2. Subir archivos en paralelo
+    // 3. Preparar objeto formData desde el inicio
+    const formData = {
+      nombres: form.nombre.value.toUpperCase(),
+      apellidos: form.apellidos.value.toUpperCase(),
+      cedula: cedula,
+      direccion: form.direccion.value.toUpperCase(),
+      telefono: form.telefono.value,
+      sexo: form.sexo.value.toUpperCase(),
+      otroSexo: form.otroSexo?.value.toUpperCase() || '',
+      fechaNacimiento: form.fechaNacimiento.value,
+      edad: form.edad.value,
+      ciudad: form.ciudad.value.toUpperCase(),
+      correo: form.correo.value.toUpperCase(),
+      barrio: form.barrio.value.toUpperCase(),
+      estadoCivil: form.estadoCivil.value.toUpperCase(),
+      trabaja: form.trabaja.value,
+      empresa: (form.empresa?.value || '').toUpperCase(),
+      cargo: (form.cargo?.value || '').toUpperCase(),
+      ingresos: parseInt(form.ingresos.value.replace(/\D/g, '')) || 0,
+      fotoPerfilUrl: '',
+      archivoPDFUrl: '',
+      desprendibleUrl: '',
+      bienes: form.bienesInmuebles.value.toUpperCase(),
+      bienes_inmuebles: '',
+      valor_cuota: form.Cuota.value.replace(/\D/g, ''),
+      porcentaje: form.porcentaje.value.replace(',', '.').replace(/[^\d.]/g, ''),
+      valor_insolvencia: form.vinsolvencia.value.replace(/\D/g, ''),
+      numero_cuotas: form.ncuota.value,
+      asesor: (sessionStorage.getItem('nombreUsuario') || 'Nombre por defecto').toUpperCase(),
+      referencias_personales: obtenerReferenciasPersonales(),
+      referencias_familiares: obtenerReferenciasFamiliares(),
+      pagadurias: []
+    };
+
+
+    // 4. Obtener pagadurías
+    const pagadurias = [];
+    for (let i = 1; i <= 4; i++) {
+      const nombre = document.getElementById(`pagaduria${i}`).value.trim().toUpperCase();
+      const valor = document.getElementById(`valor${i}`).value.trim();
+      const descuento = document.getElementById(`descuento${i}`).value;
+
+      if (nombre !== '' && valor !== '') {
+        pagadurias.push({
+          nombre,
+          valor: parseFloat(valor.replace(/\./g, '').replace(/\s/g, '')),
+          descuento: parseFloat(descuento)
+        });
+      }
+    }
+
+    if (pagadurias.length === 0) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Debe ingresar al menos una pagaduría con su valor y descuento.',
+        icon: 'error',
+        confirmButtonText: 'Entendido'
+      });
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      return;
+    }
+
+    formData.pagadurias = pagadurias;
+
+    // 5. Subir archivos
     const fileUploads = [];
     const fileFields = [
       { id: 'fotoPerfil', type: 'fotoPerfil', target: 'fotoPerfilUrl' },
@@ -439,70 +569,44 @@ async function handleFormSubmit(e) {
       { id: 'bienes_inmuebles_pdf', type: 'bienesInmuebles', target: 'bienesInmueblesUrls' }
     ];
 
-    // Subir archivos solo si no hay cédula duplicada
     fileFields.forEach(field => {
       const fileInput = document.getElementById(field.id);
       if (fileInput?.files[0]) {
         fileUploads.push(
-          subirArchivo(fileInput.files[0], field.type, cedula)
-            .then(data => {
-              document.getElementById(field.target).value = data.url;
-              return data;
-            })
+          subirArchivo(fileInput.files[0], field.type, cedula).then(data => {
+            document.getElementById(field.target).value = data.url;
+            return { target: field.target, url: data.url };
+          })
         );
       }
     });
 
-    await Promise.all(fileUploads);
+    const uploadedFiles = await Promise.all(fileUploads);
 
-    // 3. Preparar datos del formulario
-    const formData = {
-      nombres: form.nombre.value,
-      apellidos: form.apellidos.value,
-      cedula: form.cedula.value,
-      direccion: form.direccion.value,
-      telefono: form.telefono.value,
-      sexo: form.sexo.value,
-      otroSexo: form.otroSexo?.value || '',
-      fechaNacimiento: form.fechaNacimiento.value,
-      edad: form.edad.value,
-      ciudad: form.ciudad.value,
-      correo: form.correo.value,
-      barrio: form.barrio.value,
-      estadoCivil: form.estadoCivil.value,
-      trabaja: form.trabaja.value,
-      empresa: form.empresa?.value || '',
-      cargo: form.cargo?.value || '',
-      pagaduria: form.pagaduria?.value || '',
-      ingresos: parseInt(form.ingresos.value.replace(/\D/g, '')) || 0,
-      fotoPerfilUrl: form.fotoPerfilUrl.value,
-      archivoPDFUrl: form.archivoPDFUrl.value,
-      desprendibleUrl: form.desprendibleUrl.value,
-      bienes: form.bienesInmuebles.value,
-      bienes_inmuebles: form.bienesInmueblesUrls.value,
-      valor_cuota: form.Cuota.value.replace(/\D/g, ''),
-      porcentaje: form.porcentaje.value.replace(',', '.').replace(/[^\d.]/g, ''),
-      valor_insolvencia: form.vinsolvencia.value.replace(/\D/g, ''),
-      numero_cuotas: form.ncuota.value,
-      asesor: sessionStorage.getItem('nombreUsuario') || 'Nombre por defecto',
-      referencias_personales: obtenerReferenciasPersonales(),
-      referencias_familiares: obtenerReferenciasFamiliares()
-    };
+    // 6. Asignar URLs a formData
+    uploadedFiles.forEach(file => {
+      if (file.target === 'bienesInmueblesUrls') {
+        formData.bienes_inmuebles = file.url;
+      } else {
+        formData[file.target] = file.url;
+      }
+    });
 
+    // 7. Enviar datos al servidor
     console.log('Datos que se enviarán al backend:', formData);
-    // 4. Enviar datos al servidor
     const result = await enviarDatosCliente(formData);
 
-    // 5. Mostrar mensaje de éxito
+    // 8. Éxito
     Swal.fire({
       title: '¡Éxito!',
       text: `Cliente creado exitosamente con ID: ${result.id}`,
       icon: 'success',
       confirmButtonText: 'Aceptar',
-      timer: 3000,
+      timer: 3000
     }).then(() => {
       form.reset();
     });
+
   } catch (error) {
     console.error('Error en el proceso:', error);
     Swal.fire({
@@ -516,6 +620,7 @@ async function handleFormSubmit(e) {
     submitBtn.innerHTML = originalText;
   }
 }
+
 
 
 // Inicialización del formulario
