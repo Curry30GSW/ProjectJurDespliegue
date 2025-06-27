@@ -293,11 +293,12 @@
                       <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <div class="card-body row">
-                      <div class="col-md-6 mb-3">
+                      <div class="col-md-6 mb-3 position-relative">
                         <label class="form-label fw-bold text-dark">Salario</label>
-                        <input type="text" class="form-control" name="ingresos" id="ingresos"
+                        <input type="text" class="form-control ps-4" name="ingresos" id="ingresos"
                           placeholder="Ingrese Salario Cliente" oninput="formatearMoneda(this)">
                       </div>
+
                       <div class="col-md-6 mb-3">
                         <label for="desprendible" class="form-label fw-bold text-dark">Desprendible
                           (PDF)</label>
@@ -356,8 +357,9 @@
 
                       <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-dark">Valor Cuota</label>
-                        <input type="text" class="form-control" name="Cuota" id="Cuota"
-                          placeholder="Ingrese Cuota Real a Pagar" oninput="formatearMoneda(this)">
+                        <input type="text" class="form-control" name="ingresos" id="ingresos"
+                            placeholder="Ingrese Salario Cliente" oninput="formatearMoneda(this)"
+                            onkeypress="return /[0-9]/.test(event.key)">
                       </div>
 
                       <!-- Adjuntar Data-Crédito -->
@@ -515,13 +517,96 @@
                         <input type="text" class="form-control" id="cargo" name="cargo"
                           placeholder="Ej: Gerente de Ventas">
                       </div>
+                      
+                  <!-- Campos si es PENSIONADO -->
+                      <div id="campoPagaduria" style="display: none;">
 
-                      <!-- Campo si es PENSIONADO -->
-                      <div class="col-md-6 mb-3" id="campoPagaduria" style="display: none;">
-                        <label for="pagaduria" class="form-label fw-bold text-dark">Pagaduría</label>
-                        <input type="text" class="form-control" id="pagaduria" name="pagaduria"
-                          placeholder="Ej: Colpensiones">
+                        <!-- Grupo 1 -->
+                        <div class="row mb-3">
+                          <div class="col-md-4" id="grupoPagaduria1">
+                            <label for="pagaduria1" class="form-label fw-bold text-dark">Pagaduría</label>
+                            <input type="text" class="form-control" id="pagaduria1" onchange="mostrarSiguientePagaduria(1)">
+                          </div>
+                          <div class="col-md-4" id="grupoValor1">
+                            <label for="valor1" class="form-label fw-bold text-dark">Valor</label>
+                            <input type="text" class="form-control" id="valor1" oninput="formatearMoneda(this)" onchange="mostrarSiguientePagaduria(1)">
+                          </div>
+                          <div class="col-md-4" id="grupoDescuento1">
+                            <label for="descuento1" class="form-label fw-bold text-dark">Descuento Salud</label>
+                            <select class="form-select" id="descuento1" onchange="calcularSalarioPensionado()">
+                              <option value="0">Sin descuento</option>
+                              <option value="0.04">4%</option>
+                              <option value="0.10">10%</option>
+                              <option value="0.12">12%</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <!-- Grupo 2 -->
+                        <div class="row mb-3">
+                          <div class="col-md-4" id="grupoPagaduria2" style="display: none;">
+                            <label for="pagaduria2" class="form-label fw-bold text-dark">Pagaduría 2</label>
+                            <input type="text" class="form-control" id="pagaduria2" onchange="mostrarSiguientePagaduria(2)">
+                          </div>
+                          <div class="col-md-4" id="grupoValor2" style="display: none;">
+                            <label for="valor2" class="form-label fw-bold text-dark">Valor 2</label>
+                            <input type="text" class="form-control" id="valor2" oninput="formatearMoneda(this)" onchange="mostrarSiguientePagaduria(2)">
+                          </div>
+                          <div class="col-md-4" id="grupoDescuento2" style="display: none;">
+                            <label for="descuento2" class="form-label fw-bold text-dark">Descuento Salud 2</label>
+                            <select class="form-select" id="descuento2" onchange="calcularSalarioPensionado()">
+                              <option value="0">Sin descuento</option>
+                              <option value="0.04">4%</option>
+                              <option value="0.10">10%</option>
+                              <option value="0.12">12%</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <!-- Grupo 3 -->
+                        <div class="row mb-3">
+                          <div class="col-md-4" id="grupoPagaduria3" style="display: none;">
+                            <label for="pagaduria3" class="form-label fw-bold text-dark">Pagaduría 3</label>
+                            <input type="text" class="form-control" id="pagaduria3" onchange="mostrarSiguientePagaduria(3)">
+                          </div>
+                          <div class="col-md-4" id="grupoValor3" style="display: none;">
+                            <label for="valor3" class="form-label fw-bold text-dark">Valor 3</label>
+                            <input type="text" class="form-control" id="valor3" oninput="formatearMoneda(this)" onchange="mostrarSiguientePagaduria(3)">
+                          </div>
+                          <div class="col-md-4" id="grupoDescuento3" style="display: none;">
+                            <label for="descuento3" class="form-label fw-bold text-dark">Descuento Salud 3</label>
+                            <select class="form-select" id="descuento3" onchange="calcularSalarioPensionado()">
+                              <option value="0">Sin descuento</option>
+                              <option value="0.04">4%</option>
+                              <option value="0.10">10%</option>
+                              <option value="0.12">12%</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <!-- Grupo 4 -->
+                        <div class="row mb-3">
+                          <div class="col-md-4" id="grupoPagaduria4" style="display: none;">
+                            <label for="pagaduria4" class="form-label fw-bold text-dark">Pagaduría 4</label>
+                            <input type="text" class="form-control" id="pagaduria4">
+                          </div>
+                          <div class="col-md-4" id="grupoValor4" style="display: none;">
+                            <label for="valor4" class="form-label fw-bold text-dark">Valor 4</label>
+                            <input type="text" class="form-control" id="valor4" oninput="formatearMoneda(this)">
+                          </div>
+                          <div class="col-md-4" id="grupoDescuento4" style="display: none;">
+                            <label for="descuento4" class="form-label fw-bold text-dark">Descuento Salud 4</label>
+                            <select class="form-select" id="descuento4" onchange="calcularSalarioPensionado()">
+                              <option value="0">Sin descuento</option>
+                              <option value="0.04">4%</option>
+                              <option value="0.10">10%</option>
+                              <option value="0.12">12%</option>
+                            </select>
+                          </div>
+                        </div>
+
                       </div>
+                      
                     </div>
                   </div>
                 </div>

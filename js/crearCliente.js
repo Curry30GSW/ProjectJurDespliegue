@@ -2,7 +2,6 @@
 // MOSTRAR / OCULTAR CAMPOS SEGÚN OPCIONES
 // ==========================
 
-// Campo según tipo de trabajo
 function mostrarCamposTrabajo(valor) {
   const esActivo = valor === '1';
 
@@ -10,11 +9,67 @@ function mostrarCamposTrabajo(valor) {
   document.getElementById('campoCargo').style.display = esActivo ? 'block' : 'none';
   document.getElementById('campoPagaduria').style.display = esActivo ? 'none' : 'block';
 
-  // Hacer requeridos los campos según la selección
+  // Campos requeridos según selección
   document.getElementById('empresa').required = esActivo;
   document.getElementById('cargo').required = esActivo;
-  document.getElementById('pagaduria').required = !esActivo;
+  document.getElementById('pagaduria1').required = !esActivo;
+  document.getElementById('valor1').required = !esActivo;
+
+  // Habilitar o deshabilitar el campo 'ingresos'
+  document.getElementById('ingresos').disabled = !esActivo;
+
+  // Reiniciar campos de pagadurías
+for (let i = 2; i <= 4; i++) {
+  document.getElementById(`grupoPagaduria${i}`).style.display = 'none';
+  document.getElementById(`grupoValor${i}`).style.display = 'none';
+  document.getElementById(`grupoDescuento${i}`).style.display = 'none'; // <- esta línea corregida
+  document.getElementById(`pagaduria${i}`).value = '';
+  document.getElementById(`valor${i}`).value = '';
 }
+}
+
+
+function mostrarSiguientePagaduria(numero) {
+  const pagaduria = document.getElementById(`pagaduria${numero}`);
+  const valor = document.getElementById(`valor${numero}`);
+
+  if (pagaduria.value.trim() !== '' && valor.value.trim() !== '') {
+    const siguiente = numero + 1;
+    if (siguiente <= 4) {
+      document.getElementById(`grupoPagaduria${siguiente}`).style.display = 'block';
+      document.getElementById(`grupoValor${siguiente}`).style.display = 'block';
+      document.getElementById(`grupoDescuento${siguiente}`).style.display = 'block';
+    }
+  }
+}
+
+
+function calcularSalarioPensionado() {
+  let salarioTotal = 0;
+
+  for (let i = 1; i <= 4; i++) {
+    const valorInput = document.getElementById(`valor${i}`);
+    const descuentoSelect = document.getElementById(`descuento${i}`);
+
+    if (valorInput && descuentoSelect && valorInput.value.trim() !== '') {
+      // Elimina puntos del valor formateado
+      const valorLimpio = valorInput.value.replace(/\./g, '').replace(/\s/g, '');
+      const valor = parseFloat(valorLimpio);
+      const descuento = parseFloat(descuentoSelect.value);
+      const valorConDescuento = valor - (valor * descuento);
+      salarioTotal += valorConDescuento;
+    }
+  }
+
+  // Mostrar el salario total formateado como número colombiano
+  document.getElementById('ingresos').value = Math.round(salarioTotal).toLocaleString('es-CO');
+}
+
+for (let i = 1; i <= 4; i++) {
+  document.getElementById(`valor${i}`).addEventListener('input', calcularSalarioPensionado);
+  document.getElementById(`descuento${i}`).addEventListener('change', calcularSalarioPensionado);
+}
+
 
 // Campo de otro sexo
 function toggleOtroSexo(valor) {
@@ -131,26 +186,22 @@ function calcularEdad() {
   edadInput.value = edad;
 }
 
-// Formatear valores numéricos como moneda
 function formatearMoneda(input) {
-  if (!input) return;
-
-  // Guardar posición del cursor
-  const start = input.selectionStart;
-  const end = input.selectionEnd;
-
+  // Obtener solo los números
   let valor = input.value.replace(/\D/g, '');
+
+  // Guardar valor sin formato para enviar si se quiere
   input.dataset.rawValue = valor;
 
   if (valor) {
-    input.value = '$ ' + new Intl.NumberFormat('es-CO').format(valor);
+    // Formatear como moneda sin incluir el símbolo $
+    input.value = new Intl.NumberFormat('es-CO').format(valor);
   } else {
     input.value = '';
   }
-
-  // Restaurar posición del cursor
-  input.setSelectionRange(start, end);
 }
+
+
 // Obtener el nombre del asesor desde sessionStorage
 const nombreAsesor = sessionStorage.getItem('nombreUsuario');
 
