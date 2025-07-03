@@ -801,7 +801,7 @@
                             <!-- Contenido principal -->
                             <div class="mx-2 mx-md-2 mt-n6">
                                 <h5 class="mb-4">Crear Insolvencia</h5>
-                                <form id="formCrearCliente" enctype="multipart/form-data">
+                                <form id="formCrearInsolvencia" enctype="multipart/form-data">
                                     <!-- Sección superior con foto de perfil y datos básicos del cliente -->
                                     <div class="row mb-4">
                                         <!-- Foto de perfil con efecto flotante -->
@@ -894,23 +894,23 @@
                                                                         <div class="col-md-6 mb-2">
                                                                             <label
                                                                                 class="form-label fw-bold text-dark mb-1">¿Realizado?</label>
-                                                                            <div class="d-flex gap-4">
-                                                                                <div
-                                                                                    class="form-check form-check-inline">
+                                                                            <div class="d-flex flex-wrap gap-2">
+                                                                                <div class="form-check">
                                                                                     <input class="form-check-input"
                                                                                         type="radio" name="cuadernillo"
                                                                                         id="cuadernillo_si" value="SI"
                                                                                         onchange="mostrarFecha('cuadernillo', true)">
-                                                                                    <label class="form-check-label"
+                                                                                    <label
+                                                                                        class="form-check-label badge bg-success font-weight-bold"
                                                                                         for="cuadernillo_si">Sí</label>
                                                                                 </div>
-                                                                                <div
-                                                                                    class="form-check form-check-inline">
+                                                                                <div class="form-check">
                                                                                     <input class="form-check-input"
                                                                                         type="radio" name="cuadernillo"
                                                                                         id="cuadernillo_no" value="NO"
                                                                                         onchange="mostrarFecha('cuadernillo', false)">
-                                                                                    <label class="form-check-label"
+                                                                                    <label
+                                                                                        class="form-check-label badge bg-danger font-weight-bold"
                                                                                         for="cuadernillo_no">No</label>
                                                                                 </div>
                                                                             </div>
@@ -943,23 +943,23 @@
                                                                         <div class="col-md-6 mb-2">
                                                                             <label
                                                                                 class="form-label fw-bold text-dark mb-1">¿Realizada?</label>
-                                                                            <div class="d-flex gap-4">
-                                                                                <div
-                                                                                    class="form-check form-check-inline">
+                                                                            <div class="d-flex flex-wrap gap-2">
+                                                                                <div class="form-check">
                                                                                     <input class="form-check-input"
                                                                                         type="radio" name="radicacion"
                                                                                         id="radicacion_si" value="SI"
                                                                                         onchange="mostrarFecha('radicacion', true)">
-                                                                                    <label class="form-check-label"
+                                                                                    <label
+                                                                                        class="form-check-label badge bg-success font-weight-bold"
                                                                                         for="radicacion_si">Sí</label>
                                                                                 </div>
-                                                                                <div
-                                                                                    class="form-check form-check-inline">
+                                                                                <div class="form-check">
                                                                                     <input class="form-check-input"
                                                                                         type="radio" name="radicacion"
                                                                                         id="radicacion_no" value="NO"
                                                                                         onchange="mostrarFecha('radicacion', false)">
-                                                                                    <label class="form-check-label"
+                                                                                    <label
+                                                                                        class="form-check-label badge bg-danger font-weight-bold"
                                                                                         for="radicacion_no">No</label>
                                                                                 </div>
                                                                             </div>
@@ -979,7 +979,6 @@
                                                             </div>
 
 
-
                                                             <!-- Correcciones - Con campo dinámico -->
                                                             <div class="mb-3 toggle-card">
                                                                 <div class="d-flex justify-content-between align-items-center toggle-header"
@@ -993,27 +992,25 @@
                                                                         <label
                                                                             class="form-label fw-bold text-dark me-3">¿Requiere
                                                                             correcciones?</label>
-                                                                        <div class="d-flex gap-4">
-                                                                            <div class="form-check form-check-inline">
+                                                                        <div class="d-flex flex-wrap gap-2">
+                                                                            <div class="form-check">
                                                                                 <input class="form-check-input"
                                                                                     type="radio" name="correcciones"
                                                                                     id="correcciones_si" value="SI"
                                                                                     onchange="mostrarCampoCorrecciones()">
-                                                                                <label class="form-check-label"
-                                                                                    for="correcciones_si">
-                                                                                    Sí
-                                                                                </label>
+                                                                                <label
+                                                                                    class="form-check-label badge bg-warning text-dark font-weight-bold"
+                                                                                    for="correcciones_si">Sí</label>
                                                                             </div>
-                                                                            <div class="form-check form-check-inline">
+                                                                            <div class="form-check">
                                                                                 <input class="form-check-input"
                                                                                     type="radio" name="correcciones"
                                                                                     id="correcciones_no" value="NO"
                                                                                     onchange="ocultarCampoCorrecciones()"
                                                                                     checked>
-                                                                                <label class="form-check-label"
-                                                                                    for="correcciones_no">
-                                                                                    No
-                                                                                </label>
+                                                                                <label
+                                                                                    class="form-check-label badge bg-success font-weight-bold"
+                                                                                    for="correcciones_no">No</label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -1043,13 +1040,11 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
-
                                                             </div>
+
 
                                                         </div>
                                                     </div>
-
                                                     <!-- Sección de Audiencias -->
                                                     <div class="card shadow-sm">
                                                         <div class="card-header bg-primary text-white">
@@ -1057,19 +1052,26 @@
                                                                     class="fas fa-gavel me-2"></i>Audiencias</h6>
                                                         </div>
                                                         <div class="card-body">
-                                                            <div class="btn-group btn-group-sm mb-3" role="group">
-                                                                <input type="radio" class="btn-check" name="audiencias"
-                                                                    id="audiencias_si" value="Sí" autocomplete="off"
-                                                                    onchange="mostrarAudiencias()">
-                                                                <label class="btn btn-outline-success"
-                                                                    for="audiencias_si">Sí</label>
-
-                                                                <input type="radio" class="btn-check" name="audiencias"
-                                                                    id="audiencias_no" value="No" autocomplete="off"
-                                                                    onchange="ocultarAudiencias()">
-                                                                <label class="btn btn-outline-danger"
-                                                                    for="audiencias_no">No</label>
+                                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="audiencias" id="audiencias_si" value="Sí"
+                                                                        onchange="mostrarAudiencias()">
+                                                                    <label
+                                                                        class="form-check-label badge bg-success font-weight-bold"
+                                                                        for="audiencias_si">Sí</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="audiencias" id="audiencias_no" value="No"
+                                                                        onchange="ocultarAudiencias()">
+                                                                    <label
+                                                                        class="form-check-label badge bg-danger font-weight-bold"
+                                                                        for="audiencias_no">No</label>
+                                                                </div>
                                                             </div>
+
+
                                                             <div id="contenedorAudiencias" style="display: none;">
                                                                 <div class="audiencias-container">
                                                                     <div
@@ -1169,21 +1171,23 @@
                                                                             name="desprendible"
                                                                             id="desprendible_parcial" value="PARCIAL">
                                                                         <label
-                                                                            class="form-check-label badge bg-secondary"
+                                                                            class="form-check-label badge bg-secondary font-weight-bold"
                                                                             for="desprendible_parcial">Parcial</label>
                                                                     </div>
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio"
                                                                             name="desprendible" id="desprendible_limpio"
                                                                             value="LIMPIO">
-                                                                        <label class="form-check-label badge bg-success"
+                                                                        <label
+                                                                            class="form-check-label badge bg-success font-weight-bold"
                                                                             for="desprendible_limpio">Limpio</label>
                                                                     </div>
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio"
                                                                             name="desprendible" id="desprendible_deudas"
                                                                             value="DEUDAS">
-                                                                        <label class="form-check-label badge bg-danger"
+                                                                        <label
+                                                                            class="form-check-label badge bg-danger font-weight-bold"
                                                                             for="desprendible_deudas">Deudas</label>
                                                                     </div>
                                                                 </div>
@@ -1195,7 +1199,8 @@
                                                                             <label for="salario"
                                                                                 class="form-label fw-bold text-dark">Salario</label>
                                                                             <input type="text" class="form-control"
-                                                                                id="salario" placeholder="Salario">
+                                                                                id="salario" placeholder="Salario"
+                                                                                readonly>
                                                                         </div>
                                                                         <div class="col-md-4 mb-2">
                                                                             <label for="salud"
@@ -1317,21 +1322,28 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label fw-bold text-dark">Tipo de
                                                                     proceso</label>
-                                                                <div class="btn-group w-100" role="group">
-                                                                    <input type="radio" class="btn-check"
-                                                                        name="tipo_proceso" id="proceso_liquidacion"
-                                                                        value="Liquidación" autocomplete="off">
-                                                                    <label class="btn btn-outline-info"
-                                                                        for="proceso_liquidacion">Liquidación</label>
-
-                                                                    <input type="radio" class="btn-check"
-                                                                        name="tipo_proceso" id="proceso_acuerdo_pago"
-                                                                        value="Acuerdo de Pago" autocomplete="off">
-                                                                    <label class="btn btn-outline-info"
-                                                                        for="proceso_acuerdo_pago">Acuerdo de
-                                                                        Pago</label>
+                                                                <div class="d-flex flex-wrap gap-2">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tipo_proceso" id="proceso_liquidacion"
+                                                                            value="Liquidación">
+                                                                        <label
+                                                                            class="form-check-label badge bg-info text-white font-weight-bold"
+                                                                            for="proceso_liquidacion">Liquidación</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tipo_proceso"
+                                                                            id="proceso_acuerdo_pago"
+                                                                            value="Acuerdo de Pago">
+                                                                        <label
+                                                                            class="form-check-label badge bg-info text-white font-weight-bold"
+                                                                            for="proceso_acuerdo_pago">Acuerdo de
+                                                                            Pago</label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
+
 
                                                             <!-- Juzgado -->
                                                             <div class="mb-3">
@@ -1387,147 +1399,260 @@
                                                                     <i class="fas fa-chevron-down toggle-icon"></i>
                                                                 </div>
                                                                 <div class="toggle-content mt-2">
-                                                                    <div class="btn-group btn-group-sm mb-2"
-                                                                        role="group">
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="liquidador" id="liquidador_si"
-                                                                            value="Sí" autocomplete="off"
-                                                                            onclick="mostrarDatosLiquidador(true)">
-                                                                        <label class="btn btn-outline-success"
-                                                                            for="liquidador_si">Sí</label>
-
-                                                                        <input type="radio" class="btn-check"
-                                                                            name="liquidador" id="liquidador_no"
-                                                                            value="No" autocomplete="off"
-                                                                            onclick="mostrarDatosLiquidador(false)">
-                                                                        <label class="btn btn-outline-danger"
-                                                                            for="liquidador_no">No</label>
-                                                                    </div>
-
-                                                                    <div id="datos_liquidador" style="display: none;"
-                                                                        class="liquidador-details">
-                                                                        <div class="mb-2">
-                                                                            <label for="nombre_liquidador"
-                                                                                class="form-label small text-dark fw-bold">Nombre</label>
-                                                                            <input type="text"
-                                                                                class="form-control form-control-sm"
-                                                                                id="nombre_liquidador"
-                                                                                name="nombre_liquidador">
+                                                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="liquidador" id="liquidador_si"
+                                                                                value="SI"
+                                                                                onclick="mostrarDatosLiquidador(true)">
+                                                                            <label
+                                                                                class="form-check-label badge bg-success font-weight-bold"
+                                                                                for="liquidador_si">Sí</label>
                                                                         </div>
-                                                                        <div class="row g-2">
-                                                                            <div class="col-md-6">
-                                                                                <label for="telefono_liquidador"
-                                                                                    class="form-label small text-dark fw-bold">Teléfono</label>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="liquidador" id="liquidador_no"
+                                                                                value="No"
+                                                                                onclick="mostrarDatosLiquidador(false)">
+                                                                            <label
+                                                                                class="form-check-label badge bg-danger font-weight-bold"
+                                                                                for="liquidador_no">No</label>
+                                                                        </div>
+
+                                                                        <div id="datos_liquidador"
+                                                                            style="display: none;"
+                                                                            class="liquidador-details">
+                                                                            <div class="mb-2">
+                                                                                <label for="nombre_liquidador"
+                                                                                    class="form-label small text-dark fw-bold">Nombre</label>
                                                                                 <input type="text"
                                                                                     class="form-control form-control-sm"
-                                                                                    id="telefono_liquidador"
-                                                                                    name="telefono_liquidador">
+                                                                                    id="nombre_liquidador"
+                                                                                    name="nombre_liquidador"
+                                                                                    placeholder="Escribe el nombre del liquidador">
                                                                             </div>
-                                                                            <div class="col-md-6">
-                                                                                <label for="correo_liquidador"
-                                                                                    class="form-label small text-dark fw-bold">Correo</label>
-                                                                                <input type="email"
-                                                                                    class="form-control form-control-sm"
-                                                                                    id="correo_liquidador"
-                                                                                    name="correo_liquidador">
+                                                                            <div class="row g-2">
+                                                                                <div class="col-md-6">
+                                                                                    <label for="telefono_liquidador"
+                                                                                        class="form-label small text-dark fw-bold">Teléfono</label>
+                                                                                    <input type="text"
+                                                                                        class="form-control form-control-sm"
+                                                                                        id="telefono_liquidador"
+                                                                                        name="telefono_liquidador"
+                                                                                        placeholder="Ej: 3001234567">
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label for="correo_liquidador"
+                                                                                        class="form-label small text-dark fw-bold">Correo</label>
+                                                                                    <input type="email"
+                                                                                        class="form-control form-control-sm"
+                                                                                        id="correo_liquidador"
+                                                                                        name="correo_liquidador"
+                                                                                        placeholder="Ej: correo@ejemplo.com">
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <div class="mt-2">
-                                                                            <label
-                                                                                class="form-label small text-dark fw-bold">¿Ya
-                                                                                se pagó?</label>
-                                                                            <div class="btn-group btn-group-sm w-100"
-                                                                                role="group">
-                                                                                <input type="radio" class="btn-check"
-                                                                                    name="pago_liquidador" id="pago_si"
-                                                                                    value="Sí" autocomplete="off">
-                                                                                <label class="btn btn-outline-success"
-                                                                                    for="pago_si">Sí</label>
+                                                                            <div class="mt-2">
+                                                                                <label
+                                                                                    class="form-label small text-dark fw-bold">¿Ya
+                                                                                    se pagó?</label>
+                                                                                <div class="d-flex flex-wrap gap-2">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input"
+                                                                                            type="radio"
+                                                                                            name="pago_liquidador"
+                                                                                            id="pago_si" value="SI">
+                                                                                        <label
+                                                                                            class="form-check-label badge bg-success"
+                                                                                            for="pago_si">Si</label>
+                                                                                    </div>
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input"
+                                                                                            type="radio"
+                                                                                            name="pago_liquidador"
+                                                                                            id="pago_no" value="No">
+                                                                                        <label
+                                                                                            class="form-check-label badge bg-danger"
+                                                                                            for="pago_no">No</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div id="cuotas_pago" class="mt-3"
+                                                                                style="display: none;">
+                                                                                <label
+                                                                                    class="form-label fw-bold text-dark">Información
+                                                                                    del Pago</label>
 
-                                                                                <input type="radio" class="btn-check"
-                                                                                    name="pago_liquidador" id="pago_no"
-                                                                                    value="No" autocomplete="off">
-                                                                                <label class="btn btn-outline-danger"
-                                                                                    for="pago_no">No</label>
+                                                                                <!-- Valor total pagado -->
+                                                                                <div class="row mb-3">
+                                                                                    <div class="col-md-6">
+                                                                                        <label for="valor_total_pagado"
+                                                                                            class="form-label">💰 Valor
+                                                                                            total pagado</label>
+                                                                                        <input type="text"
+                                                                                            id="valor_total_pagado"
+                                                                                            class="form-control"
+                                                                                            placeholder="Ej: 1.200.000">
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Cuotas detalladas -->
+                                                                                <div class="row">
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="cuota_1"
+                                                                                            class="form-label">Cuota
+                                                                                            1</label>
+                                                                                        <input type="text" id="cuota_1"
+                                                                                            class="form-control"
+                                                                                            placeholder="Valor de la cuota">
+                                                                                    </div>
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="fecha_1"
+                                                                                            class="form-label">Fecha de
+                                                                                            pago</label>
+                                                                                        <input type="date" id="fecha_1"
+                                                                                            class="form-control">
+                                                                                    </div>
+
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="cuota_2"
+                                                                                            class="form-label">Cuota
+                                                                                            2</label>
+                                                                                        <input type="text" id="cuota_2"
+                                                                                            class="form-control"
+                                                                                            placeholder="Valor de la cuota">
+                                                                                    </div>
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="fecha_2"
+                                                                                            class="form-label">Fecha de
+                                                                                            pago</label>
+                                                                                        <input type="date" id="fecha_2"
+                                                                                            class="form-control">
+                                                                                    </div>
+
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="cuota_3"
+                                                                                            class="form-label">Cuota
+                                                                                            3</label>
+                                                                                        <input type="text" id="cuota_3"
+                                                                                            class="form-control"
+                                                                                            placeholder="Valor de la cuota">
+                                                                                    </div>
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="fecha_3"
+                                                                                            class="form-label">Fecha de
+                                                                                            pago</label>
+                                                                                        <input type="date" id="fecha_3"
+                                                                                            class="form-control">
+                                                                                    </div>
+
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="cuota_4"
+                                                                                            class="form-label">Cuota
+                                                                                            4</label>
+                                                                                        <input type="text" id="cuota_4"
+                                                                                            class="form-control"
+                                                                                            placeholder="Valor de la cuota">
+                                                                                    </div>
+                                                                                    <div class="col-md-6 mb-2">
+                                                                                        <label for="fecha_4"
+                                                                                            class="form-label">Fecha de
+                                                                                            pago</label>
+                                                                                        <input type="date" id="fecha_4"
+                                                                                            class="form-control">
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
+
+
                                                                         </div>
+
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                    <!-- Sección de Estado Final -->
-                                                    <div class="card shadow-sm mt-4">
-                                                        <div class="card-header bg-primary text-white">
-                                                            <h6 class="mb-0 text-white "><i
-                                                                    class="fas fa-flag me-2"></i>PROCESO FINALIZADO</h6>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <div class="mb-3">
-                                                                <label
-                                                                    class="form-label fw-bold text-dark">Estado</label>
-                                                                <div class="btn-group w-100" role="group">
-                                                                    <input type="radio" class="btn-check" name="estado"
-                                                                        id="estado_apto" value="APTO" autocomplete="off"
-                                                                        onclick="mostrarMotivo(false)">
-                                                                    <label class="btn btn-outline-success"
-                                                                        for="estado_apto">SI</label>
-
-                                                                    <input type="radio" class="btn-check" name="estado"
-                                                                        id="estado_no_apto" value="NO APTO"
-                                                                        autocomplete="off"
-                                                                        onclick="mostrarMotivo(true)">
-                                                                    <label class="btn btn-outline-danger"
-                                                                        for="estado_no_apto">NO</label>
-                                                                </div>
+                                                        <!-- Sección de Estado Final -->
+                                                        <div class="card shadow-sm mt-4">
+                                                            <div class="card-header bg-primary text-white">
+                                                                <h6 class="mb-0 text-white "><i
+                                                                        class="fas fa-flag me-2"></i>PROCESO FINALIZADO
+                                                                </h6>
                                                             </div>
-
-                                                            <div id="motivo_no_apto" style="display: none;"
-                                                                class="mt-3">
-                                                                <div class="position-relative">
-                                                                    <label for="motivo"
-                                                                        class="form-label fw-bold text-dark d-flex align-items-center gap-2 mb-2">
-                                                                        <i
-                                                                            class="fas fa-exclamation-triangle text-danger"></i>
-                                                                        <span>Motivo del NO APTO</span>
-                                                                    </label>
-
-                                                                    <textarea
-                                                                        class="form-control border border-danger bg-white py-2 px-3 rounded"
-                                                                        id="motivo" name="motivo" rows="3"
-                                                                        maxlength="500"
-                                                                        placeholder="Escriba el motivo del NO APTO..."></textarea>
-
-                                                                    <div class="d-flex justify-content-between mt-1">
-                                                                        <small class="text-muted">
-                                                                            <i class="fas fa-info-circle me-1"></i>
-                                                                            Describa el motivo detalladamente
-                                                                        </small>
-                                                                        <small class="text-muted">
-                                                                            <span id="contadorMotivo">0</span>/500
-                                                                        </small>
+                                                            <div class="card-body">
+                                                                <div class="mb-3">
+                                                                    <div class="mb-3">
+                                                                        <label
+                                                                            class="form-label fw-bold text-dark">Estado</label>
+                                                                        <div class="d-flex flex-wrap gap-2">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input"
+                                                                                    type="radio" name="estado"
+                                                                                    id="estado_apto" value="APTO"
+                                                                                    onclick="mostrarMotivo(false)">
+                                                                                <label
+                                                                                    class="form-check-label badge bg-success"
+                                                                                    for="estado_apto">SI</label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input"
+                                                                                    type="radio" name="estado"
+                                                                                    id="estado_no_apto" value="NO APTO"
+                                                                                    onclick="mostrarMotivo(true)">
+                                                                                <label
+                                                                                    class="form-check-label badge bg-danger"
+                                                                                    for="estado_no_apto">NO</label>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
+
+                                                                    <div id="motivo_no_apto" style="display: none;"
+                                                                        class="mt-3">
+                                                                        <div class="position-relative">
+                                                                            <label for="motivo"
+                                                                                class="form-label fw-bold text-dark d-flex align-items-center gap-2 mb-2">
+                                                                                <i
+                                                                                    class="fas fa-exclamation-triangle text-danger"></i>
+                                                                                <span>Motivo del NO APTO</span>
+                                                                            </label>
+
+                                                                            <textarea
+                                                                                class="form-control border border-danger bg-white py-2 px-3 rounded"
+                                                                                id="motivo" name="motivo" rows="3"
+                                                                                maxlength="500"
+                                                                                placeholder="Escriba el motivo del NO APTO..."></textarea>
+
+                                                                            <div
+                                                                                class="d-flex justify-content-between mt-1">
+                                                                                <small class="text-muted">
+                                                                                    <i
+                                                                                        class="fas fa-info-circle me-1"></i>
+                                                                                    Describa el motivo detalladamente
+                                                                                </small>
+                                                                                <small class="text-muted">
+                                                                                    <span
+                                                                                        id="contadorMotivo">0</span>/500
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    <!-- Asesor a cargo -->
-                                    <div class="mt-4 text-end">
-                                        <span class="fw-bold text-secondary">Asesor a Cargo: <span id="asesorNombre"
-                                                class="text-dark"></span></span>
-                                    </div>
+                                            <!-- Asesor a cargo -->
+                                            <div class="mt-4 text-end">
+                                                <span class="fw-bold text-secondary">Asesor a Cargo: <span
+                                                        id="asesorNombre" class="text-dark"></span></span>
+                                            </div>
                                 </form>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success" form="formCrearCliente">Guardar</button>
+                            <button type="submit" class="btn btn-success" form="formCrearInsolvencia">Guardar</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </div>

@@ -110,7 +110,7 @@ border: 1px solid #ced4da;
   }
 
 
-  #formEditarCliente input,
+#formEditarCliente input,
 #formEditarCliente select,
 #formEditarCliente textarea {
   border: 1px solid #ccc;
@@ -119,3 +119,19 @@ border: 1px solid #ced4da;
   font-size: 1rem;
 }
 
+
+/* Estilo para elementos deshabilitados */
+input:disabled + label {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
+
+/* Estilo para radios deshabilitados */
+input[type="radio"]:disabled {
+    cursor: not-allowed;
+}
+
+/* Estilo para el textarea de correcciones */
+#campoDetalleCorrecciones {
+    transition: all 0.3s ease;
+}

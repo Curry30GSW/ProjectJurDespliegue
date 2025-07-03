@@ -69,18 +69,38 @@ document.addEventListener('DOMContentLoaded', () => {
 const mostrar = (clientes) => {
     let resultados = '';
     clientes.forEach((cliente) => {
+
         let estadoTexto = '';
         let estadoClase = '';
+        let correccionesBadge = '';
+        let estadoCreadaTexto = '';
+        const botonEditar = `
+        <button class="btn btn-sm btn-warning text-white editar-proceso" 
+            data-cedula="${cliente.cedula}" 
+            ${!cliente.creada || cliente.creada === 'null' ? 'disabled' : ''}>
+            Editar Proceso
+        </button>`;
 
+
+        // Estado principal (APTO/NO APTO)
         if (cliente.terminacion === 'APTO') {
             estadoTexto = 'APTO';
             estadoClase = 'bg-gradient-success';
         } else if (cliente.terminacion === 'NO APTO') {
             estadoTexto = 'NO APTO';
             estadoClase = 'bg-gradient-danger';
-        } else {
-            estadoTexto = 'No definido';
-            estadoClase = 'bg-gradient-warning';
+        }
+
+        if (!cliente.creada || cliente.creada === 'null') {
+            estadoCreadaTexto = '<span class="badge badge-sm bg-gradient-dark">No definido</span>';
+        }
+
+
+        // Badge para correcciones si existe información
+        if (cliente.correcciones && cliente.correcciones.trim() !== '') {
+            correccionesBadge = `<span class="badge badge-md bg-gradient-warning">CORRECCIONES</span>`;
+            estadoTexto = '';
+            estadoClase = '';
         }
 
         const fecha = new Date(cliente.fecha_vinculo);
@@ -105,6 +125,7 @@ const mostrar = (clientes) => {
             data-fecha="${fechaFormateada}"
             data-porcentaje="${cliente.porcentaje ?? ''}"
             data-cuota="${cliente.valor_cuota ?? ''}"
+            data-salario="${cliente.salario ?? ''}"
             ${procesoIniciado ? 'disabled' : ''}>
             Crear Insolvencia
         </button>`;
@@ -125,23 +146,23 @@ const mostrar = (clientes) => {
                     </div>
                 </div>
             </td>
-            <td><p class="text-xs font-weight-bold ">${cliente.cedula}</p></td>
-            <td class="align-middle text-center text-sm">
-                <p class="badge badge-sm ${estadoClase}">${estadoTexto}</p>
-            </td>
-          <td class="align-middle">
+            <td><p class="text-xs font-weight-bold">${cliente.cedula}</p></td>
+          <td class="align-middle text-center text-sm">
+                    ${estadoTexto ? `<span class="badge badge-sm ${estadoClase}">${estadoTexto}</span>` : ''}
+                    ${correccionesBadge}
+                    ${estadoCreadaTexto}
+                </td>
+            <td class="align-middle">
                 <div class="d-flex justify-content-center gap-2">
                     ${botonCrear}
-                    <button class="btn btn-sm btn-warning text-white editar-proceso" data-cedula="${cliente.cedula}">
-                        Editar Proceso
-                    </button>
+                    ${botonEditar}
                     <button class="btn btn-sm btn-info text-white ver-detalle" data-cedula="${cliente.cedula}">
                         Ver detalles
                     </button>
                 </div>
             </td>
         </tr>
-    `;
+        `;
     });
 
     if ($.fn.DataTable.isDataTable('#tablaClientes')) {
@@ -149,9 +170,9 @@ const mostrar = (clientes) => {
     }
 
     $("#tablaClientes tbody").html(resultados);
-
 };
 
+// Esperar a que el DOM cargue completamente
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
         window.location.href = '../pages/login.html';
@@ -161,8 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Evento para el botón "Crear Insolvencia"
     $(document).on('click', '.crear-insolvencia', function () {
-        limpiarModalInsolvencia();
-        // Obtener datos del cliente
+
+
         const cliente = {
             id_cliente: $(this).data('id'),
             nombres: $(this).data('nombres'),
@@ -175,12 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
             foto: $(this).data('foto'),
             fecha: $(this).data('fecha'),
             porcentaje: $(this).data('porcentaje'),
-            valor_cuota: $(this).data('cuota')
+            valor_cuota: $(this).data('cuota'),
+            salario: $(this).data('salario') || ''
         };
-        console.log("un cliente rebelde:", cliente);
 
-
-        // Llenar el modal con los datos
         $('#idModal').text(String(cliente.id_cliente));
         $('#inputIdCliente').val(String(cliente.id_cliente));
         $('#detalleNombreCliente').text(`${cliente.nombres ?? ''} ${cliente.apellidos ?? ''}`);
@@ -190,24 +209,28 @@ document.addEventListener('DOMContentLoaded', () => {
         $('#direccionModal').text(cliente.direccion ?? '---');
         $('#ciudadModal').text(cliente.ciudad ?? '---');
         $('#vinculacionModal').text(cliente.fecha ?? '---');
-        $('#inputIdCliente').val(String(cliente.id_cliente));
         $('#inputIdCliente').data('porcentaje', cliente.porcentaje);
         $('#inputIdCliente').data('cuota', cliente.valor_cuota);
+        $('#salario').data('salario', cliente.salario);
+        $('#salario').val(cliente.salario);
 
 
-        // Actualizar foto de perfil
         if (cliente.foto) {
             $('#fotoperfilModal').attr('src', `http://localhost:3000${cliente.foto}`);
         } else {
             $('#fotoperfilModal').attr('src', '../assets/img/avatar.png');
         }
 
-        // Mostrar el modal
         const modalInsolvencia = new bootstrap.Modal(document.getElementById('modalCrearInsolvencia'));
         modalInsolvencia.show();
+    });
 
+    // Recargar la página al cerrar el modal
+    $('#modalCrearInsolvencia').on('hidden.bs.modal', function () {
+        location.reload();
     });
 });
+
 
 
 $(document).on('click', '.foto-cliente', function () {
@@ -219,329 +242,377 @@ $(document).on('click', '.foto-cliente', function () {
 });
 
 
-function limpiarModalInsolvencia() {
-    // Deseleccionar todos los radios
-    document.querySelectorAll('#modalCrearInsolvencia input[type="radio"]').forEach(input => {
-        input.checked = false;
-    });
+// function limpiarModalInsolvencia() {
+//     // Deseleccionar todos los radios
+//     document.querySelectorAll('#modalCrearInsolvencia input[type="radio"]').forEach(input => {
+//         input.checked = false;
+//     });
 
-    // Limpiar inputs de texto
-    document.querySelectorAll('#modalCrearInsolvencia input[type="text"], #modalCrearInsolvencia input[type="email"], #modalCrearInsolvencia input[type="number"]').forEach(input => {
-        input.value = '';
-    });
+//     // Limpiar inputs de texto
+//     document.querySelectorAll('#modalCrearInsolvencia input[type="text"], #modalCrearInsolvencia input[type="email"], #modalCrearInsolvencia input[type="number"]').forEach(input => {
+//         input.value = '';
+//     });
 
-    // Limpiar textareas
-    document.querySelectorAll('#modalCrearInsolvencia textarea').forEach(textarea => {
-        textarea.value = '';
-    });
+//     // Limpiar textareas
+//     document.querySelectorAll('#modalCrearInsolvencia textarea').forEach(textarea => {
+//         textarea.value = '';
+//     });
 
-    // Resetear selects
-    document.querySelectorAll('#modalCrearInsolvencia select').forEach(select => {
-        select.selectedIndex = 0;
-    });
-
-
-    // Ocultar campos condicionales
-    const camposOcultar = [
-        'campoDetalleCorrecciones',
-        'contenedorAudiencias',
-        'datos_liquidador',
-        'motivo_no_apto'
-    ];
-
-    camposOcultar.forEach(id => {
-        const elemento = document.getElementById(id);
-        if (elemento) elemento.style.display = 'none';
-    });
-
-    // Limpiar lista de audiencias
-    const listaAudiencias = document.getElementById('listaAudiencias');
-    if (listaAudiencias) listaAudiencias.innerHTML = '';
-
-    // Resetear campo de archivo PDF y su UI
-    const inputArchivo = document.getElementById('archivoPDF');
-    if (inputArchivo) {
-        inputArchivo.value = '';
-
-        // Restablecer la UI del campo de archivo
-        const uploadLabel = document.querySelector('.file-upload-label');
-        if (uploadLabel) {
-            uploadLabel.classList.remove('has-file');
-            const uploadText = uploadLabel.querySelector('.file-upload-text');
-            if (uploadText) uploadText.textContent = 'Seleccionar archivo';
-        }
-
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
-        if (fileNameDisplay) fileNameDisplay.textContent = 'Ningún archivo seleccionado';
-    }
-
-    // Resetear campo oculto del archivo
-    const archivoUrl = document.getElementById('archivoPDFUrl');
-    if (archivoUrl) archivoUrl.value = '';
-
-    // Resetear campos específicos adicionales
-    const camposEspecificos = {
-        'juzgado': '',
-        'nombre_liquidador': '',
-        'telefono_liquidador': '',
-        'correo_liquidador': '',
-        'motivo': '',
-        'detalleCorrecciones': ''
-    };
-
-    Object.entries(camposEspecificos).forEach(([id, value]) => {
-        const elemento = document.getElementById(id);
-        if (elemento) elemento.value = value;
-    });
-
-    // Remover clases de validación si existen
-    document.querySelectorAll('#modalCrearInsolvencia .is-invalid').forEach(el => {
-        el.classList.remove('is-invalid');
-    });
-
-    document.querySelectorAll('#modalCrearInsolvencia .is-valid').forEach(el => {
-        el.classList.remove('is-valid');
-    });
-
-    const idsCalculadora = [
-        'salario',
-        'salud',
-        'salario_total',
-        'saldo_total',
-        'deducciones',
-        'saldo_libre',
-        'porcentaje',
-        'cuota_pagar'
-    ];
-
-    idsCalculadora.forEach(id => {
-        const campo = document.getElementById(id);
-        if (campo) campo.value = '';
-    });
-
-    // Ocultar la calculadora parcial
-    const calculadora = document.getElementById('calculadora-parcial');
-    if (calculadora) calculadora.style.display = 'none';
-
-    // Limpiar radios y fechas de Cuadernillo y Radicación
-    const radiosExtras = ['cuadernillo', 'radicacion', 'correcciones'];
-    radiosExtras.forEach(name => {
-        const radios = document.querySelectorAll(`#modalCrearInsolvencia input[name="${name}"]`);
-        radios.forEach(radio => radio.checked = false);
-    });
-
-    // Limpiar fechas y ocultar contenedores de fechas
-    const fechasExtras = ['cuadernillo', 'radicacion'];
-    fechasExtras.forEach(item => {
-        const fechaInput = document.getElementById(`fecha_${item}`);
-        const fechaContainer = document.getElementById(`fecha_${item}_container`);
-        if (fechaInput) fechaInput.value = '';
-        if (fechaContainer) fechaContainer.style.display = 'none';
-    });
-
-    // Ocultar campo y limpiar textarea de correcciones
-    const campoCorrecciones = document.getElementById('campoDetalleCorrecciones');
-    if (campoCorrecciones) campoCorrecciones.style.display = 'none';
-
-    const detalleCorrecciones = document.getElementById('detalleCorrecciones');
-    if (detalleCorrecciones) detalleCorrecciones.value = '';
-
-    const fechaCuadernillo = document.getElementById('fecha_cuadernillo');
-    if (fechaCuadernillo) {
-        fechaCuadernillo.readOnly = false;
-        fechaCuadernillo.style.backgroundColor = '';
-        fechaCuadernillo.value = '';
-    }
-
-    const fechaRadicacion = document.getElementById('fecha_radicacion');
-    if (fechaRadicacion) {
-        fechaRadicacion.readOnly = false;
-        fechaRadicacion.style.backgroundColor = '';
-        fechaRadicacion.value = '';
-    }
-
-    // Ocultar contenedores
-    document.getElementById('fecha_cuadernillo_container').style.display = 'none';
-    document.getElementById('fecha_radicacion_container').style.display = 'none';
-
-    // Limpiar calculadora de LIMPIO
-    const camposCalculadoraLimpio = ['porcentaje_limpio', 'cuota_limpio'];
-    camposCalculadoraLimpio.forEach(id => {
-        const campo = document.getElementById(id);
-        if (campo) campo.value = '';
-    });
-
-    const calculadoraLimpio = document.getElementById('calculadora-limpio');
-    if (calculadoraLimpio) calculadoraLimpio.style.display = 'none';
-
-    const inputDesprendible = document.getElementById('desprendiblePDF');
-    if (inputDesprendible) {
-        inputDesprendible.value = '';
-
-        const uploadLabelDesprendible = document.querySelector('label[for="desprendiblePDF"]');
-        if (uploadLabelDesprendible) {
-            uploadLabelDesprendible.classList.remove('has-file');
-
-            const uploadText = uploadLabelDesprendible.querySelector('.file-upload-text');
-            if (uploadText) uploadText.textContent = 'Seleccionar desprendible';
-        }
-
-        const fileNameDisplayDesprendible = document.getElementById('desprendibleFileNameDisplay');
-        if (fileNameDisplayDesprendible) fileNameDisplayDesprendible.textContent = 'Ningún archivo seleccionado';
-    }
-
-    // Limpiar campo de Autoliquidador
-    const inputAutoliquidador = document.getElementById('archivoAutoliquidador');
-    if (inputAutoliquidador) {
-        inputAutoliquidador.value = '';
-
-        const uploadLabelAuto = document.querySelector('label[for="archivoAutoliquidador"]');
-        if (uploadLabelAuto) {
-            uploadLabelAuto.classList.remove('has-file'); // <-- Remueve clase visual si existe
-
-            const uploadText = uploadLabelAuto.querySelector('.file-upload-text');
-            if (uploadText) uploadText.textContent = 'Seleccionar archivo';
-        }
-
-        const fileNameDisplayAuto = document.getElementById('fileNameDisplayAutoliquidador');
-        if (fileNameDisplayAuto) fileNameDisplayAuto.textContent = 'Ningún archivo seleccionado';
-    }
-
-    const archivoAutoliquidadorUrl = document.getElementById('archivoAutoliquidadorUrl');
-    if (archivoAutoliquidadorUrl) archivoAutoliquidadorUrl.value = '';
-
-    const filePreviewAuto = document.getElementById('filePreviewAutoliquidador');
-    if (filePreviewAuto) filePreviewAuto.innerHTML = '';
-
-    // Función auxiliar para limpiar un input file y su UI
-    function limpiarCampoArchivo(inputId, labelSelector, fileNameId, defaultText, previewId = null) {
-        const input = document.getElementById(inputId);
-        const label = document.querySelector(labelSelector);
-        const fileNameDisplay = document.getElementById(fileNameId);
-        const previewContainer = previewId ? document.getElementById(previewId) : null;
-
-        if (input) input.value = '';
-        if (label) {
-            label.classList.remove('has-file');
-            const textSpan = label.querySelector('.file-upload-text');
-            if (textSpan) textSpan.textContent = defaultText;
-        }
-        if (fileNameDisplay) fileNameDisplay.textContent = 'Ningún archivo seleccionado';
-        if (previewContainer) previewContainer.innerHTML = '';
-    }
-
-    // Limpiar todos los campos de archivos PDF
-    limpiarCampoArchivo('archivoPDF', '.file-upload-label[for="archivoPDF"]', 'fileNameDisplay', 'Seleccionar archivo', 'filePreviewActa');
-    limpiarCampoArchivo('desprendiblePDF', '.file-upload-label[for="desprendiblePDF"]', 'desprendibleFileNameDisplay', 'Seleccionar desprendible', 'filePreviewDesprendible');
-    limpiarCampoArchivo('archivoAutoliquidador', '.file-upload-label[for="archivoAutoliquidador"]', 'fileNameDisplayAutoliquidador', 'Seleccionar archivo', 'filePreviewAutoliquidador');
-
-}
+//     // Resetear selects
+//     document.querySelectorAll('#modalCrearInsolvencia select').forEach(select => {
+//         select.selectedIndex = 0;
+//     });
 
 
-document.getElementById('formCrearCliente').addEventListener('submit', function (e) {
+//     // Ocultar campos condicionales
+//     const camposOcultar = [
+//         'campoDetalleCorrecciones',
+//         'contenedorAudiencias',
+//         'datos_liquidador',
+//         'motivo_no_apto'
+//     ];
+
+//     camposOcultar.forEach(id => {
+//         const elemento = document.getElementById(id);
+//         if (elemento) elemento.style.display = 'none';
+//     });
+
+//     // Limpiar lista de audiencias
+//     const listaAudiencias = document.getElementById('listaAudiencias');
+//     if (listaAudiencias) listaAudiencias.innerHTML = '';
+
+//     // Resetear campo de archivo PDF y su UI
+//     const inputArchivo = document.getElementById('archivoPDF');
+//     if (inputArchivo) {
+//         inputArchivo.value = '';
+
+//         // Restablecer la UI del campo de archivo
+//         const uploadLabel = document.querySelector('.file-upload-label');
+//         if (uploadLabel) {
+//             uploadLabel.classList.remove('has-file');
+//             const uploadText = uploadLabel.querySelector('.file-upload-text');
+//             if (uploadText) uploadText.textContent = 'Seleccionar archivo';
+//         }
+
+//         const fileNameDisplay = document.getElementById('fileNameDisplay');
+//         if (fileNameDisplay) fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+//     }
+
+//     // Resetear campo oculto del archivo
+//     const archivoUrl = document.getElementById('archivoPDFUrl');
+//     if (archivoUrl) archivoUrl.value = '';
+
+//     // Resetear campos específicos adicionales
+//     const camposEspecificos = {
+//         'juzgado': '',
+//         'nombre_liquidador': '',
+//         'telefono_liquidador': '',
+//         'correo_liquidador': '',
+//         'motivo': '',
+//         'detalleCorrecciones': ''
+//     };
+
+//     Object.entries(camposEspecificos).forEach(([id, value]) => {
+//         const elemento = document.getElementById(id);
+//         if (elemento) elemento.value = value;
+//     });
+
+//     // Remover clases de validación si existen
+//     document.querySelectorAll('#modalCrearInsolvencia .is-invalid').forEach(el => {
+//         el.classList.remove('is-invalid');
+//     });
+
+//     document.querySelectorAll('#modalCrearInsolvencia .is-valid').forEach(el => {
+//         el.classList.remove('is-valid');
+//     });
+
+//     const idsCalculadora = [
+//         'salario',
+//         'salud',
+//         'salario_total',
+//         'saldo_total',
+//         'deducciones',
+//         'saldo_libre',
+//         'porcentaje',
+//         'cuota_pagar'
+//     ];
+
+//     idsCalculadora.forEach(id => {
+//         const campo = document.getElementById(id);
+//         if (campo) campo.value = '';
+//     });
+
+//     // Ocultar la calculadora parcial
+//     const calculadora = document.getElementById('calculadora-parcial');
+//     if (calculadora) calculadora.style.display = 'none';
+
+//     // Limpiar radios y fechas de Cuadernillo y Radicación
+//     const radiosExtras = ['cuadernillo', 'radicacion', 'correcciones'];
+//     radiosExtras.forEach(name => {
+//         const radios = document.querySelectorAll(`#modalCrearInsolvencia input[name="${name}"]`);
+//         radios.forEach(radio => radio.checked = false);
+//     });
+
+//     // Limpiar fechas y ocultar contenedores de fechas
+//     const fechasExtras = ['cuadernillo', 'radicacion'];
+//     fechasExtras.forEach(item => {
+//         const fechaInput = document.getElementById(`fecha_${item}`);
+//         const fechaContainer = document.getElementById(`fecha_${item}_container`);
+//         if (fechaInput) fechaInput.value = '';
+//         if (fechaContainer) fechaContainer.style.display = 'none';
+//     });
+
+//     // Ocultar campo y limpiar textarea de correcciones
+//     const campoCorrecciones = document.getElementById('campoDetalleCorrecciones');
+//     if (campoCorrecciones) campoCorrecciones.style.display = 'none';
+
+//     const detalleCorrecciones = document.getElementById('detalleCorrecciones');
+//     if (detalleCorrecciones) detalleCorrecciones.value = '';
+
+//     const fechaCuadernillo = document.getElementById('fecha_cuadernillo');
+//     if (fechaCuadernillo) {
+//         fechaCuadernillo.readOnly = false;
+//         fechaCuadernillo.style.backgroundColor = '';
+//         fechaCuadernillo.value = '';
+//     }
+
+//     const fechaRadicacion = document.getElementById('fecha_radicacion');
+//     if (fechaRadicacion) {
+//         fechaRadicacion.readOnly = false;
+//         fechaRadicacion.style.backgroundColor = '';
+//         fechaRadicacion.value = '';
+//     }
+
+//     // Ocultar contenedores
+//     document.getElementById('fecha_cuadernillo_container').style.display = 'none';
+//     document.getElementById('fecha_radicacion_container').style.display = 'none';
+
+//     // Limpiar calculadora de LIMPIO
+//     const camposCalculadoraLimpio = ['porcentaje_limpio', 'cuota_limpio'];
+//     camposCalculadoraLimpio.forEach(id => {
+//         const campo = document.getElementById(id);
+//         if (campo) campo.value = '';
+//     });
+
+//     const calculadoraLimpio = document.getElementById('calculadora-limpio');
+//     if (calculadoraLimpio) calculadoraLimpio.style.display = 'none';
+
+//     const inputDesprendible = document.getElementById('desprendiblePDF');
+//     if (inputDesprendible) {
+//         inputDesprendible.value = '';
+
+//         const uploadLabelDesprendible = document.querySelector('label[for="desprendiblePDF"]');
+//         if (uploadLabelDesprendible) {
+//             uploadLabelDesprendible.classList.remove('has-file');
+
+//             const uploadText = uploadLabelDesprendible.querySelector('.file-upload-text');
+//             if (uploadText) uploadText.textContent = 'Seleccionar desprendible';
+//         }
+
+//         const fileNameDisplayDesprendible = document.getElementById('desprendibleFileNameDisplay');
+//         if (fileNameDisplayDesprendible) fileNameDisplayDesprendible.textContent = 'Ningún archivo seleccionado';
+//     }
+
+//     // Limpiar campo de Autoliquidador
+//     const inputAutoliquidador = document.getElementById('archivoAutoliquidador');
+//     if (inputAutoliquidador) {
+//         inputAutoliquidador.value = '';
+
+//         const uploadLabelAuto = document.querySelector('label[for="archivoAutoliquidador"]');
+//         if (uploadLabelAuto) {
+//             uploadLabelAuto.classList.remove('has-file'); // <-- Remueve clase visual si existe
+
+//             const uploadText = uploadLabelAuto.querySelector('.file-upload-text');
+//             if (uploadText) uploadText.textContent = 'Seleccionar archivo';
+//         }
+
+//         const fileNameDisplayAuto = document.getElementById('fileNameDisplayAutoliquidador');
+//         if (fileNameDisplayAuto) fileNameDisplayAuto.textContent = 'Ningún archivo seleccionado';
+//     }
+
+//     const archivoAutoliquidadorUrl = document.getElementById('archivoAutoliquidadorUrl');
+//     if (archivoAutoliquidadorUrl) archivoAutoliquidadorUrl.value = '';
+
+//     const filePreviewAuto = document.getElementById('filePreviewAutoliquidador');
+//     if (filePreviewAuto) filePreviewAuto.innerHTML = '';
+
+//     // Función auxiliar para limpiar un input file y su UI
+//     function limpiarCampoArchivo(inputId, labelSelector, fileNameId, defaultText, previewId = null) {
+//         const input = document.getElementById(inputId);
+//         const label = document.querySelector(labelSelector);
+//         const fileNameDisplay = document.getElementById(fileNameId);
+//         const previewContainer = previewId ? document.getElementById(previewId) : null;
+
+//         if (input) input.value = '';
+//         if (label) {
+//             label.classList.remove('has-file');
+//             const textSpan = label.querySelector('.file-upload-text');
+//             if (textSpan) textSpan.textContent = defaultText;
+//         }
+//         if (fileNameDisplay) fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+//         if (previewContainer) previewContainer.innerHTML = '';
+//     }
+
+//     // Limpiar todos los campos de archivos PDF
+//     limpiarCampoArchivo('archivoPDF', '.file-upload-label[for="archivoPDF"]', 'fileNameDisplay', 'Seleccionar archivo', 'filePreviewActa');
+//     limpiarCampoArchivo('desprendiblePDF', '.file-upload-label[for="desprendiblePDF"]', 'desprendibleFileNameDisplay', 'Seleccionar desprendible', 'filePreviewDesprendible');
+//     limpiarCampoArchivo('archivoAutoliquidador', '.file-upload-label[for="archivoAutoliquidador"]', 'fileNameDisplayAutoliquidador', 'Seleccionar archivo', 'filePreviewAutoliquidador');
+
+// }
+
+
+document.getElementById('formCrearInsolvencia').addEventListener('submit', function (e) {
     e.preventDefault();
-    // Validar radios obligatorios
-    const radiosObligatorios = [
-        'cuadernillo',
-        'radicacion',
-        'correcciones',
-        'audiencias',
-        'desprendible',
-        'tipo_proceso',
-        'liquidador',
-        'estado'
-    ];
 
-    for (let nombre of radiosObligatorios) {
-        const seleccionado = document.querySelector(`input[name="${nombre}"]:checked`);
-        if (!seleccionado) {
+    // Verificar si hay correcciones activas
+    const tieneCorrecciones = document.querySelector('input[name="correcciones"]:checked')?.value === 'SI';
+
+    // Validar solo si NO hay correcciones
+    if (!tieneCorrecciones) {
+        // Validar radios obligatorios
+        const radiosObligatorios = [
+            'cuadernillo',
+            'radicacion',
+            'correcciones',
+            'audiencias',
+            'desprendible',
+            'tipo_proceso',
+            'liquidador',
+            'estado'
+        ];
+
+        for (let nombre of radiosObligatorios) {
+            const seleccionado = document.querySelector(`input[name="${nombre}"]:checked`);
+            if (!seleccionado) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: `Debes seleccionar una opción para "${nombre}".`,
+                    confirmButtonColor: '#d33'
+                });
+                return;
+            }
+        }
+
+        // Validar archivo PDF solo si no hay correcciones
+        const archivoPDF = document.getElementById('archivoPDF').files[0];
+        if (!archivoPDF) {
             Swal.fire({
                 icon: 'warning',
-                title: 'Campos incompletos',
-                text: `Debes seleccionar una opción para "${nombre}".`,
+                title: 'Archivo requerido',
+                text: 'Debes subir el archivo PDF del acta de aceptación.',
                 confirmButtonColor: '#d33'
             });
-            return; // detener envío
+            return;
         }
     }
 
-
+    // Obtener valores del formulario
     const id_cliente = document.getElementById('inputIdCliente').value;
     const cuadernillo = document.querySelector('input[name="cuadernillo"]:checked')?.value === 'SI' ? 1 : 0;
     const fecha_cuadernillo = document.getElementById('fecha_cuadernillo')?.value || '';
     const radicacion = document.querySelector('input[name="radicacion"]:checked')?.value === 'SI' ? 1 : 0;
     const fecha_radicacion = document.getElementById('fecha_radicacion')?.value || '';
-
-    const correccionesRadio = document.querySelector('input[name="correcciones"]:checked')?.value;
-    const correcciones = correccionesRadio === 'SI'
-        ? document.getElementById('detalleCorrecciones').value.trim()
-        : '';
-
+    const correcciones = tieneCorrecciones ? document.getElementById('detalleCorrecciones').value.trim() : '';
     const archivoPDF = document.getElementById('archivoPDF').files[0];
     const archivoAutoliquidador = document.getElementById('archivoAutoliquidador')?.files[0];
-    const audienciasVisibles = document.querySelector('input[name="audiencias"]:checked')?.value === 'Sí';
+    const audienciasVisibles = document.querySelector('input[name="audiencias"]:checked')?.value === 'SI';
     const tipo_proceso = document.querySelector('input[name="tipo_proceso"]:checked')?.value || '';
     const juzgado = document.getElementById('juzgado')?.value.trim() || '';
-    const liquidador = document.querySelector('input[name="liquidador"]:checked')?.value === 'Sí' ? 1 : 0;
+    const liquidador = document.querySelector('input[name="liquidador"]:checked')?.value === 'SI' ? 1 : 0;
     const terminacion = document.querySelector('input[name="estado"]:checked')?.value || '';
-
     const desprendible_estado = document.querySelector('input[name="desprendible"]:checked')?.value || '';
-    const desprendiblePDFUrl = document.getElementById('desprendiblePDF').files[0];
+    const desprendiblePDF = document.getElementById('desprendiblePDF').files[0];
     const observaciones_desprendible = document.getElementById('observaciones_desprendible')?.value.trim() || '';
 
+    // Validar campos condicionales solo si no hay correcciones
+    if (!tieneCorrecciones) {
+        if (liquidador) {
+            const nombre_liquidador = document.getElementById('nombre_liquidador')?.value.trim() || '';
+            const telefono_liquidador = document.getElementById('telefono_liquidador')?.value.trim() || '';
+            const correo_liquidador = document.getElementById('correo_liquidador')?.value.trim() || '';
+            const pago_liquidador = document.querySelector('input[name="pago_liquidador"]:checked')?.value || '';
 
+            if (!nombre_liquidador || !telefono_liquidador || !correo_liquidador || !pago_liquidador) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Debes completar todos los datos del liquidador.',
+                    confirmButtonColor: '#d33'
+                });
+                return;
+            }
+        }
+
+        if (terminacion === 'NO APTO') {
+            const motivo = document.getElementById('motivo')?.value.trim().toUpperCase() || '';
+            if (!motivo) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Motivo requerido',
+                    text: 'Debes escribir el motivo si el proceso no es apto.',
+                    confirmButtonColor: '#d33'
+                });
+                return;
+            }
+        }
+    }
+
+    // Preparar datos del desprendible
     let datosParcial = null;
-
     if (desprendible_estado === 'PARCIAL') {
         datosParcial = {
+            salario: document.getElementById('salario')?.value || '',
+            salud: document.getElementById('salud')?.value || '',
+            salario_total: document.getElementById('salario_total')?.value || '',
+            saldo_total: document.getElementById('saldo_total')?.value || '',
+            deducciones: document.getElementById('deducciones')?.value || '',
+            saldo_libre: document.getElementById('saldo_libre')?.value || '',
+            porcentaje: document.getElementById('porcentaje')?.value || '',
             cuota_pagar: document.getElementById('cuota_pagar')?.value || ''
         };
     } else if (desprendible_estado === 'LIMPIO') {
         datosParcial = {
+            porcentaje: document.getElementById('porcentaje_limpio')?.value || '',
             cuota_pagar: document.getElementById('cuota_limpio')?.value || ''
         };
     }
+
     const desprendibleData = {
         estado_desprendible: desprendible_estado,
-        obs_desprendible: observaciones_desprendible,
+        obs_desprendible: observaciones_desprendible.toUpperCase(),
         datos_parcial: datosParcial
     };
 
+    // Preparar FormData
     const formData = new FormData();
     formData.append('id_cliente', id_cliente);
     formData.append('cuadernillo', cuadernillo);
     formData.append('fecha_cuadernillo', fecha_cuadernillo);
     formData.append('radicacion', radicacion);
     formData.append('fecha_radicacion', fecha_radicacion);
-    formData.append('correcciones', correcciones);
+    formData.append('correcciones', correcciones.toUpperCase());
     formData.append('tipo_proceso', tipo_proceso);
-    formData.append('juzgado', juzgado);
+    formData.append('juzgado', juzgado.toUpperCase());
     formData.append('liquidador', liquidador);
-    formData.append('terminacion', terminacion);
+    formData.append('terminacion', terminacion.toUpperCase());
     formData.append('datos_desprendible', JSON.stringify(desprendibleData));
 
-    if (desprendiblePDFUrl) {
-        formData.append('desprendiblePDF', desprendiblePDFUrl);
-    }
+    // Agregar archivos solo si existen
+    if (archivoPDF) formData.append('archivoPDF', archivoPDF);
+    if (desprendiblePDF) formData.append('desprendiblePDF', desprendiblePDF);
+    if (archivoAutoliquidador) formData.append('archivoAutoliquidador', archivoAutoliquidador);
 
-
-    if (archivoPDF) {
-        formData.append('archivoPDF', archivoPDF);
-    }
-
-    if (archivoAutoliquidador) {
-        formData.append('archivoAutoliquidador', archivoAutoliquidador);
-    }
-
+    // Procesar audiencias si están visibles
     if (audienciasVisibles) {
         const audienciasItems = document.querySelectorAll('#listaAudiencias .audiencia-item');
         const audiencias = [];
 
         for (const item of audienciasItems) {
-            const descripcion = item.querySelector('input[name^="audiencias"][name$="[descripcion]"]').value.trim();
-            const fecha = item.querySelector('input[name^="audiencias"][name$="[fecha]"]').value.trim();
+            const descripcion = item.querySelector('input[name^="audiencias"][name$="[descripcion]"]').value.trim().toUpperCase();
+            const fecha = item.querySelector('input[name^="audiencias"][name$="[fecha]"]').value.trim().toUpperCase();
 
-            if (!descripcion || !fecha) {
+            if (!tieneCorrecciones && (!descripcion || !fecha)) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Datos incompletos',
@@ -557,75 +628,91 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         formData.append('audiencias', JSON.stringify(audiencias));
     }
 
-    if (liquidador) {
-        const nombre_liquidador = document.getElementById('nombre_liquidador')?.value.trim() || '';
-        const telefono_liquidador = document.getElementById('telefono_liquidador')?.value.trim() || '';
-        const correo_liquidador = document.getElementById('correo_liquidador')?.value.trim() || '';
+    // Agregar datos del liquidador si corresponde
+    if (liquidador && !tieneCorrecciones) {
+        const nombre_liquidador = document.getElementById('nombre_liquidador')?.value.trim().toUpperCase() || '';
+        const telefono_liquidador = document.getElementById('telefono_liquidador')?.value.trim().toUpperCase() || '';
+        const correo_liquidador = document.getElementById('correo_liquidador')?.value.trim().toUpperCase() || '';
         const pago_liquidador = document.querySelector('input[name="pago_liquidador"]:checked')?.value || '';
-
-        if (!nombre_liquidador || !telefono_liquidador || !correo_liquidador || !pago_liquidador) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Campos incompletos',
-                text: 'Debes completar todos los datos del liquidador.',
-                confirmButtonColor: '#d33'
-            });
-            return;
-        }
 
         formData.append('nombre_liquidador', nombre_liquidador);
         formData.append('telefono_liquidador', telefono_liquidador);
         formData.append('correo_liquidador', correo_liquidador);
         formData.append('pago_liquidador', pago_liquidador);
+
+        if (pago_liquidador === 'SI') {
+            const valor_total_pagado = document.getElementById('valor_total_pagado')?.value || '';
+
+            const cuotas = [
+                document.getElementById('cuota_1')?.value || '',
+                document.getElementById('cuota_2')?.value || '',
+                document.getElementById('cuota_3')?.value || '',
+                document.getElementById('cuota_4')?.value || ''
+            ];
+
+            const fechas = [
+                document.getElementById('fecha_1')?.value || '',
+                document.getElementById('fecha_2')?.value || '',
+                document.getElementById('fecha_3')?.value || '',
+                document.getElementById('fecha_4')?.value || ''
+            ];
+
+
+            // Agregar al FormData directamente
+            formData.append('valor_liquidador', valor_total_pagado);
+            formData.append('cuota_1', cuotas[0]);
+            formData.append('cuota_2', cuotas[1]);
+            formData.append('cuota_3', cuotas[2]);
+            formData.append('cuota_4', cuotas[3]);
+            formData.append('fecha_1', fechas[0]);
+            formData.append('fecha_2', fechas[1]);
+            formData.append('fecha_3', fechas[2]);
+            formData.append('fecha_4', fechas[3]);
+        }
     }
 
 
-    if (terminacion === 'NO APTO') {
-        const motivo = document.getElementById('motivo')?.value.trim() || '';
-        if (!motivo) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Motivo requerido',
-                text: 'Debes escribir el motivo si el proceso no es apto.',
-                confirmButtonColor: '#d33'
-            });
-            return;  // para que no continúe si falta el motivo
-        }
+    // Agregar motivo si no es apto
+    if (terminacion === 'NO APTO' && !tieneCorrecciones) {
+        const motivo = document.getElementById('motivo')?.value.trim().toUpperCase() || '';
         formData.append('motivo_insolvencia', motivo);
     }
 
-
-
-    // Generar resumen de previsualización
+    // Generar resumen para confirmación
     let resumen = `
         <strong>Cuadernillo:</strong> ${cuadernillo ? 'Sí' : 'No'}<br>
         <strong>Fecha Cuadernillo:</strong> ${fecha_cuadernillo || 'N/A'}<br>
         <strong>Radicación:</strong> ${radicacion ? 'Sí' : 'No'}<br>
         <strong>Fecha Radicación:</strong> ${fecha_radicacion || 'N/A'}<br>
         <strong>Correcciones:</strong> ${correcciones || 'No'}<br>
-        <strong>Desprendible:</strong> Estado: ${desprendible_estado}, Observaciones: ${observaciones_desprendible || 'N/A'}, Cuota: ${datosParcial?.cuota_pagar || 'N/A'}<br>
+        <strong>Desprendible:</strong> ${desprendible_estado}<br>
+        <strong>Observaciones Desprendible:</strong> ${observaciones_desprendible || 'N/A'}<br>`;
+
+    if (desprendible_estado === 'PARCIAL' || desprendible_estado === 'LIMPIO') {
+        resumen += `<strong>Cuota a Pagar:</strong> ${datosParcial?.cuota_pagar || 'N/A'}<br>`;
+    }
+
+    resumen += `
         <strong>Tipo de Proceso:</strong> ${tipo_proceso}<br>
         <strong>Juzgado:</strong> ${juzgado || 'N/A'}<br>
         <strong>Liquidador:</strong> ${liquidador ? 'Sí' : 'No'}<br>
-        <strong>Estado / Terminación:</strong> ${terminacion}<br>
-        `;
+        <strong>Estado/Terminación:</strong> ${terminacion}<br>`;
 
-    if (terminacion === 'NO APTO') {
+    if (terminacion === 'NO APTO' && !tieneCorrecciones) {
         resumen += `<strong>Motivo:</strong> ${document.getElementById('motivo').value.trim()}<br>`;
     }
 
-    if (liquidador) {
+    if (liquidador && !tieneCorrecciones) {
         resumen += `
-    <strong>Nombre Liquidador:</strong> ${document.getElementById('nombre_liquidador').value.trim()}<br>
-    <strong>Teléfono Liquidador:</strong> ${document.getElementById('telefono_liquidador').value.trim()}<br>
-    <strong>Correo Liquidador:</strong> ${document.getElementById('correo_liquidador').value.trim()}<br>
-    <strong>Pago Liquidador:</strong> ${document.querySelector('input[name="pago_liquidador"]:checked')?.value}<br>
-    `;
+            <strong>Nombre Liquidador:</strong> ${document.getElementById('nombre_liquidador').value.trim()}<br>
+            <strong>Teléfono Liquidador:</strong> ${document.getElementById('telefono_liquidador').value.trim()}<br>
+            <strong>Correo Liquidador:</strong> ${document.getElementById('correo_liquidador').value.trim()}<br>
+            <strong>Pago Liquidador:</strong> ${document.querySelector('input[name="pago_liquidador"]:checked')?.value}<br>`;
     }
 
     if (audienciasVisibles) {
         const audienciasItems = document.querySelectorAll('#listaAudiencias .audiencia-item');
-        resumen += `<strong>Audiencias:</strong><br><ul>`;
+        resumen += `<strong>Audiencias:</strong><br><ul style="margin-left: 20px;">`;
         audienciasItems.forEach((item) => {
             const descripcion = item.querySelector('input[name^="audiencias"][name$="[descripcion]"]').value.trim();
             const fecha = item.querySelector('input[name^="audiencias"][name$="[fecha]"]').value.trim();
@@ -634,48 +721,69 @@ document.getElementById('formCrearCliente').addEventListener('submit', function 
         resumen += `</ul>`;
     }
 
+    // Mostrar confirmación antes de enviar
     Swal.fire({
         title: '¿Confirmar envío?',
-        html: `<p>Estás a punto de guardar esta información. <strong>¿Deseas realmente guardar?</strong></p>${resumen}`,
+        html: `<div style="text-align: left; max-height: 60vh; overflow-y: auto;">${resumen}</div>`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Guardar',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33'
+        cancelButtonColor: '#d33',
+        width: '800px'
     }).then((result) => {
         if (result.isConfirmed) {
+            // Mostrar carga mientras se envía
+            Swal.fire({
+                title: 'Enviando datos...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Enviar datos al servidor
             fetch('http://localhost:3000/api/actualizar-insolvencias', {
                 method: 'PUT',
                 body: formData
             })
                 .then(response => response.json())
                 .then(data => {
+                    Swal.close();
                     if (data.success) {
                         Swal.fire({
                             icon: 'success',
                             title: '¡Guardado!',
                             text: 'Los datos se guardaron correctamente.',
                             confirmButtonColor: '#3085d6'
+                        }).then(() => {
+                            // Cerrar modal y recargar si es necesario
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('modalCrearInsolvencia'));
+                            if (modal) modal.hide();
+                            location.reload(); // Opcional: recargar la página
                         });
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalCrearInsolvencia'));
-                        modal.hide();
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'Hubo un problema al guardar los datos.',
+                            text: data.message || 'Hubo un problema al guardar los datos.',
                             confirmButtonColor: '#d33'
                         });
                     }
                 })
                 .catch(error => {
+                    Swal.close();
                     console.error('Error:', error);
-                    alert('Error de red o del servidor.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo conectar con el servidor.',
+                        confirmButtonColor: '#d33'
+                    });
                 });
         }
     });
-
 });
 
 
@@ -702,9 +810,12 @@ document.addEventListener('click', async function (e) {
     }
 });
 
+
+let datosOriginalesParcial = {};
+
 function cargarDatosEnFormulario(cliente) {
     console.log("Datos del cliente recibidos CLIENTE EDIT:", cliente);
-    limpiarModalInsolvencia();
+
 
     // Datos básicos del cliente (ya funcionan)
     document.getElementById('idModal').textContent = cliente.id_cliente || '---';
@@ -778,28 +889,55 @@ function cargarDatosEnFormulario(cliente) {
         document.querySelector(`input[name="correcciones"][value="NO"]`).checked = true;
     }
 
-    // Desprendible
+
+
+    datosOriginalesParcial = {
+        salario: cliente.salario || '',
+        cuota_pagar: cliente.valor_cuota || ''
+    };
+
+
+
     if (cliente.estado_desprendible) {
         document.querySelector(`input[name="desprendible"][value="${cliente.estado_desprendible}"]`).checked = true;
-
-        const calculadoraParcial = document.getElementById('calculadora-parcial');
-        const calculadoraLimpio = document.getElementById('calculadora-limpio');
-
-        // Oculta ambas por defecto
-        calculadoraParcial.style.display = 'none';
-        calculadoraLimpio.style.display = 'none';
-
-        if (cliente.estado_desprendible === 'PARCIAL') {
-            calculadoraParcial.style.display = 'block';
-            // Aquí deberías cargar los datos de la calculadora si los tienes
-        } else if (cliente.estado_desprendible === 'LIMPIO') {
-            calculadoraLimpio.style.display = 'block';
-
-            // Aquí cargas los datos del JSON
-            document.getElementById('porcentaje_limpio').value = cliente.porcentaje + ' %';
-            document.getElementById('cuota_limpio').value = '$ ' + Number(cliente.valor_cuota).toLocaleString('es-CO');
-        }
+        document.querySelector(`input[name="desprendible"][value="${cliente.estado_desprendible}"]`).dispatchEvent(new Event('change'));
     }
+
+    document.querySelectorAll('input[name="desprendible"]').forEach((radio) => {
+        radio.addEventListener('change', (e) => {
+            const estado = e.target.value;
+            const calculadoraParcial = document.getElementById('calculadora-parcial');
+            const calculadoraLimpio = document.getElementById('calculadora-limpio');
+
+            // Oculta ambos primero
+            calculadoraParcial.style.display = 'none';
+            calculadoraLimpio.style.display = 'none';
+
+            if (estado === 'PARCIAL') {
+                calculadoraParcial.style.display = 'block';
+
+                if (datosOriginalesParcial) {
+                    document.getElementById('salario').value = '$ ' + Number(datosOriginalesParcial.salario).toLocaleString('es-CO');
+                    document.getElementById('cuota_pagar').value = '$ ' + Number(datosOriginalesParcial.cuota_pagar).toLocaleString('es-CO');
+                }
+            }
+            else if (estado === 'LIMPIO') {
+                calculadoraLimpio.style.display = 'block';
+
+                // Cargar desde el cliente directamente
+                const porcentaje = cliente.porcentaje?.toString().replace('%', '').trim() || '0';
+                const cuota = cliente.valor_cuota?.toString().replace(/[^\d.-]/g, '') || '0';
+
+                document.getElementById('porcentaje_limpio').value = porcentaje + ' %';
+                document.getElementById('cuota_limpio').value = '$ ' + Number(cuota).toLocaleString('es-CO');
+            } else {
+                // Si hay otro estado como "DEUDA", podrías manejarlo aquí también
+                console.log('Otro estado:', estado);
+            }
+        });
+    });
+
+
 
 
     // Mostrar nombre del archivo de desprendible si existe
@@ -888,7 +1026,7 @@ function cargarDatosEnFormulario(cliente) {
         });
     } else {
         document.getElementById('audiencias_no').checked = true;
-        document.getElementById('audiencias_no').disabled = false; // ✅ Asegurar que esté habilitado
+        document.getElementById('audiencias_no').disabled = false;
         ocultarAudiencias();
     }
 
@@ -937,6 +1075,7 @@ function cargarDatosEnFormulario(cliente) {
 
 
 }
+
 
 
 function mostrarDatosLiquidador(mostrar) {
@@ -1226,26 +1365,27 @@ function mostrarError(mensaje) {
     alert(mensaje);
 }
 
-// Funciones para audiencias (similar a las anteriores pero con estilos mejorados)
+
 function agregarAudiencia() {
     const contadorAudiencias = document.getElementById('listaAudiencias').children.length + 1;
     const nuevoId = 'audiencia_' + contadorAudiencias;
 
     const nuevaAudiencia = document.createElement('div');
-    nuevaAudiencia.className = 'audiencia-item';
+    nuevaAudiencia.className = 'audiencia-item mb-2';
     nuevaAudiencia.id = nuevoId;
     nuevaAudiencia.innerHTML = `
       <div class="row g-2">
         <div class="col-md-7">
-          <input type="text" class="form-control form-control-sm" placeholder="Descripción" 
-                 name="audiencias[${contadorAudiencias}][descripcion]" required>
+          <input type="text" class="form-control form-control-sm" 
+                 name="audiencias[${contadorAudiencias}][descripcion]" 
+                 value="Audiencia ${contadorAudiencias}" required>
         </div>
         <div class="col-md-4">
           <input type="date" class="form-control form-control-sm" 
                  name="audiencias[${contadorAudiencias}][fecha]" required>
         </div>
         <div class="col-md-1">
-          <button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="eliminarAudiencia('${nuevoId}')">
+          <button type="button" class="btn btn-md btn-outline-danger w-100" onclick="eliminarAudiencia('${nuevoId}')">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -1254,6 +1394,7 @@ function agregarAudiencia() {
 
     document.getElementById('listaAudiencias').appendChild(nuevaAudiencia);
 }
+
 
 function eliminarAudiencia(id) {
     Swal.fire({
@@ -1269,15 +1410,7 @@ function eliminarAudiencia(id) {
     });
 }
 
-// Otras funciones existentes
-function mostrarCampoCorrecciones() {
-    document.getElementById('campoDetalleCorrecciones').style.display = 'block';
-}
 
-function ocultarCampoCorrecciones() {
-    document.getElementById('campoDetalleCorrecciones').style.display = 'none';
-    document.getElementById('detalleCorrecciones').value = '';
-}
 
 function mostrarAudiencias() {
     document.getElementById('contenedorAudiencias').style.display = 'block';
@@ -1396,7 +1529,19 @@ document.querySelectorAll('input[name="desprendible"]').forEach(radio => {
 
         if (this.value === 'PARCIAL') {
             seccionParcial.style.display = 'block';
-        } else if (this.value === 'LIMPIO') {
+
+            const salario = $('#salario').data('salario');
+            if (salario) {
+                document.getElementById('salario').value = formatCurrency(salario);
+                document.getElementById('salario').dataset.valor = salario;
+            } else {
+                document.getElementById('salario').value = '';
+                document.getElementById('salario').dataset.valor = '0';
+            }
+
+            calcular(); // ejecuta la función de cálculo automáticamente
+        }
+        else if (this.value === 'LIMPIO') {
             seccionLimpio.style.display = 'block';
 
             // Obtener porcentaje y cuota desde los inputs ocultos o del DOM
@@ -1426,19 +1571,38 @@ const saldo_libre = document.getElementById("saldo_libre");
 const porcentaje = document.getElementById("porcentaje");
 const cuota_pagar = document.getElementById("cuota_pagar");
 
+function limpiarNumero(valor) {
+    return valor.replace(/\D/g, '');
+}
+
+function formatearMonedaVisual(input) {
+    const crudo = limpiarNumero(input.value);
+    input.dataset.valor = crudo;
+
+    if (crudo) {
+        input.value = new Intl.NumberFormat('es-CO').format(crudo);
+    } else {
+        input.value = '';
+    }
+}
+
+function capturarValorCrudo(input) {
+    const crudo = limpiarNumero(input.value);
+    input.dataset.valor = crudo;
+}
+
 function formatCurrency(value) {
     const number = parseFloat(value);
     if (isNaN(number)) return "";
-    return '$' + number.toLocaleString('en-US', { maximumFractionDigits: 0 });
-
+    return '$' + number.toLocaleString('es-CO', { maximumFractionDigits: 0 });
 }
 
 function unformatCurrency(value) {
-    return parseFloat(value.replace(/[^0-9.-]+/g, "")) || 0;
+    return parseFloat(value.replace(/[^\d.-]/g, "")) || 0;
 }
 
 function calcular() {
-    const sal = unformatCurrency(salario.value);
+    const sal = parseFloat(salario.dataset.valor || 0);
     const salu = unformatCurrency(salud.value);
     const ded = unformatCurrency(deducciones.value);
     const porc = parseFloat(porcentaje.value) || 0;
@@ -1462,17 +1626,32 @@ function calcular() {
 
 function applyCurrencyFormatting(input) {
     input.addEventListener("input", () => {
-        calcular(); // Calcula mientras escribe, pero sin formatear
+        // Obtener solo los números
+        let raw = input.value.replace(/\D/g, '');
+        input.dataset.valor = raw;
+
+        if (raw) {
+            input.value = formatCurrency(raw);
+
+            // Mover el cursor al final
+            setTimeout(() => {
+                input.selectionStart = input.selectionEnd = input.value.length;
+            }, 0);
+        } else {
+            input.value = '';
+        }
+
+        calcular();
     });
 
-    input.addEventListener("blur", () => {
-        const value = unformatCurrency(input.value);
-        input.value = formatCurrency(value); // Formatea solo cuando termina de escribir
-    });
-
-    // Formatear al inicio si hay un valor cargado
-    input.value = formatCurrency(unformatCurrency(input.value));
+    // Inicializar si hay valor al cargar
+    const initialRaw = input.value.replace(/\D/g, '');
+    input.dataset.valor = initialRaw;
+    if (initialRaw) {
+        input.value = formatCurrency(initialRaw);
+    }
 }
+
 
 
 [salario, salud, deducciones].forEach(applyCurrencyFormatting);
@@ -1548,3 +1727,154 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const pagoSi = document.getElementById('pago_si');
+    const pagoNo = document.getElementById('pago_no');
+    const cuotasDiv = document.getElementById('cuotas_pago');
+
+    function toggleCuotas() {
+        cuotasDiv.style.display = pagoSi.checked ? 'block' : 'none';
+    }
+
+    pagoSi.addEventListener('change', toggleCuotas);
+    pagoNo.addEventListener('change', toggleCuotas);
+
+    toggleCuotas();
+
+    // ⬇️ Aplicar formato de moneda a los campos
+    const camposMoneda = [
+        'valor_total_pagado',
+        'cuota_1',
+        'cuota_2',
+        'cuota_3',
+        'cuota_4'
+    ];
+
+    camposMoneda.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) {
+            applyCurrencyFormatting(campo);
+        }
+    });
+});
+
+// Lista de IDs de campos a deshabilitar (actualizada)
+const CAMPOS_A_DESHABILITAR = [
+    // Audiencias
+    "audiencias_si", "audiencias_no",
+
+    // Acta de aceptación
+    "archivoPDF", "archivoPDFUrl",
+
+    // Estado del Proceso
+    "desprendiblePDF", "desprendiblePDFUrl",
+    "desprendible_parcial", "desprendible_limpio", "desprendible_deudas",
+    "salario", "salud", "salario_total", "saldo_total", "deducciones",
+    "saldo_libre", "porcentaje", "cuota_pagar",
+    "porcentaje_limpio", "cuota_limpio",
+    "observaciones_desprendible",
+
+    // Proceso Jurídico
+    "proceso_liquidacion", "proceso_acuerdo_pago",
+    "juzgado", "archivoAutoliquidador", "archivoAutoliquidadorUrl",
+    "liquidador_si", "liquidador_no",
+    "nombre_liquidador", "telefono_liquidador", "correo_liquidador",
+    "pago_si", "pago_no",
+
+    // Proceso Finalizado
+    "estado_apto", "estado_no_apto", "motivo"
+];
+
+// Función para deshabilitar un elemento y su label asociado
+function deshabilitarElemento(elemento) {
+    if (!elemento) return;
+
+    elemento.disabled = true;
+
+    // Manejo especial para radios/checkboxes
+    if (elemento.type === "radio" || elemento.type === "checkbox") {
+        elemento.onclick = function (e) { e.preventDefault(); return false; };
+        const label = document.querySelector(`label[for="${elemento.id}"]`);
+        if (label) {
+            label.classList.add('disabled-field');
+            label.style.pointerEvents = 'none';
+        }
+    }
+
+    // Manejo especial para file inputs
+    if (elemento.type === "file") {
+        const label = document.querySelector(`label[for="${elemento.id}"]`);
+        if (label) {
+            label.classList.add('disabled-field');
+            label.style.pointerEvents = 'none';
+        }
+    }
+}
+
+// Función para habilitar un elemento y su label asociado
+function habilitarElemento(elemento) {
+    if (!elemento) return;
+
+    elemento.disabled = false;
+
+    if (elemento.type === "radio" || elemento.type === "checkbox") {
+        elemento.onclick = null;
+        const label = document.querySelector(`label[for="${elemento.id}"]`);
+        if (label) {
+            label.classList.remove('disabled-field');
+            label.style.pointerEvents = '';
+        }
+    }
+
+    if (elemento.type === "file") {
+        const label = document.querySelector(`label[for="${elemento.id}"]`);
+        if (label) {
+            label.classList.remove('disabled-field');
+            label.style.pointerEvents = '';
+        }
+    }
+}
+
+// Mostrar campo de correcciones y deshabilitar otros campos
+function mostrarCampoCorrecciones() {
+    console.log("Mostrando campo de correcciones");
+
+    // Mostrar el textarea de correcciones
+    const campoCorrecciones = document.getElementById("campoDetalleCorrecciones");
+    if (campoCorrecciones) {
+        campoCorrecciones.style.display = "block";
+    } else {
+        console.error("No se encontró el elemento con ID 'campoDetalleCorrecciones'");
+    }
+
+    // Deshabilitar todos los campos especificados
+    CAMPOS_A_DESHABILITAR.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (!elemento) {
+            console.warn(`Elemento con ID ${id} no encontrado`);
+            return;
+        }
+        deshabilitarElemento(elemento);
+    });
+}
+
+// Ocultar campo de correcciones y habilitar otros campos
+function ocultarCampoCorrecciones() {
+    console.log("Ocultando campo de correcciones");
+
+    // Ocultar el textarea de correcciones
+    const campoCorrecciones = document.getElementById("campoDetalleCorrecciones");
+    if (campoCorrecciones) {
+        campoCorrecciones.style.display = "none";
+        document.getElementById("detalleCorrecciones").value = "";
+    }
+
+    // Habilitar todos los campos especificados
+    CAMPOS_A_DESHABILITAR.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            habilitarElemento(elemento);
+        }
+    });
+}
