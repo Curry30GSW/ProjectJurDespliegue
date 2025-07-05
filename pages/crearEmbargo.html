@@ -272,7 +272,7 @@
         <!-- Columna principal (formulario) -->
         <div class="col-lg-9 mb-4">
           <div class="card card-body">
-            <h5 class="mb-4">Crear Embargo</h5>
+            <h5 class="mb-4">Crear Proceso</h5>
             <form id="formCrearEmbargo" enctype="multipart/form-data">
               <!-- Sección superior con foto de perfil y datos básicos del cliente -->
               <div class="row mb-4">
@@ -291,7 +291,7 @@
 
                     <!-- Fecha de vinculación -->
                     <div class="small text-muted">
-                      Vinculación: <span id="detalleVinculacion" class="text-dark">---</span>
+                      Vinculación: <span id="detalleVinculacion" class="text-dark font-weight-bold">---</span>
                     </div>
                   </div>
                 </div>
@@ -302,18 +302,23 @@
                     <div class="card-body py-3">
                       <div class="row">
                         <div class="col-md-4">
-                          <h5 class="fw-bold mb-1" id="detalleNombreCliente">[Nombre del Cliente]</h5>
-                          <p class="text-muted small mb-1" id="detalleTipoDocumento">[Tipo de Documento]</p>
+                          <h5 class="fw-bold mb-1" id="detalleNombreCliente">---</h5>
+                          <p class="mb-1">
+                            <span class="fw-bold text-info">Cédula:</span>
+                            <span id="detalleDocumento" class="text-dark font-weight-bold">---</span>
+                          </p>
                         </div>
                         <div class="col-md-4">
-                          <p class="mb-1"><span class="fw-semibold">Teléfono:</span> <span
-                              id="detalleTelefono">---</span></p>
-                          <p class="mb-1"><span class="fw-semibold">Email:</span> <span id="detalleEmail">---</span></p>
+                          <p class="mb-1"><span class="fw-bold text-info">Teléfono:</span> <span id="detalleTelefono"
+                              class="text-dark font-weight-bold">---</span></p>
+                          <p class="mb-1"><span class="fw-bold text-info">Email:</span> <span id="detalleEmail"
+                              class="text-dark font-weight-bold">---</span></p>
                         </div>
                         <div class="col-md-4">
-                          <p class="mb-1"><span class="fw-semibold">Dirección:</span> <span
-                              id="detalleDireccion">---</span></p>
-                          <p class="mb-1"><span class="fw-semibold">Ciudad:</span> <span id="detalleCiudad">---</span>
+                          <p class="mb-1"><span class="fw-bold text-info">Pagaduría:</span> <span id="detallePagaduria"
+                              class="text-dark font-weight-bold">---</span></p>
+                          <p class="mb-1"><span class="fw-bold text-info">Ciudad:</span> <span id="detalleCiudad"
+                              class="text-dark font-weight-bold">---</span>
                           </p>
                         </div>
                       </div>
@@ -340,14 +345,13 @@
                   </div>
 
                   <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold text-dark">Pagaduría*</label>
-                    <input type="text" class="form-control" name="pagaduria"
-                      placeholder="Las pagadurías cargan automáticamente" required>
+                    <label class="form-label fw-bold text-dark">Pagaduría</label>
+                    <input type="text" class="form-control" name="pagaduria" id="inputPagaduria"
+                      placeholder="Las pagadurías cargan automáticamente" readonly>
                   </div>
-
                   <!-- Fila 2 -->
                   <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold text-dark">Porcentaje*</label>
+                    <label class="form-label fw-bold text-dark">Porcentaje</label>
                     <div class="input-group">
                       <input type="number" class="form-control" name="porcentaje" id="porcentaje" min="1" max="100"
                         placeholder="Ej: 30" required>
@@ -356,21 +360,22 @@
                   </div>
 
                   <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold text-dark">Juzgado*</label>
+                    <label class="form-label fw-bold text-dark">Juzgado</label>
                     <input type="text" class="form-control" name="juzgado" id="juzgado"
                       placeholder="Ej: Juzgado 15 Civil Municipal" required>
                   </div>
 
                   <!-- Fila 3 -->
                   <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold text-dark">Fecha de radicación*</label>
-                    <input type="date" class="form-control" name="fecha_radicacion" id="fecha_radicacion" required>
+                    <label class="form-label fw-bold text-dark">Fecha de radicación</label>
+                    <input type="date" class="form-control" name="fecha_radicacion" id="fecha_radicacion" required
+                      min="">
                   </div>
 
                   <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold text-dark">Fecha solicitud expediente</label>
                     <input type="date" class="form-control" name="fecha_solicitud_expediente"
-                      id="fecha_solicitud_expediente">
+                      id="fecha_solicitud_expediente" readonly>
                   </div>
                 </div>
               </div>
@@ -518,26 +523,89 @@
       </form>
     </div>
   </div>
+  </div>
 
-
-  <!-- <footer class="footer py-4  ">
-    <div class="container-fluid">
-      <div class="row align-items-center justify-content-lg-between">
-        <div class="col-lg-6 mb-lg-0 mb-4">
-          <div class="copyright text-center text-sm text-muted text-lg-start">
-            ©
-            <script>
-              document.write(new Date().getFullYear())
-            </script>,
-            Diseñado Por
-            <a href="https://www.instagram.com/andres_753_/" class="font-weight-bold" target="_blank">Andres
-              GUAPACHA</a>
+  <!-- Modal Seleccionar Cliente -->
+  <div class="modal fade" id="modalSeleccionCliente" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title text-white"><i class="fas fa-id-card me-2 text-white"></i>Seleccionar Cliente</h5>
+        </div>
+        <div class="modal-body">
+          <!-- Campo de búsqueda por cédula -->
+          <div class="mb-4">
+            <label for="inputCedula" class="form-label fw-semibold">Buscar cliente por cédula</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white rounded-start">
+                <i class="fas fa-id-card text-secondary"></i>
+              </span>
+              <input type="text" class="form-control" id="inputCedula" placeholder="Ingrese el número de cédula"
+                autocomplete="off" inputmode="numeric" pattern="[0-9]*">
+              <button class="btn btn-dark rounded-end" type="button" id="btnBuscarCedula">
+                <i class="fas fa-search me-1"></i> Buscar
+              </button>
+            </div>
           </div>
+
+          <!-- Resultado de búsqueda (inicialmente oculto) -->
+          <div id="resultadoCliente" class="d-none">
+            <div class="card border-dark">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                  <!-- Foto de perfil del cliente - Contenedor con relación de aspecto 1:1 -->
+                  <div class="flex-shrink-0 me-4" style="width: 100px; height: 100px;">
+                    <img src="" id="clienteFotoPerfil" class="img-thumbnail rounded-circle w-100 h-100 object-fit-cover"
+                      alt="Foto de perfil" onerror="this.src='../assets/img/avatar.png'; this.onerror=null;">
+                  </div>
+
+                  <!-- Datos del cliente -->
+                  <div class="flex-grow-1">
+                    <h5 class="card-title mb-2" id="clienteNombre"></h5>
+                    <div class="d-flex flex-wrap gap-3">
+                      <div>
+                        <span class="badge bg-info bg-opacity-25 text-white">
+                          <i class="fas fa-id-card me-1 text-white"></i>
+                          <span id="clienteCedula" class="text-white"></span>
+                        </span>
+                      </div>
+                      <div>
+                        <span class="badge bg-info bg-opacity-25 text-white">
+                          <i class="fas fa-phone me-1 text-white"></i>
+                          <span id="clienteTelefono" class="text-white"></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Botón de selección -->
+                  <div class="flex-shrink-0 ms-4">
+                    <button class="btn btn-success px-4 py-2" id="btnSeleccionarCliente">
+                      <i class="fas fa-check me-2"></i> Seleccionar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mensaje cuando no hay resultados -->
+          <div id="sinResultados" class="text-center py-4 d-none">
+            <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No se encontró el cliente</h5>
+            <p class="text-muted">Verifique el número de cédula</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelarBusqueda">
+            <i class="fas fa-times me-1"></i> Cancelar
+          </button>
         </div>
       </div>
     </div>
-  </footer> -->
   </div>
+
+
   <div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
       <i class="material-symbols-rounded py-2">settings</i>
@@ -625,6 +693,8 @@
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="/js/crearEmbargos.js"></script>
+  <script src="/js/hora.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script>
@@ -648,59 +718,6 @@
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
 
-  <script src="/js/crearInsolvencias.js"></script>
-  <script src="/js/hora.js"></script>
-  <script>
-    // Función para agregar pagadurías dinámicas (hasta 3)
-    function agregarPagaduria() {
-      const contenedor = document.getElementById('contenedorPagadurias');
-      const gruposPagadurias = contenedor.querySelectorAll('.input-group').length;
-
-      if (gruposPagadurias < 3) {
-        const nuevoGrupo = document.createElement('div');
-        nuevoGrupo.className = 'input-group mb-2';
-        nuevoGrupo.innerHTML = `
-      <select class="form-select" name="pagaduria[]">
-        <option value="">Seleccione...</option>
-        <option value="Colpensiones">Colpensiones</option>
-        <option value="Protección">Protección</option>
-      </select>
-      <button class="btn btn-outline-danger" type="button" onclick="removerPagaduria(this)">
-        <i class="fas fa-times"></i>
-      </button>
-    `;
-        contenedor.appendChild(nuevoGrupo);
-      } else {
-        alert('Máximo 3 pagadurías permitidas');
-      }
-    }
-
-    // Función para remover pagadurías
-    function removerPagaduria(boton) {
-      boton.closest('.input-group').remove();
-    }
-
-    // Mostrar/ocultar campo de link para Red Judicial
-    document.querySelectorAll('input[name="red_judicial"]').forEach(radio => {
-      radio.addEventListener('change', function () {
-        document.getElementById('linkRedJudicialContainer').style.display =
-          this.value === 'si' ? 'block' : 'none';
-      });
-    });
-
-    // Mostrar/ocultar detalle de subsanaciones
-    function mostrarDetalleSubsanaciones(mostrar) {
-      document.getElementById('detalleSubsanacionesContainer').style.display =
-        mostrar ? 'block' : 'none';
-    }
-
-    // Formateador de moneda (similar al de tu plantilla)
-    function formatearMoneda(input) {
-      let valor = input.value.replace(/\D/g, '');
-      valor = Number(valor).toLocaleString('es-CO');
-      input.value = valor;
-    }
-  </script>
 </body>
 
 </html>

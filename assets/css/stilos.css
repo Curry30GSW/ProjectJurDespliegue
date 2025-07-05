@@ -135,3 +135,64 @@ input[type="radio"]:disabled {
 #campoDetalleCorrecciones {
     transition: all 0.3s ease;
 }
+
+
+
+/* Estilos adicionales para mejorar la experiencia */
+.cliente-item:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.seleccionar-btn {
+  transition: all 0.2s ease;
+}
+
+.seleccionar-btn:hover {
+  transform: translateX(3px);
+}
+
+#listaClientes {
+  transition: all 0.3s ease;
+}
+
+/* Estilo para el item seleccionado */
+.cliente-item.seleccionado {
+  background-color: #e7f5ff;
+  border-left: 3px solid #0d6efd;
+}
+
+/* Estilo para el input de cédula */
+#inputCedula {
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+/* Efecto para el botón de búsqueda */
+#btnBuscarCedula {
+  transition: all 0.2s;
+}
+
+#btnBuscarCedula:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Estilo para la tarjeta de resultados */
+#resultadoCliente .card {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-width: 2px;
+}
+
+/* Efecto para el botón de seleccionar */
+#btnSeleccionarCliente {
+  transition: all 0.2s;
+  min-width: 120px;
+}
+
+#btnSeleccionarCliente:hover {
+  transform: scale(1.02);
+}
+
+
