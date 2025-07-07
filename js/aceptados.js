@@ -29,10 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 async function obtenerClientes() {
     try {
         const token = sessionStorage.getItem('token');
-        const url = 'http://localhost:3000/api/clientes-embargos';
+        const url = 'http://localhost:3000/api/embargo/aceptados';
 
         const response = await fetch(url, {
             method: 'GET',
@@ -65,7 +66,6 @@ async function obtenerClientes() {
         Swal.fire('Error', 'No se pudo obtener la información.', 'error');
     }
 }
-
 
 const mostrar = (clientes) => {
     let resultados = '';
@@ -113,11 +113,3 @@ const mostrar = (clientes) => {
 
     $("#tablaClientes tbody").html(resultados);
 };
-
-$(document).on('click', '.foto-cliente', function () {
-    const src = $(this).data('src');
-    $('#imagen-modal').attr('src', src);
-
-    const modal = new bootstrap.Modal(document.getElementById('modalFoto'));
-    modal.show();
-});

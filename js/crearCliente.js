@@ -530,35 +530,47 @@ async function handleFormSubmit(e) {
     };
 
 
-    // 4. Obtener pagadurías
+    const situacionLaboral = document.getElementById('trabaja').value; // 1: Activo, 0: Pensionado
     const pagadurias = [];
-    for (let i = 1; i <= 4; i++) {
-      const nombre = document.getElementById(`pagaduria${i}`).value.trim().toUpperCase();
-      const valor = document.getElementById(`valor${i}`).value.trim();
-      const descuento = document.getElementById(`descuento${i}`).value;
 
-      if (nombre !== '' && valor !== '') {
-        pagadurias.push({
-          nombre,
-          valor: parseFloat(valor.replace(/\./g, '').replace(/\s/g, '')),
-          descuento: parseFloat(descuento)
+    if (situacionLaboral === '0') {
+      // Solo si es pensionado recolectamos pagadurías
+      for (let i = 1; i <= 4; i++) {
+        const nombre = document.getElementById(`pagaduria${i}`).value.trim().toUpperCase();
+        const valor = document.getElementById(`valor${i}`).value.trim();
+        const descuento = document.getElementById(`descuento${i}`).value;
+
+        if (nombre !== '' && valor !== '') {
+          pagadurias.push({
+            nombre,
+            valor: parseFloat(valor.replace(/\./g, '').replace(/\s/g, '')),
+            descuento: parseFloat(descuento)
+          });
+        }
+      }
+
+      // Validación: si es pensionado y no hay pagadurías válidas
+      if (pagadurias.length === 0) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Debe ingresar al menos una pagaduría con su valor y descuento.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
         });
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        return;
       }
     }
 
-    if (pagadurias.length === 0) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Debe ingresar al menos una pagaduría con su valor y descuento.',
-        icon: 'error',
-        confirmButtonText: 'Entendido'
-      });
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalText;
-      return;
-    }
+    // Asignar pagadurías solo si existen (si es pensionado)
+    formData.pagadurias = pagadurias.length > 0 ? pagadurias : null;
 
-    formData.pagadurias = pagadurias;
+    // También puedes agregar empresa y cargo si es activo
+    if (situacionLaboral === '1') {
+      formData.empresa = document.getElementById('empresa').value.trim().toUpperCase();
+      formData.cargo = document.getElementById('cargo').value.trim().toUpperCase();
+    }
 
     // 5. Subir archivos
     const fileUploads = [];

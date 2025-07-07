@@ -196,3 +196,33 @@ input[type="radio"]:disabled {
 }
 
 
+.blink {
+  animation: blink-animation 1.5s infinite;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+@keyframes blink-animation {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.bg-estado-aceptado {
+  background-color: #4CAF50; /* Verde suave */
+  color: white;
+}
+
+.bg-estado-rechazado {
+  background-color: #F44336; /* Rojo suave */
+  color: white;
+}
+
+
+
