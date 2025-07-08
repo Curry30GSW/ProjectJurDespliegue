@@ -344,8 +344,15 @@ function mostrarAlertasCentrales() {
             if (clientesConAlerta.length > 0) {
                 mostrarAlertasToast(clientesConAlerta);
             } else {
-                console.log("No hay alertas hoy.");
+                const contenedor = document.getElementById("alerta-central-container");
+                contenedor.innerHTML = `<div class="alerta-toast alerta-vacia">
+                                        <h4>✅ No hay expedientes pendientes para hoy.</h4>
+                                    </div>`
+                setTimeout(() => {
+                    contenedor.innerHTML = '';
+                }, 2500);
             }
+
         })
         .catch(err => console.error("Error al traer los datos:", err));
 }

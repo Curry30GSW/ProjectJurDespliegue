@@ -112,7 +112,7 @@ const mostrar = (clientes) => {
                     <button class="btn btn-sm btn-info text-white ver-detalle" data-cedula="${cliente.cedula}">
                         Ver detalle
                     </button>
-                    <button class="btn btn-sm btn-primary text-white editar-cliente"
+                    <button class="btn btn-sm btn-primary text-white subir-data"
                         data-cedula="${cliente.cedula}"
                         data-nombre="${cliente.nombres} ${cliente.apellidos}">
                         Subir DataCrédito
@@ -387,7 +387,7 @@ function mostrarError(mensaje) {
 }
 
 document.addEventListener('click', function (event) {
-    if (event.target.classList.contains('editar-cliente')) {
+    if (event.target.classList.contains('subir-data')) {
         const cedula = event.target.getAttribute('data-cedula');
         const nombre = event.target.getAttribute('data-nombre');
 

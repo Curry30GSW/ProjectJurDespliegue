@@ -75,36 +75,40 @@ const mostrar = (clientes) => {
         let estadoEmbargoClase = '';
 
         if (cliente.estado_embargo === 1) {
-            estadoEmbargoTexto = 'Rechazado';
+            estadoEmbargoTexto = 'RECHAZADO';
             estadoEmbargoClase = 'blink bg-danger text-white px-2 rounded';
         } else if (cliente.estado_embargo === 0) {
-            estadoEmbargoTexto = 'Aceptado';
+            estadoEmbargoTexto = 'ACEPTADO';
             estadoEmbargoClase = 'blink bg-success text-white px-2 rounded';
         } else {
-            estadoEmbargoTexto = 'Pendiente';
+            estadoEmbargoTexto = 'PENDIENTE';
             estadoEmbargoClase = 'blink bg-warning text-dark px-2 rounded';
         }
 
         resultados += `
-      <tr>
-          <td>
-              <div class="d-flex align-items-center px-2 py-1">
-                  <div>
-                      <img src="http://localhost:3000${cliente.foto_perfil}" 
-                          class="avatar avatar-lg me-3 foto-cliente" 
-                          alt="${cliente.nombres}"
-                          data-src="http://localhost:3000${cliente.foto_perfil}">
-                  </div>
-                  <div class="d-flex flex-column justify-content-center">
-                      <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
-                      <p class="text-xs text-secondary mb-0">${cliente.cedula}</p>
-                  </div>
-              </div>
-          </td>
-          <td><p class="text-xs font-weight-bold ">${cliente.radicado}</p></td>
-          <td><p class="text-xs font-weight-bold ${estadoEmbargoClase}">${estadoEmbargoTexto}</p></td>
-      </tr>
-    `;
+            <tr>
+                <td class="align-middle">
+                    <div class="d-flex align-items-center px-2 py-1">
+                        <div>
+                            <img src="http://localhost:3000${cliente.foto_perfil}" 
+                                class="avatar avatar-lg me-3 foto-cliente" 
+                                alt="${cliente.nombres}" 
+                                data-src="http://localhost:3000${cliente.foto_perfil}">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                            <span class="text-xs font-weight-bold text-dark mb-1">${cliente.nombres} ${cliente.apellidos}</span>
+                            <span class="text-xs text-dark ">${cliente.cedula}</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="text-center align-middle">
+                    <span class="text-xs font-weight-bold">${cliente.radicado}</span>
+                </td>
+                <td class="text-center align-middle">
+                    <span class="text-xs font-weight-bold ${estadoEmbargoClase}">${estadoEmbargoTexto}</span>
+                </td>
+            </tr>
+            `;
     });
 
     if ($.fn.DataTable.isDataTable('#tablaClientes')) {
