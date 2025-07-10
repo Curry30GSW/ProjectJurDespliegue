@@ -27,6 +27,7 @@
 
 
 
+
   <style>
     .form-control {
       border: 1px solid #ced4da !important;
@@ -290,6 +291,7 @@
                     <!-- ID del Cliente con badge -->
                     <div class="mb-2">
                       <span class="badge bg-info text-white fs-6">ID: <span id="detalleID">---</span></span>
+                      <input type="hidden" id="id_cliente" name="id_cliente">
                     </div>
 
                     <!-- Fecha de vinculación -->
@@ -369,16 +371,25 @@
                   </div>
 
                   <!-- Fila 3 -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold text-dark">Fecha de radicación</label>
-                    <input type="date" class="form-control" name="fecha_radicacion" id="fecha_radicacion" required
-                      min="">
+                  <div class="row mb-3">
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold text-dark">Fecha de radicación</label>
+                      <input type="date" class="form-control" name="fecha_radicacion" id="fecha_radicacion">
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold text-dark">Fecha solicitud expediente</label>
+                      <input type="date" class="form-control" name="fecha_expediente" id="fecha_expediente" readonly>
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold text-dark">Fecha revisión expediente</label>
+                      <input type="date" class="form-control" name="fecha_revision_exp" id="fecha_revision_exp"
+                        readonly>
+                    </div>
                   </div>
 
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold text-dark">Fecha solicitud expediente</label>
-                    <input type="date" class="form-control" name="fecha_expediente" id="fecha_expediente" readonly>
-                  </div>
+
                 </div>
               </div>
 
@@ -480,51 +491,23 @@
           </div>
         </div>
 
-        <!-- Columna de notificaciones (EXTERNA al card principal) -->
+        <!-- TARJETA DE NOTIFICACIONES (col-3) -->
         <div class="col-lg-3 mb-4">
           <div class="card bg-light shadow rounded-4 p-3">
             <div class="card-header bg-transparent border-0 pb-2">
               <h6 class="text-primary mb-1">Notificaciones de Embargos</h6>
               <p class="text-sm text-muted mb-0">
-                <i class="fa fa-bell me-2"></i>Historial de acciones recientes
+                <i class="fa fa-bell me-2"></i>Historial de notificaciones recientes
               </p>
             </div>
             <div class="card-body p-0">
               <div id="notificaciones-contenedor" class="timeline timeline-one-side">
                 <!-- Ejemplo de notificaciones -->
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step bg-success shadow">
-                    <i class="fa fa-check text-white"></i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Embargo creado correctamente</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Hoy 2:00 PM</p>
-                  </div>
-                </div>
-
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step bg-warning shadow">
-                    <i class="fa fa-exclamation text-white"></i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Subsanación requerida</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Ayer 4:30 PM</p>
-                  </div>
-                </div>
-
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step bg-info shadow">
-                    <i class="fa fa-info-circle text-white"></i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Nuevo juzgado agregado</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">15 JUN 10:20 AM</p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
       </form>
     </div>
@@ -703,6 +686,7 @@
   <script src="../assets/js/core/bootstrap.min.js"></script>
   <script src="/js/crearEmbargos.js"></script>
   <script src="/js/hora.js"></script>
+  <script src="/js/notificaciones.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
 

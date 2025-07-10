@@ -102,9 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const backdrop = document.querySelector('.modal-backdrop');
             if (backdrop) backdrop.remove();
 
-            // ✅ Mostrar tus alertas centradas
-            mostrarAlertasCentrales();
-
             // Actualizar detalles del cliente
             actualizarDetalleCliente(clienteSeleccionado);
         }
@@ -115,11 +112,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Función para actualizar los detalles del cliente
     function actualizarDetalleCliente(cliente) {
         const fotoPerfil = document.getElementById('detalleFotoPerfil');
+
+        // Corregir la ruta de la foto (consistencia en mayúsculas)
         if (cliente.foto_perfil) {
             fotoPerfil.src = `http://localhost:3000${cliente.foto_perfil}`;
         } else {
             fotoPerfil.src = '../assets/img/avatar.png';
         }
+
         const fechaRaw = cliente.fecha_vinculo;
 
         if (fechaRaw) {
@@ -133,7 +133,10 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('detalleVinculacion').textContent = '---';
         }
 
+        // Establecer el ID del cliente en el campo hidden
+        document.getElementById('id_cliente').value = cliente.id_cliente || '';
 
+        // Mostrar datos en la interfaz
         document.getElementById('detalleID').textContent = cliente.id_cliente || '---';
         document.getElementById('detalleDocumento').textContent = cliente.cedula || '---';
         document.getElementById('detalleNombreCliente').textContent = `${cliente.nombres || ''} ${cliente.apellidos || ''}`.trim();
@@ -177,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     const fechaRadicacionInput = document.getElementById('fecha_radicacion');
     const fechaSolicitudInput = document.getElementById('fecha_expediente');
+    const fechaRevisionInput = document.getElementById('fecha_revision_exp');
 
     // Establecer la fecha mínima como hoy
     const hoy = new Date();
@@ -186,21 +190,47 @@ document.addEventListener('DOMContentLoaded', function () {
     const fechaHoy = `${anio}-${mes}-${dia}`;
     fechaRadicacionInput.min = fechaHoy;
 
-    // Escuchar cambios para calcular +15 días
+    // Función para sumar días hábiles (lunes a viernes)
+    function sumarDiasHabiles(fechaInicial, cantidadDias) {
+        const fecha = new Date(fechaInicial);
+        let diasSumados = 0;
+
+        while (diasSumados < cantidadDias) {
+            fecha.setDate(fecha.getDate() + 1);
+            const diaSemana = fecha.getDay(); // 0 = domingo, 6 = sábado
+            if (diaSemana !== 0 && diaSemana !== 6) {
+                diasSumados++;
+            }
+        }
+        return fecha;
+    }
+
+    // Escuchar cambios para calcular +15 y +30 días hábiles
     fechaRadicacionInput.addEventListener('change', function () {
         const fechaRadicacion = new Date(this.value);
 
         if (!isNaN(fechaRadicacion.getTime())) {
-            fechaRadicacion.setDate(fechaRadicacion.getDate() + 15);
-            const anio = fechaRadicacion.getFullYear();
-            const mes = (fechaRadicacion.getMonth() + 1).toString().padStart(2, '0');
-            const dia = fechaRadicacion.getDate().toString().padStart(2, '0');
-            fechaSolicitudInput.value = `${anio}-${mes}-${dia}`;
+            // Calcular fechas hábiles
+            const fechaSolicitud = sumarDiasHabiles(fechaRadicacion, 15);
+            const fechaRevision = sumarDiasHabiles(fechaRadicacion, 30);
+
+            // Formatear y asignar
+            const formatDate = (fecha) => {
+                const año = fecha.getFullYear();
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                return `${año}-${mes}-${dia}`;
+            };
+
+            fechaSolicitudInput.value = formatDate(fechaSolicitud);
+            fechaRevisionInput.value = formatDate(fechaRevision);
         } else {
             fechaSolicitudInput.value = '';
+            fechaRevisionInput.value = '';
         }
     });
 });
+
 
 const nombreAsesor = sessionStorage.getItem('nombreUsuario');
 document.getElementById('asesorNombre').textContent = nombreAsesor || '---';
@@ -213,21 +243,20 @@ document.addEventListener('DOMContentLoaded', () => {
 async function seleccionarEstadoFinal(estado) {
     const form = document.getElementById('formCrearEmbargo');
     const estadoFinalInput = document.getElementById('estado_embargo');
+    const idClienteInput = document.getElementById('id_cliente');
 
-    // Asignar valor numérico: 0 = aceptado, 1 = rechazado
-    const estadoNumerico = (estado === 'aceptado') ? 0 : 1;
-    estadoFinalInput.value = estadoNumerico;
+    // Validar que el ID del cliente esté presente
+    if (!idClienteInput.value) {
+        return Swal.fire('Error', 'No se ha seleccionado un cliente válido', 'error');
+    }
 
-    // Obtener valores a validar
     const valorEmbargo = document.getElementById('valor_embargo').value.trim();
-    const pagaduria = document.getElementById('inputPagaduria').value.trim();
     const porcentaje = document.getElementById('porcentaje').value.trim();
     const juzgado = document.getElementById('juzgado').value.trim();
     const fechaRadicacion = document.getElementById('fecha_radicacion').value.trim();
     const redJudicial = document.querySelector('input[name="red_judicial"]:checked')?.value;
     const linkRedJudicial = document.querySelector('input[name="link_red_judicial"]')?.value.trim();
 
-    // Validaciones
     if (!valorEmbargo) {
         return Swal.fire('Campo obligatorio', 'Por favor ingresa el valor del embargo.', 'warning');
     }
@@ -252,62 +281,65 @@ async function seleccionarEstadoFinal(estado) {
         return Swal.fire('Campo obligatorio', 'Debes ingresar el link de la red judicial.', 'warning');
     }
 
-    // Si pasa las validaciones, continúa
-    const idEmbargo = obtenerIdEmbargo();
-    const url = `http://localhost:3000/api/embargo/${idEmbargo}`;
+    // Asignar valor numérico al estado
+    const estadoNumerico = (estado === 'aceptado') ? 0 : 1;
+    estadoFinalInput.value = estadoNumerico;
 
-    // Crear objeto plano desde los inputs del formulario
+    // Crear objeto con los datos del formulario
     const formData = new FormData(form);
     const plainData = Object.fromEntries(formData.entries());
 
-    // Agregar valores manualmente
-    plainData.nombreUsuario = sessionStorage.getItem('nombreUsuario') || '---';
-    plainData.pagaduria_embargo = pagaduria;
+    // Agregar valores adicionales
+    plainData.asesor_embargo = sessionStorage.getItem('nombreUsuario') || '---';
+    plainData.pagaduria_embargo = document.getElementById('inputPagaduria').value.trim();
     plainData.porcentaje_embargo = porcentaje;
-    plainData.juzgado_embargo = juzgado;
-    plainData.red_judicial = (redJudicial === 'si') ? linkRedJudicial : '';
-    plainData.estado_embargo = estadoNumerico; // 👈 este es el valor que se enviará al backend
+    plainData.juzgado_embargo = document.getElementById('juzgado').value.trim().toUpperCase();
+    plainData.red_judicial = document.querySelector('input[name="red_judicial"]:checked')?.value === 'si'
+        ? document.querySelector('input[name="link_red_judicial"]').value.trim().toUpperCase()
+        : '';
+    plainData.estado_embargo = estadoNumerico;
+    // Agregar fechas calculadas
+    plainData.fecha_expediente = document.getElementById('fecha_expediente').value.trim();
+    plainData.fecha_revision_exp = document.getElementById('fecha_revision_exp').value.trim();
 
-    // Enviar al backend
+
+    console.log('Datos a enviar:', plainData); // Para depuración
+
     try {
-        console.log('Datos enviados al backend:', plainData);
-
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(plainData),
+        const response = await fetch('http://localhost:3000/api/crear-embargos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(plainData)
         });
 
-        if (response.ok) {
-            const resultado = await response.json();
-            Swal.fire({
-                icon: 'success',
-                title: '¡Éxito!',
-                text: `Embargo ${estado === 'aceptado' ? 'enviado' : 'rechazado'} correctamente.`,
-            }).then(() => {
-                if (estado === 'rechazado') {
-                    document.getElementById('btnNuevoProceso').classList.remove('d-none');
-                    document.getElementById('mensajeRechazo').textContent = 'Este embargo fue rechazado. Puedes crear un nuevo proceso si lo deseas.';
-                } else {
-                    location.reload();
-                }
-            });
-        } else {
-            const error = await response.text();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Error al enviar el embargo: ' + error,
-            });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al procesar el embargo');
         }
-    } catch (err) {
-        console.error(err);
+
+        const resultado = await response.json();
+
+        await Swal.fire({
+            title: 'Éxito',
+            text: resultado.action === 'insert'
+                ? 'Nuevo embargo creado correctamente'
+                : 'Embargo actualizado correctamente',
+            icon: 'success'
+        });
+
+        if (estado === 'rechazado') {
+            document.getElementById('btnNuevoProceso').classList.remove('d-none');
+            document.getElementById('mensajeRechazo').textContent = 'Este embargo fue rechazado. Puedes crear un nuevo proceso si lo deseas.';
+        } else {
+            window.location.href = 'embargos.html';
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
         Swal.fire({
-            icon: 'error',
-            title: 'Error de conexión',
-            text: 'Hubo un error en la conexión con el servidor.',
+            title: 'Error',
+            text: error.message || 'Error al procesar el embargo',
+            icon: 'error'
         });
     }
 }
@@ -315,8 +347,7 @@ async function seleccionarEstadoFinal(estado) {
 
 
 function obtenerIdEmbargo() {
-    // Puedes obtener el ID desde la URL, un input oculto, una variable global, etc.
-    return document.getElementById('detalleID').textContent.trim(); // ejemplo
+    return document.getElementById('detalleID').textContent.trim();
 }
 
 function formatearMoneda(input) {
@@ -327,69 +358,6 @@ function formatearMoneda(input) {
 
 
 
-function mostrarAlertasCentrales() {
-    fetch("http://localhost:3000/api/clientes-embargos")
-        .then(response => response.json())
-        .then(data => {
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-
-            const clientesConAlerta = data.filter(cliente => {
-                if (!cliente.fecha_expediente) return false;
-                const fecha = new Date(cliente.fecha_expediente);
-                fecha.setHours(0, 0, 0, 0);
-                return fecha.getTime() === hoy.getTime();
-            });
-
-            if (clientesConAlerta.length > 0) {
-                mostrarAlertasToast(clientesConAlerta);
-            } else {
-                const contenedor = document.getElementById("alerta-central-container");
-                contenedor.innerHTML = `<div class="alerta-toast alerta-vacia">
-                                        <h4>✅ No hay expedientes pendientes para hoy.</h4>
-                                    </div>`
-                setTimeout(() => {
-                    contenedor.innerHTML = '';
-                }, 2500);
-            }
-
-        })
-        .catch(err => console.error("Error al traer los datos:", err));
-}
-
-
-function formatearFechaPersonalizada(fechaStr) {
-    const mesesAbreviados = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-
-    const fecha = new Date(fechaStr);
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    const mes = mesesAbreviados[fecha.getMonth()];
-    const año = fecha.getFullYear();
-
-    return `${dia}/${mes}/${año}`;
-}
-
-
-function mostrarAlertasToast(clientes) {
-    const contenedor = document.getElementById("alerta-central-container");
-    contenedor.innerHTML = ""; // Limpiar alertas anteriores
-
-    clientes.forEach((cliente, index) => {
-        const fechaFormateada = formatearFechaPersonalizada(cliente.fecha_expediente);
-
-        const alertaHTML = `
-            <div class="alerta-toast" id="toast-${index}">
-                <button class="cerrar-alerta" onclick="document.getElementById('toast-${index}').remove()">×</button>
-                <h4>🚨 ¡Expediente por revisar!</h4>
-                <p><strong>${cliente.nombres} ${cliente.apellidos}</strong></p>
-                <p><strong>Cédula:</strong> ${cliente.cedula}</p>
-                <p><strong>Radicado:</strong> ${cliente.radicado || 'N/A'}</p>
-                <p><strong>Fecha:</strong> ${fechaFormateada}</p>
-            </div>
-        `;
-        contenedor.insertAdjacentHTML('beforeend', alertaHTML);
-    });
-}
 
 
 
