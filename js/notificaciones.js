@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     mostrarAlertasCentrales();
+    mostrarNotificacionesEmbargo();
 });
 
 
@@ -47,39 +48,45 @@ function mostrarAlertasNotificaciones(clientes) {
     contenedor.innerHTML = "";
 
     clientes.forEach((cliente, index) => {
-
-
-        const fechaFormateada = formatearFechaPersonalizada(cliente.fecha_expediente);
         const id = `notificacion-${index}`;
+        const fechaFormateada = formatearFechaPersonalizada(cliente.fecha_expediente);
 
         const notificacionHTML = `
-    <div class="timeline-block mb-3 notificacion-timeline" id="${id}">
-        <span class="timeline-step bg-danger shadow">
-            <i class="fa fa-bell text-white"></i>
-        </span>
-        <div class="timeline-content">
-            <div class="acciones">
-                <button class="btn-leido" onclick="marcarComoLeido('${id}')" title="Marcar como leído">
-                    <i class="fa fa-check"></i>
-                </button>
-                <button class="btn-eliminar" onclick="eliminarNotificacion('${id}', ${cliente.id_embargos})" title="Eliminar">
-                    <i class="fa fa-times"></i>
-                </button>
+        <div class="ios-toast shadow-sm p-2 mb-2 rounded position-relative d-flex gap-2 align-items-start" id="${id}" style="font-size: 0.85rem;">
+          
+
+            <!-- Contenido -->
+            <div class="flex-grow-1">
+                <h6 class="mb-1 fw-semibold text-dark" style="font-size: 0.95rem;">
+                    Expediente por Solicitar – ${cliente.nombres} ${cliente.apellidos}
+                </h6>
+                <p class="mb-1 text-muted small">
+                    C.C. <strong>${cliente.cedula || 'N/D'}</strong> – Radicado: <strong>${cliente.radicado || 'N/D'}</strong>
+                </p>
+                <div class="alert alert-light border rounded px-2 py-1 mb-2" style="font-size: 0.8rem;">
+                    <i class="fas fa-folder-open text-danger me-1"></i>
+                    Fecha de expediente: ${fechaFormateada || 'N/D'}
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary rounded-pill btn-sm py-0 px-2" onclick="marcarComoLeido('${id}')">
+                        <i class="fa fa-check me-1"></i> Leído
+                    </button>
+                    <button class="btn btn-outline-danger rounded-pill btn-sm py-0 px-2" onclick="eliminarNotificacion('${id}', ${cliente.id_embargos})">
+                        <i class="fa fa-times me-1"></i> Eliminar
+                    </button>
+                </div>
             </div>
-            <h6 class="text-dark text-sm font-weight-bold mb-0">
-                Expediente por Solicitar: ${cliente.nombres} ${cliente.apellidos}
-            </h6>
-            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
-                Cédula: ${cliente.cedula} | Fecha: ${fechaFormateada} | Radicación: ${cliente.radicado}
-            </p>
+
+            <!-- Fecha -->
+            <span class="position-absolute end-0 bottom-0 me-2 mb-1 text-muted small">${fechaFormateada}</span>
         </div>
-    </div>
-    `;
+        `;
 
         contenedor.insertAdjacentHTML("beforeend", notificacionHTML);
     });
-
 }
+
+
 
 
 
@@ -189,4 +196,84 @@ function eliminarNotificacion(htmlId, idEmbargo) {
 function marcarComoLeido(id) {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('notificacion-leida');
+}
+
+//NOTIFICACIONES DE EMBARGO
+function mostrarNotificacionesEmbargo() {
+    fetch('http://localhost:3000/api/notificaciones-embargo')
+        .then(response => response.json())
+        .then(result => {
+            const data = result.data;
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const notificacionesHoy = data.filter(noti => {
+                if (!noti.fecha_notificacion) return false;
+
+                const fecha = new Date(noti.fecha_notificacion);
+                fecha.setHours(0, 0, 0, 0);
+
+                return fecha.getTime() === hoy.getTime();
+            });
+
+            if (notificacionesHoy.length > 0) {
+                mostrarAlertasNotificacionesEmbargo(notificacionesHoy);
+            } else {
+                const contenedor = document.getElementById("alerta-central-container");
+                contenedor.innerHTML = `<div class="alerta-toast alerta-vacia">
+                                            <h4>✅ No hay notificaciones de embargo para hoy.</h4>
+                                        </div>`;
+                setTimeout(() => {
+                    contenedor.innerHTML = '';
+                }, 2500);
+            }
+        })
+        .catch(err => {
+            console.error("Error al obtener notificaciones de embargo:", err);
+        });
+}
+
+
+function mostrarAlertasNotificacionesEmbargo(notificaciones) {
+    const contenedor = document.getElementById("notificaciones-contenedor");
+
+    notificaciones.forEach((noti, index) => {
+        const id = `notificacion-embargo-${index}`;
+
+        const notificacionHTML = `
+        <div class="ios-toast d-flex align-items-start shadow-sm p-2 mb-2 rounded position-relative" id="${id}" style="font-size: 0.85rem;">
+           
+            <div class="flex-grow-1">
+                <h6 class="mb-1 fw-semibold text-dark" style="font-size: 0.95rem;">Subsanación pendiente – ${noti.nombres} ${noti.apellidos}</h6>
+                <p class="mb-1 text-muted small">
+                    C.C. <strong>${noti.cedula || 'N/D'}</strong> – Radicado: <strong>${noti.radicado || 'N/D'}</strong><br>
+                    Asesor: ${noti.asesor_noticacion || 'N/D'}
+                </p>
+                <div class="alert alert-light border rounded px-2 py-1 mb-2" style="font-size: 0.8rem;">
+                    <i class="fas fa-comment text-warning me-1"></i>
+                    ${noti.observaciones || 'Sin observaciones'}
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary rounded-pill btn-sm py-0 px-2" onclick="posponerNotificacion('${id}')">
+                        <i class="fas fa-clock me-1"></i> Posponer
+                    </button>
+                    <button class="btn btn-outline-danger rounded-pill btn-sm py-0 px-2" onclick="eliminarNotificacion('${id}', ${noti.id_embargos})">
+                        <i class="fas fa-times me-1"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+            <span class="position-absolute end-0 bottom-0 me-2 mb-1 text-muted small">${formatDate(noti.fecha_notificacion)}</span>
+        </div>
+        `;
+
+        contenedor.insertAdjacentHTML("beforeend", notificacionHTML);
+    });
+}
+
+
+
+function formatDate(dateString) {
+    if (!dateString) return null;
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('es-ES', options);
 }

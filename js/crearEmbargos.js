@@ -319,6 +319,53 @@ async function seleccionarEstadoFinal(estado) {
 
         const resultado = await response.json();
 
+        // Si se seleccionó subsanaciones = SI, enviar la notificación
+        const subsanacionSI = document.getElementById('subsanaciones_si').checked;
+
+        if (subsanacionSI) {
+            const fechaNotificacion = document.querySelector('input[name="fecha_alarma"]').value.trim();
+            const observaciones = document.querySelector('textarea[name="observaciones_alarma"]').value.trim();
+            const asesor = sessionStorage.getItem('nombreUsuario') || '---';
+            const idEmbargo = resultado.id_embargos;
+
+            if (!fechaNotificacion || !observaciones) {
+                return Swal.fire('Campos incompletos', 'Debes ingresar la fecha y observaciones para programar la notificación.', 'warning');
+            }
+
+            const notificacion = {
+                fecha_notificacion: fechaNotificacion,
+                observaciones: observaciones,
+                asesor_noticacion: asesor,
+                id_embargos: idEmbargo
+            };
+
+            if (!idEmbargo) {
+                console.error('No se recibió un ID de embargo válido:', resultado);
+                return Swal.fire('Error', 'No se pudo obtener el ID del embargo creado.', 'error');
+            }
+
+            try {
+                console.log('Notificación a enviar:', notificacion);
+
+                const notifRes = await fetch('http://localhost:3000/api/notificaciones-embargos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(notificacion)
+                });
+
+                if (!notifRes.ok) {
+                    throw new Error('No se pudo programar la notificación');
+                }
+
+                console.log('Notificación registrada correctamente');
+
+            } catch (error) {
+                console.error('Error al registrar notificación:', error);
+                Swal.fire('Error', 'El embargo fue creado, pero no se pudo programar la notificación.', 'error');
+            }
+        }
+
+
         await Swal.fire({
             title: 'Éxito',
             text: resultado.action === 'insert'
@@ -357,7 +404,10 @@ function formatearMoneda(input) {
 }
 
 
-
+function mostrarDetalleSubsanaciones(mostrar) {
+    const contenedor = document.getElementById('detalleSubsanacionesContainer');
+    contenedor.style.display = mostrar ? 'block' : 'none';
+}
 
 
 

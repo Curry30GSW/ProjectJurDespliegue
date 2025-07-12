@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link href="../assets/css/stilos.css" rel="stylesheet" />
     <link rel="stylesheet" href="../assets/css/alerts.css">
+    <link rel="stylesheet" href="../assets/css/datatable.css">
 
     <style>
         .file-upload-container {
@@ -217,7 +218,7 @@
                                             <tr>
                                                 <th
                                                     class="text-uppercase text-secondary text-xs font-weight-bolder opacity-100">
-                                                    NOMBRE</th>
+                                                    Nombre</th>
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-100">
                                                     Radicado</th>
@@ -230,7 +231,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- Aquí se llenan los datos -->
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -344,6 +345,253 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalEditarEmbargo" tabindex="-1" aria-labelledby="modalEditarEmbargoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between align-items-center"
+                    style="background: linear-gradient(135deg, rgb(0, 0, 0) 0%, #157347 100%); color: white; padding: 15px 20px;">
+                    <h5 class="modal-title fw-bold text-white mb-0" id="modalEditarEmbargoLabel">
+                        <i class="fas fa-gavel me-2"></i> Editar Proceso de Embargo
+                    </h5>
+                </div>
+
+                <form id="formEditarEmbargo" enctype="multipart/form-data">
+                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                        <!-- Sección superior con foto de perfil y datos básicos del cliente -->
+                        <div class="row mb-4">
+                            <!-- Foto de perfil -->
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-white rounded-3 shadow-sm">
+                                    <img id="detalleFotoPerfil" src="../assets/img/avatar.png" alt="Foto de perfil"
+                                        class="rounded-circle shadow mb-2"
+                                        style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;">
+                                    <h6 class="fw-bold text-muted mb-2 small">FOTO DE PERFIL</h6>
+
+                                    <!-- ID del Cliente -->
+                                    <div class="mb-2">
+                                        <span class="badge bg-info text-white">ID: <span
+                                                id="detalleID">---</span></span>
+                                        <input type="hidden" id="id_cliente" name="id_cliente">
+                                    </div>
+
+                                    <!-- Fecha de vinculación -->
+                                    <div class="small text-muted">
+                                        Vinculación: <span id="detalleVinculacion" class="text-dark">---</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Datos del cliente -->
+                            <div class="col-md-9">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body py-3">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-2">
+                                                <h5 class="fw-bold mb-2" id="detalleNombreCliente">---</h5>
+                                                <p class="mb-1 medium">
+                                                    <span class="fw-bold" style="color: rgba(25, 135, 84, 0.9);">
+                                                        <i class="fas fa-id-card me-1"></i> Cédula:
+                                                    </span>
+                                                    <span id="detalleDocumento" class="text-dark">---</span>
+                                                </p>
+                                                <p class="mb-1 medium">
+                                                    <span class="fw-bold" style="color: rgba(25, 135, 84, 0.9);">
+                                                        <i class="fas fa-phone me-1"></i> Teléfono:
+                                                    </span>
+                                                    <span id="detalleTelefono" class="text-dark">---</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <p class="mb-1 medium">
+                                                    <span class="fw-bold" style="color: rgba(25, 135, 84, 0.9);">
+                                                        <i class="fas fa-envelope me-1"></i> Email:
+                                                    </span>
+                                                    <span id="detalleEmail" class="text-dark">---</span>
+                                                </p>
+                                                <p class="mb-1 medium">
+                                                    <span class="fw-bold" style="color: rgba(25, 135, 84, 0.9);">
+                                                        <i class="fas fa-building me-1"></i> Pagaduría:
+                                                    </span>
+                                                    <span id="detallePagaduria" class="text-dark">---</span>
+                                                </p>
+                                                <p class="mb-1 medium">
+                                                    <span class="fw-bold" style="color: rgba(25, 135, 84, 0.9);">
+                                                        <i class="fas fa-city me-1"></i> Ciudad:
+                                                    </span>
+                                                    <span id="detalleCiudad" class="text-dark">---</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- DATOS PRINCIPALES DEL EMBARGO -->
+                        <div class="card mb-3 border-dark">
+                            <div
+                                class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center py-2">
+                                <span><i class="fas fa-gavel me-2"></i>DATOS PRINCIPALES</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Fila 1 -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Valor de embargo</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="valor_embargo"
+                                                id="valor_embargo" placeholder="Ej: 10,000,000"
+                                                oninput="formatearMoneda(this)" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Pagaduría</label>
+                                        <input type="text" class="form-control form-control-sm" name="pagaduria"
+                                            id="inputPagaduria" placeholder="Las pagadurías cargan automáticamente"
+                                            readonly>
+                                    </div>
+
+                                    <!-- Fila 2 -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Porcentaje</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="porcentaje" id="porcentaje"
+                                                min="1" max="100" placeholder="Ej: 30" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Juzgado</label>
+                                        <input type="text" class="form-control form-control-sm" name="juzgado"
+                                            id="juzgado" placeholder="Ej: Juzgado 15 Civil Municipal" required>
+                                    </div>
+
+                                    <!-- Fila 3 -->
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold small text-muted">Fecha de radicación</label>
+                                        <input type="date" class="form-control form-control-sm" name="fecha_radicacion"
+                                            id="fecha_radicacion">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold small text-muted">Fecha solicitud
+                                            expediente</label>
+                                        <input type="date" class="form-control form-control-sm" name="fecha_expediente"
+                                            id="fecha_expediente" readonly>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold small text-muted">Fecha revisión
+                                            expediente</label>
+                                        <input type="date" class="form-control form-control-sm"
+                                            name="fecha_revision_exp" id="fecha_revision_exp" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- INFORMACIÓN COMPLEMENTARIA -->
+                        <div class="card border-success shadow-sm mb-4">
+                            <div
+                                class="card-header bg-success text-white fw-bold d-flex justify-content-between align-items-center py-2">
+                                <span><i class="fas fa-clipboard-check me-2"></i>INFORMACIÓN COMPLEMENTARIA</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Radicado -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Radicado</label>
+                                        <input type="text" class="form-control form-control-sm" name="radicado"
+                                            id="radicado" placeholder="Número de radicado">
+                                    </div>
+
+                                    <!-- Red Judicial -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Red Judicial</label>
+                                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                                            <div class="d-flex gap-2 flex-shrink-0">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="red_judicial"
+                                                        id="red_judicial_si" value="si"
+                                                        onchange="document.getElementById('linkRedJudicialContainer').style.display = 'flex'">
+                                                    <label class="form-check-label badge bg-success"
+                                                        for="red_judicial_si">SI</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="red_judicial"
+                                                        id="red_judicial_no" value="no"
+                                                        onchange="document.getElementById('linkRedJudicialContainer').style.display = 'none'">
+                                                    <label class="form-check-label badge bg-danger"
+                                                        for="red_judicial_no">NO</label>
+                                                </div>
+                                            </div>
+
+                                            <div id="linkRedJudicialContainer" style="display: none;"
+                                                class="flex-grow-1">
+                                                <input type="url" class="form-control form-control-sm w-100"
+                                                    name="link_red_judicial" placeholder="Pegue el link aquí">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Subsanaciones -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Subsanaciones</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="subsanaciones"
+                                                    id="subsanaciones_si" value="si"
+                                                    onchange="document.getElementById('detalleSubsanacionesContainer').style.display = 'block'">
+                                                <label class="form-check-label badge bg-warning text-white"
+                                                    for="subsanaciones_si">SI</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="subsanaciones"
+                                                    id="subsanaciones_no" value="no"
+                                                    onchange="document.getElementById('detalleSubsanacionesContainer').style.display = 'none'">
+                                                <label class="form-check-label badge bg-secondary"
+                                                    for="subsanaciones_no">NO</label>
+                                            </div>
+                                        </div>
+                                        <div id="detalleSubsanacionesContainer" style="display: none;" class="mt-2">
+                                            <textarea class="form-control form-control-sm" name="detalle_subsanaciones"
+                                                placeholder="Detalle las subsanaciones requeridas"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Estado final -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small text-muted">Estado final</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <button type="button" class="btn btn-outline-success"
+                                                onclick="seleccionarEstadoFinal('aceptado')">ACEPTADO</button>
+                                            <button type="button" class="btn btn-outline-danger"
+                                                onclick="seleccionarEstadoFinal('rechazado')">RECHAZADO</button>
+                                        </div>
+                                        <input type="hidden" name="estado_embargo" id="estado_embargo" required>
+                                        <div id="mensajeRechazo" class="text-danger mt-2 small fw-semibold"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Asesor a cargo -->
+                                <div class="mt-4 text-end">
+                                    <span class="small fw-bold text-muted">Asesor a Cargo: <span id="asesorNombre"
+                                            class="text-dark">---</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="material-symbols-rounded py-2">settings</i>
@@ -450,8 +698,10 @@
     <script src="../js/embargos.js"></script>
     <script src="../js/notificaciones.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {

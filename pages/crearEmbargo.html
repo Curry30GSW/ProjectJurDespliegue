@@ -440,28 +440,51 @@
 
                   <!-- Segunda fila -->
                   <div class="row">
-                    <!-- Subsanaciones -->
+                    <!-- Subsanaciones - Versión mejorada conservando estilo original -->
                     <div class="col-md-6">
-                      <label class="form-label fw-bold text-dark">Subsanaciones</label>
-                      <div class="d-flex flex-wrap gap-2">
+                      <label class="form-label fw-bold text-dark mb-2">Subsanaciones</label>
+                      <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
                         <div class="form-check">
                           <input class="form-check-input" type="radio" name="subsanaciones" id="subsanaciones_si"
-                            value="si"
-                            onchange="document.getElementById('detalleSubsanacionesContainer').style.display = 'block'">
-                          <label class="form-check-label badge bg-warning text-white" for="subsanaciones_si">SI</label>
+                            value="si" onchange="mostrarDetalleSubsanaciones(true)">
+                          <label class="form-check-label badge bg-warning text-white px-3 py-2" for="subsanaciones_si">
+                            <i class="fas fa-exclamation-circle me-1"></i> SI
+                          </label>
                         </div>
                         <div class="form-check">
                           <input class="form-check-input" type="radio" name="subsanaciones" id="subsanaciones_no"
-                            value="no"
-                            onchange="document.getElementById('detalleSubsanacionesContainer').style.display = 'none'">
-                          <label class="form-check-label badge bg-secondary" for="subsanaciones_no">NO</label>
+                            value="no" onchange="mostrarDetalleSubsanaciones(false)">
+                          <label class="form-check-label badge bg-secondary px-3 py-2" for="subsanaciones_no">
+                            <i class="fas fa-check-circle me-1"></i> NO
+                          </label>
                         </div>
                       </div>
-                      <div id="detalleSubsanacionesContainer" style="display: none;" class="mt-2">
-                        <textarea class="form-control form-control-sm" name="detalle_subsanaciones"
-                          placeholder="Detalle las subsanaciones requeridas"></textarea>
+
+                      <!-- Contenedor de detalle - Estilo mejorado pero sencillo -->
+                      <div id="detalleSubsanacionesContainer" style="display: none;" class="mt-3">
+                        <div class="border-start border-3 border-warning bg-light bg-opacity-50 p-3 rounded">
+                          <h6 class="fw-bold text-dark mb-3">
+                            <i class="fas fa-bell text-warning me-2"></i>Programar notificación
+                          </h6>
+
+                          <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Fecha de recordatorio</label>
+                            <div class="input-group">
+                              <input type="date" class="form-control form-control-sm" name="fecha_alarma">
+                            </div>
+                          </div>
+
+                          <div>
+                            <label class="form-label small fw-bold text-muted">Observaciones</label>
+                            <textarea class="form-control form-control-sm" name="observaciones_alarma" rows="2"
+                              placeholder="Ingrese detalles importantes..."></textarea>
+                            <div class="form-text small">Esta notificación aparecerá en el sistema en la fecha indicada
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
 
                     <!-- Estado final -->
                     <div class="col-md-6">

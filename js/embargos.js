@@ -29,6 +29,66 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+var dataTable;
+
+$(document).ready(function () {
+    inicializarTabla();
+
+    obtenerClientes();
+
+    // Configurar el buscador personalizado
+    $('#searchInput').keyup(function () {
+        dataTable.search($(this).val()).draw();
+    });
+
+    // Botón para refrescar
+    $('#refreshTable').click(function () {
+        obtenerClientes();
+    });
+});
+
+function inicializarTabla() {
+    dataTable = $('#tablaClientes').DataTable({
+        dom: '<"top"<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>>rt<"bottom"<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>><"clear">',
+        language: {
+            "decimal": "",
+            "emptyTable": "No hay datos disponibles",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+            "infoFiltered": "(filtrado de _MAX_ registros totales)",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "loadingRecords": "Cargando...",
+            "processing": "Procesando...",
+            "search": "Buscar:",
+            "zeroRecords": "No se encontraron registros coincidentes",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            },
+            "aria": {
+                "sortAscending": ": activar para ordenar la columna ascendente",
+                "sortDescending": ": activar para ordenar la columna descendente"
+            }
+        },
+        lengthMenu: [10, 25, 50, 100],
+        pageLength: 10,
+        responsive: true,
+        order: [[3, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [3] }, // Deshabilitar ordenación para columna de acciones
+            { className: "text-center", targets: [1, 2, 3] } // Centrar columnas
+        ],
+        createdRow: function (row, data, dataIndex) {
+            // Agregar clases adicionales a las filas si es necesario
+        }
+    });
+}
+
+
 async function obtenerClientes() {
     try {
         const token = sessionStorage.getItem('token');
@@ -58,7 +118,7 @@ async function obtenerClientes() {
             return;
         }
 
-        mostrar(clientes);
+        mostrarClientesEnTabla(clientes);
 
 
     } catch (error) {
@@ -68,9 +128,11 @@ async function obtenerClientes() {
 }
 
 
-const mostrar = (clientes) => {
-    let resultados = '';
+function mostrarClientesEnTabla(clientes) {
+    // Limpiar la tabla
+    dataTable.clear();
 
+    // Agregar los nuevos datos
     clientes.forEach((cliente) => {
         let estadoEmbargoTexto = '';
         let estadoEmbargoClase = '';
@@ -86,47 +148,50 @@ const mostrar = (clientes) => {
             estadoEmbargoClase = 'blink bg-warning text-dark px-2 rounded';
         }
 
-        resultados += `
-            <tr>
-                <td class="align-middle">
-                    <div class="d-flex align-items-center px-2 py-1">
-                        <div>
-                            <img src="http://localhost:3000${cliente.foto_perfil}" 
-                                class="avatar avatar-lg me-3 foto-cliente" 
-                                alt="${cliente.nombres}" 
-                                data-src="http://localhost:3000${cliente.foto_perfil}">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center">
-                            <span class="text-xs font-weight-bold text-dark mb-1">${cliente.nombres} ${cliente.apellidos}</span>
-                            <span class="text-xs text-dark ">${cliente.cedula}</span>
-                        </div>
-                    </div>
-                </td>
-                <td class="text-center align-middle">
-                    <span class="text-xs font-weight-bold">${cliente.radicado}</span>
-                </td>
-                <td class="text-center align-middle">
-                    <span class="text-xs font-weight-bold ${estadoEmbargoClase}">${estadoEmbargoTexto}</span>
-                </td>
-                <td class="text-center align-middle">
-                    <button class="btn btn-info btn-md me-1" onclick="verCliente(${cliente.id_embargos})">
-                        <i class="fas fa-eye"></i> Ver Proceso
-                    </button>
-                    <button class="btn btn-warning btn-md" onclick="editarCliente(${cliente.id_embargos})">
-                        <i class="fas fa-edit"></i> Editar Proceso
-                    </button>
-                </td>
-            </tr>
-        `;
+        let fotoPerfil = cliente.foto_perfil ?
+            `http://localhost:3000${cliente.foto_perfil}` :
+            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+
+        dataTable.row.add([
+            `<div class="d-flex align-items-center px-2 py-1">
+                <div>
+                    <img src="${fotoPerfil}" 
+                        class="avatar avatar-lg me-3 foto-cliente" 
+                        alt="${cliente.nombres}" 
+                        onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'">
+                </div>
+                <div class="d-flex flex-column justify-content-center">
+                    <span class="text-xs font-weight-bold text-dark mb-1">${cliente.nombres} ${cliente.apellidos}</span>
+                    <span class="text-xs text-dark">${cliente.cedula}</span>
+                </div>
+            </div>`,
+            `<span class="text-xs font-weight-bold">${cliente.radicado}</span>`,
+
+            `<span class="text-xs font-weight-bold ${estadoEmbargoClase}">${estadoEmbargoTexto}</span>`,
+
+            `<button class="btn btn-info btn-md me-1" onclick="verCliente(${cliente.id_embargos})">
+                <i class="fas fa-eye"></i> Ver
+            </button>
+            <button class="btn btn-warning btn-md" onclick="editarCliente(${cliente.id_embargos})">
+                <i class="fas fa-edit"></i> Editar
+            </button>`
+        ]);
     });
 
-    if ($.fn.DataTable.isDataTable('#tablaClientes')) {
-        $('#tablaClientes').DataTable().clear().destroy();
-    }
+    // Redibujar la tabla y ocultar loading
+    dataTable.draw();
+}
 
-    $("#tablaClientes tbody").html(resultados);
-};
+// Funciones para los botones de acción (debes implementarlas según tu necesidad)
+function verCliente(id) {
+    console.log('Ver cliente con ID:', id);
+    // Tu lógica para ver el cliente
+}
 
+function editarCliente(id) {
+    console.log('Editar cliente con ID:', id);
+    // Tu lógica para editar el cliente
+}
 
 $(document).on('click', '.foto-cliente', function () {
     const src = $(this).data('src');
@@ -368,5 +433,163 @@ function mostrarDetallesEmbargo(datos) {
     modal.show();
 }
 
+//FUNCIONES DE FORMATEO PARA MODAL EDITAR
+function formatearFecha(fechaISO) {
+    if (!fechaISO) return '---';
+    const fecha = new Date(fechaISO);
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = fecha.toLocaleString('es-CO', { month: 'short' }).toUpperCase().replace('.', '');
+    const año = fecha.getFullYear();
+    return `${dia}/${mes}/${año}`;
+}
 
 
+
+function formatearMoneda(input) {
+    let valor = input.value.replace(/\D/g, '');
+    valor = new Intl.NumberFormat('es-CO').format(valor);
+    input.value = valor;
+}
+
+
+function formatearParaInputDate(fechaISO) {
+    if (!fechaISO) return '';
+    const fecha = new Date(fechaISO);
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${año}-${mes}-${dia}`;
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const fechaRadicacionInput = document.getElementById('fecha_radicacion');
+    const fechaSolicitudInput = document.getElementById('fecha_expediente');
+    const fechaRevisionInput = document.getElementById('fecha_revision_exp');
+
+    // Establecer la fecha mínima como hoy
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
+    const dia = hoy.getDate().toString().padStart(2, '0');
+    const fechaHoy = `${anio}-${mes}-${dia}`;
+    fechaRadicacionInput.min = fechaHoy;
+
+    // Función para sumar días hábiles (lunes a viernes)
+    function sumarDiasHabiles(fechaInicial, cantidadDias) {
+        const fecha = new Date(fechaInicial);
+        let diasSumados = 0;
+
+        while (diasSumados < cantidadDias) {
+            fecha.setDate(fecha.getDate() + 1);
+            const diaSemana = fecha.getDay(); // 0 = domingo, 6 = sábado
+            if (diaSemana !== 0 && diaSemana !== 6) {
+                diasSumados++;
+            }
+        }
+        return fecha;
+    }
+
+    // Escuchar cambios para calcular +15 y +30 días hábiles
+    fechaRadicacionInput.addEventListener('change', function () {
+        const fechaRadicacion = new Date(this.value);
+
+        if (!isNaN(fechaRadicacion.getTime())) {
+            // Calcular fechas hábiles
+            const fechaSolicitud = sumarDiasHabiles(fechaRadicacion, 15);
+            const fechaRevision = sumarDiasHabiles(fechaRadicacion, 30);
+
+            // Formatear y asignar
+            const formatDate = (fecha) => {
+                const año = fecha.getFullYear();
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                return `${año}-${mes}-${dia}`;
+            };
+
+            fechaSolicitudInput.value = formatDate(fechaSolicitud);
+            fechaRevisionInput.value = formatDate(fechaRevision);
+        } else {
+            fechaSolicitudInput.value = '';
+            fechaRevisionInput.value = '';
+        }
+    });
+});
+
+
+
+async function editarCliente(id_embargos) {
+    try {
+        const response = await fetch(`http://localhost:3000/api/embargos/${id_embargos}`);
+        if (!response.ok) throw new Error('No se pudo obtener la información del embargo');
+
+        const data = await response.json();
+        console.log('Datos del embargo:', data);
+
+
+        // Llenar datos del cliente (perfil superior)
+        document.getElementById('detalleFotoPerfil').src = data.embargo.foto_perfil
+            ? `http://localhost:3000${data.embargo.foto_perfil}`
+            : '../assets/img/avatar.png';
+
+
+        const nombres = data.embargo.nombres || '';
+        const apellidos = data.embargo.apellidos || '';
+        const nombreCompleto = (nombres + ' ' + apellidos).trim();
+
+        document.getElementById('detalleID').textContent = data.embargo.id_cliente || '---';
+        document.getElementById('id_cliente').value = data.embargo.id_cliente || '';
+        document.getElementById('detalleNombreCliente').textContent = nombreCompleto || '---';
+        document.getElementById('detalleDocumento').textContent = data.embargo.cedula || '---';
+        document.getElementById('detalleTelefono').textContent = data.embargo.telefono || '---';
+        document.getElementById('detalleEmail').textContent = data.embargo.correo || '---';
+        document.getElementById('detallePagaduria').textContent = data.embargo.pagaduria_embargo || '---';
+        document.getElementById('detalleCiudad').textContent = data.embargo.ciudad || '---';
+        document.getElementById('detalleVinculacion').textContent = formatearFecha(data.embargo.fecha_vinculo) || '---';
+        document.getElementById('asesorNombre').textContent = data.embargo.asesor_embargo || '---';
+
+
+
+        // Datos del embargo
+        document.getElementById('valor_embargo').value = data.embargo.valor_embargo || '';
+        document.getElementById('inputPagaduria').value = data.embargo.pagaduria_embargo || '';
+        document.getElementById('porcentaje').value = data.embargo.porcentaje_embargo || '';
+        document.getElementById('juzgado').value = data.embargo.juzgado_embargo || '';
+        document.getElementById('fecha_radicacion').value = formatearParaInputDate(data.embargo.fecha_radicacion);
+        document.getElementById('fecha_expediente').value = formatearParaInputDate(data.embargo.fecha_expediente);
+        document.getElementById('fecha_revision_exp').value = formatearParaInputDate(data.embargo.fecha_revision_exp);
+
+
+
+        // Información complementaria
+        document.getElementById('radicado').value = data.embargo.radicado || '';
+
+        // Red Judicial
+        if (data.embargo.red_judicial === 'si') {
+            document.getElementById('red_judicial_si').checked = true;
+            document.getElementById('linkRedJudicialContainer').style.display = 'flex';
+            document.querySelector('input[name="link_red_judicial"]').value = data.embargo.link_red_judicial || '';
+        } else {
+            document.getElementById('red_judicial_no').checked = true;
+            document.getElementById('linkRedJudicialContainer').style.display = 'none';
+        }
+
+        // Subsanaciones
+        if (data.embargo.subsanaciones === 'si') {
+            document.getElementById('subsanaciones_si').checked = true;
+            document.getElementById('detalleSubsanacionesContainer').style.display = 'block';
+            document.querySelector('textarea[name="detalle_subsanaciones"]').value = data.embargo.detalle_subsanaciones || '';
+        } else {
+            document.getElementById('subsanaciones_no').checked = true;
+            document.getElementById('detalleSubsanacionesContainer').style.display = 'none';
+        }
+
+        // Mostrar el modal
+        const modalEditar = new bootstrap.Modal(document.getElementById('modalEditarEmbargo'));
+        modalEditar.show();
+
+    } catch (error) {
+        console.error('Error al cargar el embargo:', error);
+        alert('Ocurrió un error al cargar los datos del proceso.');
+    }
+}
