@@ -302,9 +302,6 @@ async function seleccionarEstadoFinal(estado) {
     plainData.fecha_expediente = document.getElementById('fecha_expediente').value.trim();
     plainData.fecha_revision_exp = document.getElementById('fecha_revision_exp').value.trim();
 
-
-    console.log('Datos a enviar:', plainData); // Para depuración
-
     try {
         const response = await fetch('http://localhost:3000/api/crear-embargos', {
             method: 'POST',

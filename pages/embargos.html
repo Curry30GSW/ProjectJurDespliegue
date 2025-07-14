@@ -187,7 +187,7 @@
                     <div class="card card-body">
 
                         <!-- Barra de búsqueda estilizada -->
-                        <div class="px-3 mb-3">
+                        <!-- <div class="px-3 mb-3">
                             <div class="input-group shadow-sm rounded">
                                 <span class="input-group-text bg-white border-end-0 rounded-start">
                                     <i class="fas fa-search text-secondary"></i>
@@ -195,7 +195,7 @@
                                 <input type="text" id="busquedaClientes" class="form-control border-start-0 rounded-end"
                                     placeholder="Buscar cliente por nombre o radicado" style="box-shadow: none;">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="d-flex justify-content-end px-3 mb-2">
                             <button class="btn btn-primary text-white fw-bold px-4" id="btnAceptados"
@@ -367,6 +367,8 @@
                                         class="rounded-circle shadow mb-2"
                                         style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;">
                                     <h6 class="fw-bold text-muted mb-2 small">FOTO DE PERFIL</h6>
+                                    <input type="hidden" id="id_embargos_hidden">
+
 
                                     <!-- ID del Cliente -->
                                     <div class="mb-2">
@@ -537,28 +539,58 @@
                                         </div>
                                     </div>
 
-                                    <!-- Subsanaciones -->
+                                    <!-- Subsanaciones - Versión mejorada conservando estilo original -->
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold small text-muted">Subsanaciones</label>
-                                        <div class="d-flex flex-wrap gap-2">
+                                        <label class="form-label fw-bold text-dark mb-2">Subsanaciones</label>
+                                        <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="subsanaciones"
                                                     id="subsanaciones_si" value="si"
-                                                    onchange="document.getElementById('detalleSubsanacionesContainer').style.display = 'block'">
-                                                <label class="form-check-label badge bg-warning text-white"
-                                                    for="subsanaciones_si">SI</label>
+                                                    onchange="mostrarDetalleSubsanaciones(true)">
+                                                <label class="form-check-label badge bg-warning text-white px-3 py-2"
+                                                    for="subsanaciones_si">
+                                                    <i class="fas fa-exclamation-circle me-1"></i> SI
+                                                </label>
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="subsanaciones"
                                                     id="subsanaciones_no" value="no"
-                                                    onchange="document.getElementById('detalleSubsanacionesContainer').style.display = 'none'">
-                                                <label class="form-check-label badge bg-secondary"
-                                                    for="subsanaciones_no">NO</label>
+                                                    onchange="mostrarDetalleSubsanaciones(false)">
+                                                <label class="form-check-label badge bg-secondary px-3 py-2"
+                                                    for="subsanaciones_no">
+                                                    <i class="fas fa-check-circle me-1"></i> NO
+                                                </label>
                                             </div>
                                         </div>
-                                        <div id="detalleSubsanacionesContainer" style="display: none;" class="mt-2">
-                                            <textarea class="form-control form-control-sm" name="detalle_subsanaciones"
-                                                placeholder="Detalle las subsanaciones requeridas"></textarea>
+
+                                        <!-- Contenedor de detalle - Estilo mejorado pero sencillo -->
+                                        <div id="detalleSubsanacionesContainer" style="display: none;" class="mt-3">
+                                            <div
+                                                class="border-start border-3 border-warning bg-light bg-opacity-50 p-3 rounded">
+                                                <h6 class="fw-bold text-dark mb-3">
+                                                    <i class="fas fa-bell text-warning me-2"></i>Programar notificación
+                                                </h6>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-bold text-muted">Fecha de
+                                                        recordatorio</label>
+                                                    <div class="input-group">
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="fecha_alarma">
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        class="form-label small fw-bold text-muted">Observaciones</label>
+                                                    <textarea class="form-control form-control-sm"
+                                                        name="observaciones_alarma" rows="2"
+                                                        placeholder="Ingrese detalles importantes..."></textarea>
+                                                    <div class="form-text small">Esta notificación aparecerá en el
+                                                        sistema en la fecha indicada
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

@@ -77,7 +77,7 @@ function inicializarTabla() {
         lengthMenu: [10, 25, 50, 100],
         pageLength: 10,
         responsive: true,
-        order: [[3, 'asc']],
+        order: [[2, 'desc']],
         columnDefs: [
             { orderable: false, targets: [3] }, // Deshabilitar ordenación para columna de acciones
             { className: "text-center", targets: [1, 2, 3] } // Centrar columnas
@@ -134,6 +134,7 @@ function mostrarClientesEnTabla(clientes) {
 
     // Agregar los nuevos datos
     clientes.forEach((cliente) => {
+
         let estadoEmbargoTexto = '';
         let estadoEmbargoClase = '';
 
@@ -150,15 +151,16 @@ function mostrarClientesEnTabla(clientes) {
 
         let fotoPerfil = cliente.foto_perfil ?
             `http://localhost:3000${cliente.foto_perfil}` :
-            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
 
         dataTable.row.add([
             `<div class="d-flex align-items-center px-2 py-1">
                 <div>
-                    <img src="${fotoPerfil}" 
-                        class="avatar avatar-lg me-3 foto-cliente" 
-                        alt="${cliente.nombres}" 
-                        onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'">
+                  <img src="${fotoPerfil}" 
+                    class="avatar avatar-lg me-3 foto-cliente" 
+                    alt="${cliente.nombres}" 
+                    data-src="${fotoPerfil}"
+                    onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'">
                 </div>
                 <div class="d-flex flex-column justify-content-center">
                     <span class="text-xs font-weight-bold text-dark mb-1">${cliente.nombres} ${cliente.apellidos}</span>
@@ -182,16 +184,6 @@ function mostrarClientesEnTabla(clientes) {
     dataTable.draw();
 }
 
-// Funciones para los botones de acción (debes implementarlas según tu necesidad)
-function verCliente(id) {
-    console.log('Ver cliente con ID:', id);
-    // Tu lógica para ver el cliente
-}
-
-function editarCliente(id) {
-    console.log('Editar cliente con ID:', id);
-    // Tu lógica para editar el cliente
-}
 
 $(document).on('click', '.foto-cliente', function () {
     const src = $(this).data('src');
@@ -578,11 +570,13 @@ async function editarCliente(id_embargos) {
         if (data.embargo.subsanaciones === 'si') {
             document.getElementById('subsanaciones_si').checked = true;
             document.getElementById('detalleSubsanacionesContainer').style.display = 'block';
-            document.querySelector('textarea[name="detalle_subsanaciones"]').value = data.embargo.detalle_subsanaciones || '';
+            document.querySelector('input[name="fecha_alarma"]').value = formatearParaInputDate(data.embargo.fecha_notificacion) || '';
+            document.querySelector('textarea[name="observaciones_alarma"]').value = data.embargo.observaciones_alarma || '';
         } else {
             document.getElementById('subsanaciones_no').checked = true;
             document.getElementById('detalleSubsanacionesContainer').style.display = 'none';
         }
+
 
         // Mostrar el modal
         const modalEditar = new bootstrap.Modal(document.getElementById('modalEditarEmbargo'));
@@ -592,4 +586,59 @@ async function editarCliente(id_embargos) {
         console.error('Error al cargar el embargo:', error);
         alert('Ocurrió un error al cargar los datos del proceso.');
     }
+}
+
+async function seleccionarEstadoFinal(estado, id_embargos) {
+    document.getElementById('estado_embargo').value = estado;
+
+
+
+    // Recoger los valores
+    const datos = {
+        estado_embargo: estado,
+        valor_embargo: document.getElementById('valor_embargo').value,
+        pagaduria_embargo: document.getElementById('inputPagaduria').value,
+        porcentaje_embargo: document.getElementById('porcentaje').value,
+        juzgado_embargo: document.getElementById('juzgado').value,
+        fecha_radicacion: document.getElementById('fecha_radicacion').value,
+        fecha_expediente: document.getElementById('fecha_expediente').value,
+        fecha_revision_exp: document.getElementById('fecha_revision_exp').value,
+        radicado: document.getElementById('radicado').value,
+        red_judicial: document.getElementById('red_judicial_si').checked ? 'si' : 'no',
+        link_red_judicial: document.querySelector('input[name="link_red_judicial"]').value,
+        subsanaciones: document.getElementById('subsanaciones_si').checked ? 'si' : 'no',
+        fecha_notificacion: document.querySelector('input[name="fecha_alarma"]').value,
+        observaciones_alarma: document.querySelector('textarea[name="observaciones_alarma"]').value,
+    };
+
+    try {
+        console.log('Datos enviados:', datos);
+        console.log('ID Embargo:', id_embargos);
+        const response = await fetch(`http://localhost:3000/api/embargo/${id_embargos}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+        console.log('Respuesta del servidor:', resultado);
+
+        const resultado = await response.json();
+        if (response.ok) {
+            Swal.fire('Éxito', 'Embargo actualizado correctamente.', 'success');
+            // Opcional: cerrar modal, recargar datos, etc.
+        } else {
+            console.error(resultado);
+            Swal.fire('Error', 'No se pudo actualizar el embargo.', 'error');
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        Swal.fire('Error', 'Hubo un problema al enviar los datos.', 'error');
+    }
+}
+
+
+function mostrarDetalleSubsanaciones(mostrar) {
+    const contenedor = document.getElementById('detalleSubsanacionesContainer');
+    contenedor.style.display = mostrar ? 'block' : 'none';
 }
