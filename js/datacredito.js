@@ -196,6 +196,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     }
     const nombreCompleto = `${cliente.nombres || ''} ${cliente.apellidos || ''}`.trim();
     document.getElementById('detalleNombreCompleto').innerText = nombreCompleto || 'No registrado';
+
     document.getElementById('detalleCedula').value = cliente.cedula || 'No registrado';
     document.getElementById('detalleTelefono').value = cliente.telefono || 'No registrado';
     document.getElementById('detalleCorreo').value = cliente.correo || 'No registrado';
@@ -232,6 +233,16 @@ function llenarModalDetalle(cliente, fotoUrl) {
     document.getElementById('detalleEmpresa').value = cliente.empresa || 'No registrado';
     document.getElementById('detalleCargo').value = cliente.cargo || 'No registrado';
     document.getElementById('detallePagaduria').value = cliente.pagaduria || 'No registrado';
+    document.getElementById('detalleCuota').value = cliente.valor_cuota ?
+        '$' + parseInt(cliente.valor_cuota).toLocaleString('es-CO') : 'No registrado';
+
+    document.getElementById('detallePorcentaje').value = cliente.porcentaje ?
+        cliente.porcentaje + '%' : 'No registrado';
+
+    document.getElementById('detalleInsolvencia').value = cliente.valor_insolvencia ?
+        '$' + parseInt(cliente.valor_insolvencia).toLocaleString('es-CO') : 'No registrado';
+
+    document.getElementById('detalleNCuotas').value = cliente.numero_cuotas || 'No registrado';
 
     // Mostrar/ocultar campos según situación laboral
     if (cliente.laboral == 1) {
@@ -248,36 +259,28 @@ function llenarModalDetalle(cliente, fotoUrl) {
     actualizarBotonPDF('detalleCedulaPDF', cliente.cedula_pdf, 'Ver Cédula');
     actualizarBotonPDF('detalleDesprendible', cliente.desprendible, 'Ver Desprendible');
 
+    actualizarBotonPDF('detalleBienesInmuebles', cliente.bienes, 'Ver Bienes');
+
+
     // Bienes inmuebles
     const bienesInmueblesDiv = document.getElementById('detalleBienesInmuebles');
-    if (cliente.bienes === "1" && cliente.bienes_pdf) {
-        bienesInmueblesDiv.innerHTML = `
-        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.bienes_pdf}', '_blank')">
-            Ver Documento de Bienes
-        </button>`;
-    } else if (cliente.bienes === "1") {
-        bienesInmueblesDiv.innerHTML = `
-        <span class="text-success fw-bold">El cliente reporta tener bienes inmuebles</span>
-        <small class="text-muted d-block">(Los documentos deben ser consultados)</small>`;
+
+    if (cliente.bienes === "1" && cliente.bienes_inmuebles) {
+        actualizarBotonPDF('detalleBienesInmuebles', cliente.bienes_inmuebles, 'Ver Bienes Inmuebles');
     } else {
         bienesInmueblesDiv.innerHTML = '<span class="text-muted">El cliente no reporta bienes inmuebles</span>';
     }
 
-
     // Data crédito
     const dataCreditoDiv = document.getElementById('detalleDataCredito');
-    if (cliente.datacred === "1" && cliente.datacredito_pdf) {
-        dataCreditoDiv.innerHTML = `
-        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.datacredito_pdf}', '_blank')">
-            Ver Reporte de DataCrédito
-        </button>`;
-    } else if (cliente.datacred === "1") {
-        dataCreditoDiv.innerHTML = `
-        <span class="text-success fw-bold">El cliente tiene data crédito registrado</span>
-        <small class="text-muted d-block">(El documento debe ser consultado)</small>`;
+
+    if (cliente.nombreData) {
+        actualizarBotonPDF('detalleDataCredito', cliente.nombreData, 'Ver DataCredito');
     } else {
         dataCreditoDiv.innerHTML = '<span class="text-muted">El cliente no tiene data crédito registrado</span>';
     }
+
+
 
 
     // Asesor
@@ -302,11 +305,11 @@ function llenarModalDetalle(cliente, fotoUrl) {
 
 
     // Estado del cliente
-    const estadoCliente = cliente.estado == 0 ? 'Activo' : 'Inactivo';
+    const estadoCliente = cliente.estado == 0 ? 'ACTIVO' : 'INACTIVO';
     document.getElementById('detalleEstadoCliente').value = estadoCliente;
 
     // Motivo de retiro (si aplica)
-    document.getElementById('detalleMotivoRetiro').value = cliente.motivo_retiro || 'No aplica';
+    document.getElementById('detalleMotivoRetiro').value = cliente.motivo_retiro || 'NO APLICA';
 
 
     // Llenar referencias familiares

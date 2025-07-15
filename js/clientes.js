@@ -263,38 +263,27 @@ function llenarModalDetalle(cliente, fotoUrl) {
     actualizarBotonPDF('detalleDesprendible', cliente.desprendible, 'Ver Desprendible');
 
     actualizarBotonPDF('detalleBienesInmuebles', cliente.bienes, 'Ver Bienes');
-    actualizarBotonPDF('detalleDataCredito', cliente.datacred, 'Ver DataCredito');
+
 
     // Bienes inmuebles
     const bienesInmueblesDiv = document.getElementById('detalleBienesInmuebles');
+
     if (cliente.bienes === "1" && cliente.bienes_inmuebles) {
-        bienesInmueblesDiv.innerHTML = `
-         <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.bienes_inmuebles}', '_blank')">
-            Ver Documento de Bienes
-        </button>`;
-    } else if (cliente.bienes === "1") {
-        bienesInmueblesDiv.innerHTML = `
-        <span class="text-success fw-bold">El cliente reporta tener bienes inmuebles</span>
-        <small class="text-muted d-block">(Los documentos deben ser consultados)</small>`;
+        actualizarBotonPDF('detalleBienesInmuebles', cliente.bienes_inmuebles, 'Ver Bienes Inmuebles');
     } else {
         bienesInmueblesDiv.innerHTML = '<span class="text-muted">El cliente no reporta bienes inmuebles</span>';
     }
 
-
     // Data crédito
     const dataCreditoDiv = document.getElementById('detalleDataCredito');
-    if (cliente.datacred === "1" && cliente.data_credPdf) {
-        dataCreditoDiv.innerHTML = `
-        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.data_credPdf}', '_blank')">
-            Ver Reporte de DataCrédito
-        </button>`;
-    } else if (cliente.datacred === "1") {
-        dataCreditoDiv.innerHTML = `
-        <span class="text-success fw-bold">El cliente tiene data crédito registrado</span>
-        <small class="text-muted d-block">(El documento debe ser consultado)</small>`;
+
+    if (cliente.nombreData) {
+        actualizarBotonPDF('detalleDataCredito', cliente.nombreData, 'Ver DataCredito');
     } else {
         dataCreditoDiv.innerHTML = '<span class="text-muted">El cliente no tiene data crédito registrado</span>';
     }
+
+
 
 
     // Asesor

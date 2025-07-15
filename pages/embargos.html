@@ -261,9 +261,11 @@
                                 <i class="fa fa-bell me-2"></i>Historial de notificaciones recientes
                             </p>
                         </div>
-                        <div class="card-body p-0">
-                            <div id="notificaciones-contenedor" class="timeline timeline-one-side">
-
+                        <div class="card-body p-0 position-relative">
+                            <!-- Contenedor externo con altura fija -->
+                            <div class="notificaciones-wrapper" style="height: 300px;"> <!-- Altura ajustable -->
+                                <!-- Contenedor interno para scroll -->
+                                <div id="notificaciones-contenedor" class="notificaciones-scrollable"></div>
                             </div>
                         </div>
                     </div>
@@ -367,8 +369,6 @@
                                         class="rounded-circle shadow mb-2"
                                         style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #e9ecef;">
                                     <h6 class="fw-bold text-muted mb-2 small">FOTO DE PERFIL</h6>
-                                    <input type="hidden" id="id_embargos_hidden">
-
 
                                     <!-- ID del Cliente -->
                                     <div class="mb-2">
@@ -598,10 +598,14 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold small text-muted">Estado final</label>
                                         <div class="d-flex flex-wrap gap-2">
-                                            <button type="button" class="btn btn-outline-success"
-                                                onclick="seleccionarEstadoFinal('aceptado')">ACEPTADO</button>
-                                            <button type="button" class="btn btn-outline-danger"
-                                                onclick="seleccionarEstadoFinal('rechazado')">RECHAZADO</button>
+                                            <button onclick="seleccionarEstadoFinal('aprobado', id_embargos_actual)"
+                                                class="btn btn-success">
+                                                Aprobar
+                                            </button>
+                                            <button onclick="seleccionarEstadoFinal('rechazado', id_embargos_actual)"
+                                                class="btn btn-danger">
+                                                Rechazar
+                                            </button>
                                         </div>
                                         <input type="hidden" name="estado_embargo" id="estado_embargo" required>
                                         <div id="mensajeRechazo" class="text-danger mt-2 small fw-semibold"></div>

@@ -53,8 +53,8 @@ function inicializarTabla() {
         language: {
             "decimal": "",
             "emptyTable": "No hay datos disponibles",
-            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
-            "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+            "sInfo": "Datos del _START_ al _END_ para un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
             "infoFiltered": "(filtrado de _MAX_ registros totales)",
             "infoPostFix": "",
             "thousands": ",",
@@ -63,28 +63,23 @@ function inicializarTabla() {
             "processing": "Procesando...",
             "search": "Buscar:",
             "zeroRecords": "No se encontraron registros coincidentes",
-            "paginate": {
-                "first": "Primero",
-                "last": "Último",
-                "next": "Siguiente",
-                "previous": "Anterior"
+            "oPaginate": {
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
             },
             "aria": {
                 "sortAscending": ": activar para ordenar la columna ascendente",
                 "sortDescending": ": activar para ordenar la columna descendente"
             }
         },
-        lengthMenu: [10, 25, 50, 100],
-        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+        pageLength: 5,
         responsive: true,
         order: [[2, 'desc']],
         columnDefs: [
-            { orderable: false, targets: [3] }, // Deshabilitar ordenación para columna de acciones
-            { className: "text-center", targets: [1, 2, 3] } // Centrar columnas
-        ],
-        createdRow: function (row, data, dataIndex) {
-            // Agregar clases adicionales a las filas si es necesario
-        }
+            { orderable: false, targets: [3] },
+            { className: "text-center", targets: [1, 2, 3] }
+        ]
     });
 }
 
@@ -134,7 +129,6 @@ function mostrarClientesEnTabla(clientes) {
 
     // Agregar los nuevos datos
     clientes.forEach((cliente) => {
-
         let estadoEmbargoTexto = '';
         let estadoEmbargoClase = '';
 
@@ -151,34 +145,42 @@ function mostrarClientesEnTabla(clientes) {
 
         let fotoPerfil = cliente.foto_perfil ?
             `http://localhost:3000${cliente.foto_perfil}` :
-            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+
+        // Botón de ver (siempre visible)
+        let botones = `
+        <button class="btn btn-info btn-md me-1" onclick="verCliente(${cliente.id_embargos})">
+            <i class="fas fa-eye"></i> Ver
+        </button>`;
+
+        // Solo mostrar botón editar si NO está aceptado
+        if (cliente.estado_embargo !== 0) {
+            botones += `
+            <button class="btn btn-warning btn-md" onclick="editarCliente(${cliente.id_embargos})">
+                <i class="fas fa-edit"></i> Editar
+            </button>`;
+        }
 
         dataTable.row.add([
             `<div class="d-flex align-items-center px-2 py-1">
-                <div>
-                  <img src="${fotoPerfil}" 
-                    class="avatar avatar-lg me-3 foto-cliente" 
-                    alt="${cliente.nombres}" 
-                    data-src="${fotoPerfil}"
-                    onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'">
-                </div>
-                <div class="d-flex flex-column justify-content-center">
-                    <span class="text-xs font-weight-bold text-dark mb-1">${cliente.nombres} ${cliente.apellidos}</span>
-                    <span class="text-xs text-dark">${cliente.cedula}</span>
-                </div>
-            </div>`,
+            <div>
+              <img src="${fotoPerfil}" 
+                class="avatar avatar-lg me-3 foto-cliente" 
+                alt="${cliente.nombres}" 
+                data-src="${fotoPerfil}"
+                onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'">
+            </div>
+            <div class="d-flex flex-column justify-content-center">
+                <span class="text-xs font-weight-bold text-dark mb-1">${cliente.nombres} ${cliente.apellidos}</span>
+                <span class="text-xs text-dark">${cliente.cedula}</span>
+            </div>
+        </div>`,
             `<span class="text-xs font-weight-bold">${cliente.radicado}</span>`,
-
             `<span class="text-xs font-weight-bold ${estadoEmbargoClase}">${estadoEmbargoTexto}</span>`,
-
-            `<button class="btn btn-info btn-md me-1" onclick="verCliente(${cliente.id_embargos})">
-                <i class="fas fa-eye"></i> Ver
-            </button>
-            <button class="btn btn-warning btn-md" onclick="editarCliente(${cliente.id_embargos})">
-                <i class="fas fa-edit"></i> Editar
-            </button>`
+            botones
         ]);
     });
+
 
     // Redibujar la tabla y ocultar loading
     dataTable.draw();
@@ -266,20 +268,26 @@ function mostrarDetallesEmbargo(datos) {
                                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;"
                                 data-src="${datos.embargo.foto_perfil ? `http://localhost:3000${datos.embargo.foto_perfil}` : '../assets/img/avatar.png'}">
                         </div>
-                        <div class="row text-center">
-                            <div class="col-12 mb-2">
-                                <h5 class="mb-1">${datos.embargo.nombres} ${datos.embargo.apellidos}</h5>
-                                <p class="text-muted mb-2">ID Proceso: ${datos.embargo.id_embargos}</p>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <p style="color: rgba(25, 135, 84, 0.9); font-size: 1rem; margin-bottom: 5px; font-weight: 500;">Cédula</p>
-                                <p style="color: #000; font-weight: 525; margin-bottom: 0;">${datos.embargo.cedula}</p>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <p style="color: rgba(25, 135, 84, 0.9); font-size: 1rem; margin-bottom: 5px; font-weight: 500;">Vinculación</p>
-                                <p style="color: #000; font-weight: 525; margin-bottom: 0;">${formatDate(datos.embargo.fecha_vinculo)}</p>
-                            </div>
+                       <div class="row text-center">
+                        <div class="col-12 mb-2">
+                            <h5 class="mb-1">${datos.embargo.nombres} ${datos.embargo.apellidos}</h5>
+                            <p class="mb-2">
+                                <span style="background-color: #0d6efd20; color: #0d6efd; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 1.1rem;">
+                                    ID Proceso: ${datos.embargo.id_embargos}
+                                </span>
+                            </p>
                         </div>
+
+                        <div class="col-6 mb-2">
+                            <p style="color: rgba(25, 135, 84, 0.9); font-size: 1rem; margin-bottom: 5px; font-weight: 500;">Cédula</p>
+                            <p style="color: #000; font-weight: 525; margin-bottom: 0;">${datos.embargo.cedula}</p>
+                        </div>
+
+                        <div class="col-6 mb-2">
+                            <p style="color: rgba(25, 135, 84, 0.9); font-size: 1rem; margin-bottom: 5px; font-weight: 500;">Vinculación</p>
+                            <p style="color: #000; font-weight: 525; margin-bottom: 0;">${formatDate(datos.embargo.fecha_vinculo)}</p>
+                        </div>
+                    </div>
                     </div>
                 </div>
                 
@@ -509,14 +517,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+let id_embargos_actual;
 
 async function editarCliente(id_embargos) {
+    id_embargos_actual = id_embargos;
     try {
         const response = await fetch(`http://localhost:3000/api/embargos/${id_embargos}`);
         if (!response.ok) throw new Error('No se pudo obtener la información del embargo');
 
         const data = await response.json();
-        console.log('Datos del embargo:', data);
 
 
         // Llenar datos del cliente (perfil superior)
@@ -589,13 +598,19 @@ async function editarCliente(id_embargos) {
 }
 
 async function seleccionarEstadoFinal(estado, id_embargos) {
+    if (!id_embargos) {
+        console.error('ID de embargos no definido');
+        return;
+    }
+
+    const estadoNumerico = estado === 'rechazado' ? 1 : 0;
     document.getElementById('estado_embargo').value = estado;
 
+    const asesorEmbargo = sessionStorage.getItem('nombreUsuario') || 'SIN NOMBRE';
 
 
-    // Recoger los valores
     const datos = {
-        estado_embargo: estado,
+        estado_embargo: estadoNumerico,
         valor_embargo: document.getElementById('valor_embargo').value,
         pagaduria_embargo: document.getElementById('inputPagaduria').value,
         porcentaje_embargo: document.getElementById('porcentaje').value,
@@ -609,11 +624,10 @@ async function seleccionarEstadoFinal(estado, id_embargos) {
         subsanaciones: document.getElementById('subsanaciones_si').checked ? 'si' : 'no',
         fecha_notificacion: document.querySelector('input[name="fecha_alarma"]').value,
         observaciones_alarma: document.querySelector('textarea[name="observaciones_alarma"]').value,
+        asesor_embargo: asesorEmbargo
     };
-
+    console.log('Datos enviados:', datos);
     try {
-        console.log('Datos enviados:', datos);
-        console.log('ID Embargo:', id_embargos);
         const response = await fetch(`http://localhost:3000/api/embargo/${id_embargos}`, {
             method: 'PUT',
             headers: {
@@ -621,12 +635,23 @@ async function seleccionarEstadoFinal(estado, id_embargos) {
             },
             body: JSON.stringify(datos)
         });
-        console.log('Respuesta del servidor:', resultado);
 
-        const resultado = await response.json();
         if (response.ok) {
-            Swal.fire('Éxito', 'Embargo actualizado correctamente.', 'success');
-            // Opcional: cerrar modal, recargar datos, etc.
+            Swal.fire({
+                title: 'Éxito',
+                text: 'Embargo actualizado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarEmbargo'));
+                    if (modal) {
+                        modal.hide();
+                    }
+
+                    location.reload();
+                }
+            });
         } else {
             console.error(resultado);
             Swal.fire('Error', 'No se pudo actualizar el embargo.', 'error');

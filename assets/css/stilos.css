@@ -215,14 +215,45 @@ input[type="radio"]:disabled {
 }
 
 .bg-estado-aceptado {
-  background-color: #4CAF50; /* Verde suave */
+  background-color: #4CAF50; 
   color: white;
 }
 
 .bg-estado-rechazado {
-  background-color: #F44336; /* Rojo suave */
+  background-color: #F44336; 
   color: white;
 }
 
+.notificaciones-wrapper {
+    position: relative;
+    height: 600px !important; /* Altura fija */
+    overflow: hidden;
+}
 
+.notificaciones-scrollable {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+}
 
+/* Estilo para la barra de scroll */
+.notificaciones-scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notificaciones-scrollable::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 3px;
+}
+
+.ios-toast {
+    margin-bottom: 12px;
+    background: white;
+    border-left: 4px solid #007bff;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

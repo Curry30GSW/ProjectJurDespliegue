@@ -43,3 +43,26 @@
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
         }
+
+/* Estilos para los botones Anterior/Siguiente */
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next {
+    padding: 0.3em 1em !important;
+    border-radius: 4px !important;
+    margin: 0 4px !important;
+}
+
+/* Eliminar el ícono por defecto de los botones anterior/siguiente */
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:before,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:before {
+    content: "" !important;
+}
+
+/* Estilo para botones deshabilitados */
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+    color: #6c757d !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+}
+
