@@ -357,7 +357,7 @@ function validarCamposObligatorios(form) {
 // Función optimizada para subir archivos
 async function verificarCedula(cedula) {
   try {
-    const response = await fetch(`https://cdb43d23d78a.ngrok-free.app/api/clientes/${cedula}`);
+    const response = await fetch(`https://4e85bfc27ed8.ngrok-free.app/api/clientes/${cedula}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -390,7 +390,7 @@ async function subirArchivo(file, tipo, cedula) {
 
 
   try {
-    const response = await fetch('https://cdb43d23d78a.ngrok-free.app/api/upload', {  // Cambiado a ruta relativa
+    const response = await fetch('https://4e85bfc27ed8.ngrok-free.app/api/upload', {  // Cambiado a ruta relativa
       method: 'POST',
       body: formData
     });
@@ -410,7 +410,7 @@ async function subirArchivo(file, tipo, cedula) {
 // Función para enviar los datos del cliente
 async function enviarDatosCliente(formValues) {
   try {
-    const response = await fetch('https://cdb43d23d78a.ngrok-free.app/api/insert-clientes', {
+    const response = await fetch('https://4e85bfc27ed8.ngrok-free.app/api/insert-clientes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
