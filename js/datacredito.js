@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function obtenerClientes() {
     try {
         const token = sessionStorage.getItem('token');
-        const url = 'https://fast-papers-film.loca.lt/api/clientes-datacredito';
+        const url = 'https://pink-games-doubt.loca.lt/api/clientes-datacredito';
 
         const response = await fetch(url, {
             method: 'GET',
@@ -89,10 +89,10 @@ const mostrar = (clientes) => {
             <td>
                 <div class="d-flex align-items-center px-2 py-1">
                     <div>
-                        <img src="https://fast-papers-film.loca.lt${cliente.foto_perfil}" 
+                        <img src="https://pink-games-doubt.loca.lt${cliente.foto_perfil}" 
                             class="avatar avatar-lg me-3 foto-cliente" 
                             alt="${cliente.nombres}"
-                            data-src="https://fast-papers-film.loca.lt${cliente.foto_perfil}">
+                            data-src="https://pink-games-doubt.loca.lt${cliente.foto_perfil}">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                         <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
@@ -152,7 +152,7 @@ document.querySelector('#tablaClientes tbody').addEventListener('click', functio
         const fila = boton.closest('tr');
         const foto = fila.querySelector('.foto-cliente')?.getAttribute('data-src');
 
-        fetch(`https://fast-papers-film.loca.lt/api/clientes/${cedula}`)
+        fetch(`https://pink-games-doubt.loca.lt/api/clientes/${cedula}`)
             .then(response => response.json())
             .then(cliente => {
                 // Llenar datos en el modal
@@ -175,7 +175,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     // Foto de perfil
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
-        ? `https://fast-papers-film.loca.lt${cliente.foto_perfil}`
+        ? `https://pink-games-doubt.loca.lt${cliente.foto_perfil}`
         : (fotoUrl || 'assets/img/avatar.png');
 
 
@@ -372,7 +372,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
 function actualizarBotonPDF(elementId, url, textoBoton) {
     const elemento = document.getElementById(elementId);
     if (url) {
-        const fullUrl = url.startsWith('http') ? url : `https://fast-papers-film.loca.lt${url}`;
+        const fullUrl = url.startsWith('http') ? url : `https://pink-games-doubt.loca.lt${url}`;
         elemento.innerHTML = `
             <a href="${fullUrl}" target="_blank" class="btn btn-danger btn-lg">
                 <i class="fas fa-file-pdf me-1"></i> ${textoBoton}
@@ -441,7 +441,7 @@ document.getElementById('btnConfirmarDatacredito').addEventListener('click', asy
     formData.append('usuario', usuario);
 
     try {
-        const response = await fetch('https://fast-papers-film.loca.lt/api/subir-documento', {
+        const response = await fetch('https://pink-games-doubt.loca.lt/api/subir-documento', {
             method: 'POST',
             body: formData
         });
@@ -492,7 +492,7 @@ document.getElementById('btnConfirmarMoverArea').addEventListener('click', async
     }
 
     try {
-        const res = await fetch('https://fast-papers-film.loca.lt/api/mover-area', {
+        const res = await fetch('https://pink-games-doubt.loca.lt/api/mover-area', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -532,7 +532,7 @@ document.getElementById('btnConfirmarMoverArea').addEventListener('click', async
 
 async function cargarNotificaciones() {
     try {
-        const res = await fetch('https://fast-papers-film.loca.lt/api/notificaciones');
+        const res = await fetch('https://pink-games-doubt.loca.lt/api/notificaciones');
         const datos = await res.json();
         const contenedor = document.getElementById('notificaciones-contenedor');
         contenedor.innerHTML = ''; // limpiar
