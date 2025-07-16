@@ -262,11 +262,11 @@ function mostrarDetallesEmbargo(datos) {
                             <h4 class="mb-0" style="font-weight: 600; color: #212529;">Información del Cliente</h4>
                         </div>
                         <div class="text-center mb-3">
-                            <img src="${datos.embargo.foto_perfil ? `https://cdb43d23d78a.ngrok-free.app${datos.embargo.foto_perfil}` : '../assets/img/avatar.png'}" 
+                            <img src="${datos.embargo.foto_perfil ? `https://cdb43d23d78a.ngrok-free.app${datos.embargo.foto_perfil}` : 'assets/img/avatar.png'}" 
                                 class="rounded-circle me-3" 
                                 alt="${datos.embargo.nombres}" 
                                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;"
-                                data-src="${datos.embargo.foto_perfil ? `https://cdb43d23d78a.ngrok-free.app${datos.embargo.foto_perfil}` : '../assets/img/avatar.png'}">
+                                data-src="${datos.embargo.foto_perfil ? `https://cdb43d23d78a.ngrok-free.app${datos.embargo.foto_perfil}` : 'assets/img/avatar.png'}">
                         </div>
                        <div class="row text-center">
                         <div class="col-12 mb-2">
@@ -531,7 +531,7 @@ async function editarCliente(id_embargos) {
         // Llenar datos del cliente (perfil superior)
         document.getElementById('detalleFotoPerfil').src = data.embargo.foto_perfil
             ? `https://cdb43d23d78a.ngrok-free.app${data.embargo.foto_perfil}`
-            : '../assets/img/avatar.png';
+            : 'assets/img/avatar.png';
 
 
         const nombres = data.embargo.nombres || '';

@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cliente.foto) {
             $('#fotoperfilModal').attr('src', `https://cdb43d23d78a.ngrok-free.app${cliente.foto}`);
         } else {
-            $('#fotoperfilModal').attr('src', '../assets/img/avatar.png');
+            $('#fotoperfilModal').attr('src', 'assets/img/avatar.png');
         }
 
         const modalInsolvencia = new bootstrap.Modal(document.getElementById('modalCrearInsolvencia'));
@@ -833,9 +833,9 @@ function cargarDatosEnFormulario(cliente) {
     // Foto de perfil
     const foto = document.getElementById('fotoperfilModal');
     if (foto) {
-        foto.src = cliente.foto_perfil ? `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}` : '../assets/img/avatar.png';
+        foto.src = cliente.foto_perfil ? `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}` : 'assets/img/avatar.png';
         foto.onerror = function () {
-            this.src = '../assets/img/avatar.png';
+            this.src = 'assets/img/avatar.png';
         };
     }
 
@@ -1139,7 +1139,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
         ? `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}`
-        : (fotoUrl || '../assets/img/avatar.png');
+        : (fotoUrl || 'assets/img/avatar.png');
 
 
     // Datos personales

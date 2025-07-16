@@ -179,7 +179,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
         ? `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}`
-        : (fotoUrl || '../assets/img/avatar.png');
+        : (fotoUrl || 'assets/img/avatar.png');
 
 
     // Datos personales

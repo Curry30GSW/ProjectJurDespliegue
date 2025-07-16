@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 clienteFotoPerfil.src = `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}`;
                 clienteFotoPerfil.alt = nombreCompleto;
             } else {
-                clienteFotoPerfil.src = '../assets/img/avatar.png';
+                clienteFotoPerfil.src = 'assets/img/avatar.png';
             }
 
             clienteSeleccionado = cliente;
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cliente.foto_perfil) {
             fotoPerfil.src = `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}`;
         } else {
-            fotoPerfil.src = '../assets/img/avatar.png';
+            fotoPerfil.src = 'assets/img/avatar.png';
         }
 
         const fechaRaw = cliente.fecha_vinculo;
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
         resultadoDiv.classList.add('d-none');
         sinResultadosDiv.classList.add('d-none');
         clienteSeleccionado = null;
-        clienteFotoPerfil.src = '../assets/img/avatar.png';
+        clienteFotoPerfil.src = 'assets/img/avatar.png';
         inputCedula.focus();
     });
 });
