@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function obtenerClientes() {
         try {
             const token = sessionStorage.getItem('token');
-            const url = 'https://0086b16377e5.ngrok-free.app/api/clientes';
+            const url = 'https://silent-mirrors-show.loca.lt/api/clientes';
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -96,10 +96,10 @@ const mostrar = (clientes) => {
             <td>
             <div class="d-flex align-items-center px-2 py-1">
                 <div>
-                    <img src="https://0086b16377e5.ngrok-free.app${cliente.foto_perfil}" 
+                    <img src="https://silent-mirrors-show.loca.lt${cliente.foto_perfil}" 
                         class="avatar avatar-lg me-3 foto-cliente" 
                         alt="${cliente.nombres}"
-                        data-src="https://0086b16377e5.ngrok-free.app${cliente.foto_perfil}">
+                        data-src="https://silent-mirrors-show.loca.lt${cliente.foto_perfil}">
                 </div>
                 <div class="d-flex flex-column justify-content-center">
                     <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
@@ -156,7 +156,7 @@ document.querySelector('#tablaClientes tbody').addEventListener('click', functio
         const fila = boton.closest('tr');
         const foto = fila.querySelector('.foto-cliente')?.getAttribute('data-src');
 
-        fetch(`https://0086b16377e5.ngrok-free.app/api/clientes/${cedula}`)
+        fetch(`https://silent-mirrors-show.loca.lt/api/clientes/${cedula}`)
             .then(response => response.json())
             .then(cliente => {
                 // Llenar datos en el modal
@@ -179,7 +179,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     // Foto de perfil
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
-        ? `https://0086b16377e5.ngrok-free.app${cliente.foto_perfil}`
+        ? `https://silent-mirrors-show.loca.lt${cliente.foto_perfil}`
         : (fotoUrl || 'assets/img/avatar.png');
 
 
@@ -376,7 +376,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
 function actualizarBotonPDF(elementId, url, textoBoton) {
     const elemento = document.getElementById(elementId);
     if (url) {
-        const fullUrl = url.startsWith('http') ? url : `https://0086b16377e5.ngrok-free.app${url}`;
+        const fullUrl = url.startsWith('http') ? url : `https://silent-mirrors-show.loca.lt${url}`;
         elemento.innerHTML = `
             <a href="${fullUrl}" target="_blank" class="btn btn-danger btn-lg">
                 <i class="fas fa-file-pdf me-1"></i> ${textoBoton}
@@ -401,7 +401,7 @@ $(document).on('click', '.editar-cliente', function () {
 
 
     // Obtener datos del cliente desde la API
-    $.get(`https://0086b16377e5.ngrok-free.app/api/clientes/${cedula}`, function (cliente) {
+    $.get(`https://silent-mirrors-show.loca.lt/api/clientes/${cedula}`, function (cliente) {
         console.log('Datos completos del cliente recibidos:', cliente);
         const salarioFormateado = new Intl.NumberFormat('es-CO', {
             style: 'currency',
@@ -503,7 +503,7 @@ $(document).on('click', '.editar-cliente', function () {
 
         // Mostrar la foto de perfil si existe
         if (cliente.foto_perfil) {
-            $('#editarFotoPerfil').attr('src', `https://0086b16377e5.ngrok-free.app${cliente.foto_perfil}`);
+            $('#editarFotoPerfil').attr('src', `https://silent-mirrors-show.loca.lt${cliente.foto_perfil}`);
         }
 
         // Mostrar botón para ver Desprendible si existe
@@ -512,7 +512,7 @@ $(document).on('click', '.editar-cliente', function () {
                 .removeClass('d-none')
                 .off('click')
                 .on('click', function () {
-                    window.open(`https://0086b16377e5.ngrok-free.app${cliente.desprendible}`, '_blank');
+                    window.open(`https://silent-mirrors-show.loca.lt${cliente.desprendible}`, '_blank');
                 });
         } else {
             $('#verDesprendible').addClass('d-none');
@@ -525,7 +525,7 @@ $(document).on('click', '.editar-cliente', function () {
                 .off('click')
                 .on('click', function () {
                     // Si hay varios archivos, puedes abrir todos o uno solo, aquí se abre el primero como ejemplo:
-                    window.open(`https://0086b16377e5.ngrok-free.app${cliente.bienes_inmuebles}`, '_blank');
+                    window.open(`https://silent-mirrors-show.loca.lt${cliente.bienes_inmuebles}`, '_blank');
                 });
         } else {
             $('#verBienesInmuebles').addClass('d-none');
@@ -536,7 +536,7 @@ $(document).on('click', '.editar-cliente', function () {
                 .removeClass('d-none')
                 .off('click')
                 .on('click', function () {
-                    window.open(`https://0086b16377e5.ngrok-free.app${cliente.cedula_pdf}`, '_blank');
+                    window.open(`https://silent-mirrors-show.loca.lt${cliente.cedula_pdf}`, '_blank');
                 });
         } else {
             $('#verCedulaPDF').addClass('d-none');
@@ -672,7 +672,7 @@ $('#formEditarCliente').submit(function (e) {
 
 
     $.ajax({
-        url: `https://0086b16377e5.ngrok-free.app/api/clientes/${cedula}`,
+        url: `https://silent-mirrors-show.loca.lt/api/clientes/${cedula}`,
         type: 'PUT',
         data: formData,
         contentType: false,

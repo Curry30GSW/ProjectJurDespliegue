@@ -64,7 +64,7 @@ function eliminarNotificacion(htmlId, idEmbargo) {
             controller.abort();
         }, 15000);
 
-        fetch(`https://0086b16377e5.ngrok-free.app/api/embargos/${idEmbargo}/notificar`, {
+        fetch(`https://silent-mirrors-show.loca.lt/api/embargos/${idEmbargo}/notificar`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -134,8 +134,8 @@ function mostrarTodasLasAlertas() {
     contenedor.classList.remove('scroll-active');
 
     Promise.all([
-        fetch("https://0086b16377e5.ngrok-free.app/api/clientes-embargos").then(res => res.json()),
-        fetch("https://0086b16377e5.ngrok-free.app/api/notificaciones-embargo").then(res => res.json())
+        fetch("https://silent-mirrors-show.loca.lt/api/clientes-embargos").then(res => res.json()),
+        fetch("https://silent-mirrors-show.loca.lt/api/notificaciones-embargo").then(res => res.json())
     ])
         .then(([clientesData, notificacionesData]) => {
             const hoy = new Date();

@@ -12,7 +12,7 @@ document.getElementById('btnLogin').addEventListener('click', async function () 
     }
 
     try {
-        const response = await fetch('https://0086b16377e5.ngrok-free.app/auth/login', {
+        const response = await fetch('https://silent-mirrors-show.loca.lt/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user, password }),
