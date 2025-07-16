@@ -64,7 +64,7 @@ function eliminarNotificacion(htmlId, idEmbargo) {
             controller.abort();
         }, 15000);
 
-        fetch(`https://little-doodles-jump.loca.lt/api/embargos/${idEmbargo}/notificar`, {
+        fetch(`https://little-queens-cry.loca.lt/api/embargos/${idEmbargo}/notificar`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -134,8 +134,8 @@ function mostrarTodasLasAlertas() {
     contenedor.classList.remove('scroll-active');
 
     Promise.all([
-        fetch("https://little-doodles-jump.loca.lt/api/clientes-embargos").then(res => res.json()),
-        fetch("https://little-doodles-jump.loca.lt/api/notificaciones-embargo").then(res => res.json())
+        fetch("https://little-queens-cry.loca.lt/api/clientes-embargos").then(res => res.json()),
+        fetch("https://little-queens-cry.loca.lt/api/notificaciones-embargo").then(res => res.json())
     ])
         .then(([clientesData, notificacionesData]) => {
             const hoy = new Date();
