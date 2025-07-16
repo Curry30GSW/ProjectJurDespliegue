@@ -12,7 +12,7 @@ document.getElementById('btnLogin').addEventListener('click', async function () 
     }
 
     try {
-        const response = await fetch('https://pink-games-doubt.loca.lt/auth/login', {
+        const response = await fetch('https://green-crews-hope.loca.lt/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user, password }),

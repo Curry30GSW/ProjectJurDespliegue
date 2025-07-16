@@ -87,7 +87,7 @@ function inicializarTabla() {
 async function obtenerClientes() {
     try {
         const token = sessionStorage.getItem('token');
-        const url = 'https://pink-games-doubt.loca.lt/api/clientes-embargos';
+        const url = 'https://green-crews-hope.loca.lt/api/clientes-embargos';
 
         const response = await fetch(url, {
             method: 'GET',
@@ -144,7 +144,7 @@ function mostrarClientesEnTabla(clientes) {
         }
 
         let fotoPerfil = cliente.foto_perfil ?
-            `https://pink-games-doubt.loca.lt${cliente.foto_perfil}` :
+            `https://green-crews-hope.loca.lt${cliente.foto_perfil}` :
             'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
 
         // Botón de ver (siempre visible)
@@ -198,7 +198,7 @@ $(document).on('click', '.foto-cliente', function () {
 
 
 function verCliente(id_embargos) {
-    fetch(`https://pink-games-doubt.loca.lt/api/embargos/${id_embargos}`)
+    fetch(`https://green-crews-hope.loca.lt/api/embargos/${id_embargos}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -262,11 +262,11 @@ function mostrarDetallesEmbargo(datos) {
                             <h4 class="mb-0" style="font-weight: 600; color: #212529;">Información del Cliente</h4>
                         </div>
                         <div class="text-center mb-3">
-                            <img src="${datos.embargo.foto_perfil ? `https://pink-games-doubt.loca.lt${datos.embargo.foto_perfil}` : 'assets/img/avatar.png'}" 
+                            <img src="${datos.embargo.foto_perfil ? `https://green-crews-hope.loca.lt${datos.embargo.foto_perfil}` : 'assets/img/avatar.png'}" 
                                 class="rounded-circle me-3" 
                                 alt="${datos.embargo.nombres}" 
                                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;"
-                                data-src="${datos.embargo.foto_perfil ? `https://pink-games-doubt.loca.lt${datos.embargo.foto_perfil}` : 'assets/img/avatar.png'}">
+                                data-src="${datos.embargo.foto_perfil ? `https://green-crews-hope.loca.lt${datos.embargo.foto_perfil}` : 'assets/img/avatar.png'}">
                         </div>
                        <div class="row text-center">
                         <div class="col-12 mb-2">
@@ -522,7 +522,7 @@ let id_embargos_actual;
 async function editarCliente(id_embargos) {
     id_embargos_actual = id_embargos;
     try {
-        const response = await fetch(`https://pink-games-doubt.loca.lt/api/embargos/${id_embargos}`);
+        const response = await fetch(`https://green-crews-hope.loca.lt/api/embargos/${id_embargos}`);
         if (!response.ok) throw new Error('No se pudo obtener la información del embargo');
 
         const data = await response.json();
@@ -530,7 +530,7 @@ async function editarCliente(id_embargos) {
 
         // Llenar datos del cliente (perfil superior)
         document.getElementById('detalleFotoPerfil').src = data.embargo.foto_perfil
-            ? `https://pink-games-doubt.loca.lt${data.embargo.foto_perfil}`
+            ? `https://green-crews-hope.loca.lt${data.embargo.foto_perfil}`
             : 'assets/img/avatar.png';
 
 
@@ -628,7 +628,7 @@ async function seleccionarEstadoFinal(estado, id_embargos) {
     };
     console.log('Datos enviados:', datos);
     try {
-        const response = await fetch(`https://pink-games-doubt.loca.lt/api/embargo/${id_embargos}`, {
+        const response = await fetch(`https://green-crews-hope.loca.lt/api/embargo/${id_embargos}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

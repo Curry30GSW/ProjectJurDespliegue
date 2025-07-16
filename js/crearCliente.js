@@ -357,7 +357,7 @@ function validarCamposObligatorios(form) {
 // Función optimizada para subir archivos
 async function verificarCedula(cedula) {
   try {
-    const response = await fetch(`https://pink-games-doubt.loca.lt/api/clientes/${cedula}`);
+    const response = await fetch(`https://green-crews-hope.loca.lt/api/clientes/${cedula}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -390,7 +390,7 @@ async function subirArchivo(file, tipo, cedula) {
 
 
   try {
-    const response = await fetch('https://pink-games-doubt.loca.lt/api/upload', {  // Cambiado a ruta relativa
+    const response = await fetch('https://green-crews-hope.loca.lt/api/upload', {  // Cambiado a ruta relativa
       method: 'POST',
       body: formData
     });
@@ -410,7 +410,7 @@ async function subirArchivo(file, tipo, cedula) {
 // Función para enviar los datos del cliente
 async function enviarDatosCliente(formValues) {
   try {
-    const response = await fetch('https://pink-games-doubt.loca.lt/api/insert-clientes', {
+    const response = await fetch('https://green-crews-hope.loca.lt/api/insert-clientes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
