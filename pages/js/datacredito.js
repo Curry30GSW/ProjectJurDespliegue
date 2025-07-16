@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function obtenerClientes() {
     try {
         const token = sessionStorage.getItem('token');
-        const url = 'https://4e85bfc27ed8.ngrok-free.app/api/clientes-datacredito';
+        const url = 'https://0086b16377e5.ngrok-free.app/api/clientes-datacredito';
 
         const response = await fetch(url, {
             method: 'GET',
@@ -89,10 +89,10 @@ const mostrar = (clientes) => {
             <td>
                 <div class="d-flex align-items-center px-2 py-1">
                     <div>
-                        <img src="https://4e85bfc27ed8.ngrok-free.app${cliente.foto_perfil}" 
+                        <img src="https://0086b16377e5.ngrok-free.app${cliente.foto_perfil}" 
                             class="avatar avatar-lg me-3 foto-cliente" 
                             alt="${cliente.nombres}"
-                            data-src="https://4e85bfc27ed8.ngrok-free.app${cliente.foto_perfil}">
+                            data-src="https://0086b16377e5.ngrok-free.app${cliente.foto_perfil}">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                         <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
@@ -152,7 +152,7 @@ document.querySelector('#tablaClientes tbody').addEventListener('click', functio
         const fila = boton.closest('tr');
         const foto = fila.querySelector('.foto-cliente')?.getAttribute('data-src');
 
-        fetch(`https://4e85bfc27ed8.ngrok-free.app/api/clientes/${cedula}`)
+        fetch(`https://0086b16377e5.ngrok-free.app/api/clientes/${cedula}`)
             .then(response => response.json())
             .then(cliente => {
                 // Llenar datos en el modal
@@ -175,7 +175,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     // Foto de perfil
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
-        ? `https://4e85bfc27ed8.ngrok-free.app${cliente.foto_perfil}`
+        ? `https://0086b16377e5.ngrok-free.app${cliente.foto_perfil}`
         : (fotoUrl || 'assets/img/avatar.png');
 
 
@@ -372,7 +372,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
 function actualizarBotonPDF(elementId, url, textoBoton) {
     const elemento = document.getElementById(elementId);
     if (url) {
-        const fullUrl = url.startsWith('http') ? url : `https://4e85bfc27ed8.ngrok-free.app${url}`;
+        const fullUrl = url.startsWith('http') ? url : `https://0086b16377e5.ngrok-free.app${url}`;
         elemento.innerHTML = `
             <a href="${fullUrl}" target="_blank" class="btn btn-danger btn-lg">
                 <i class="fas fa-file-pdf me-1"></i> ${textoBoton}
@@ -441,7 +441,7 @@ document.getElementById('btnConfirmarDatacredito').addEventListener('click', asy
     formData.append('usuario', usuario);
 
     try {
-        const response = await fetch('https://4e85bfc27ed8.ngrok-free.app/api/subir-documento', {
+        const response = await fetch('https://0086b16377e5.ngrok-free.app/api/subir-documento', {
             method: 'POST',
             body: formData
         });
@@ -492,7 +492,7 @@ document.getElementById('btnConfirmarMoverArea').addEventListener('click', async
     }
 
     try {
-        const res = await fetch('https://4e85bfc27ed8.ngrok-free.app/api/mover-area', {
+        const res = await fetch('https://0086b16377e5.ngrok-free.app/api/mover-area', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -532,7 +532,7 @@ document.getElementById('btnConfirmarMoverArea').addEventListener('click', async
 
 async function cargarNotificaciones() {
     try {
-        const res = await fetch('https://4e85bfc27ed8.ngrok-free.app/api/notificaciones');
+        const res = await fetch('https://0086b16377e5.ngrok-free.app/api/notificaciones');
         const datos = await res.json();
         const contenedor = document.getElementById('notificaciones-contenedor');
         contenedor.innerHTML = ''; // limpiar
