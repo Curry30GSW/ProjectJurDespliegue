@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btnBuscar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando.';
             btnBuscar.disabled = true;
 
-            const response = await fetch(`https://silent-mirrors-show.loca.lt/api/cliente-embargos/${cedula}`);
+            const response = await fetch(`https://little-doodles-jump.loca.lt/api/cliente-embargos/${cedula}`);
 
             if (!response.ok) {
                 throw new Error('Cliente no encontrado');
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Mostrar foto de perfil
             if (cliente.foto_perfil) {
-                clienteFotoPerfil.src = `https://silent-mirrors-show.loca.lt${cliente.foto_perfil}`;
+                clienteFotoPerfil.src = `https://little-doodles-jump.loca.lt${cliente.foto_perfil}`;
                 clienteFotoPerfil.alt = nombreCompleto;
             } else {
                 clienteFotoPerfil.src = 'assets/img/avatar.png';
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Corregir la ruta de la foto (consistencia en mayúsculas)
         if (cliente.foto_perfil) {
-            fotoPerfil.src = `https://silent-mirrors-show.loca.lt${cliente.foto_perfil}`;
+            fotoPerfil.src = `https://little-doodles-jump.loca.lt${cliente.foto_perfil}`;
         } else {
             fotoPerfil.src = 'assets/img/avatar.png';
         }
@@ -303,7 +303,7 @@ async function seleccionarEstadoFinal(estado) {
     plainData.fecha_revision_exp = document.getElementById('fecha_revision_exp').value.trim();
 
     try {
-        const response = await fetch('https://silent-mirrors-show.loca.lt/api/crear-embargos', {
+        const response = await fetch('https://little-doodles-jump.loca.lt/api/crear-embargos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(plainData)
@@ -344,7 +344,7 @@ async function seleccionarEstadoFinal(estado) {
             try {
                 console.log('Notificación a enviar:', notificacion);
 
-                const notifRes = await fetch('https://silent-mirrors-show.loca.lt/api/notificaciones-embargos', {
+                const notifRes = await fetch('https://little-doodles-jump.loca.lt/api/notificaciones-embargos', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(notificacion)

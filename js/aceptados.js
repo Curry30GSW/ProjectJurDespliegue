@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function obtenerClientes() {
     try {
         const token = sessionStorage.getItem('token');
-        const url = 'https://silent-mirrors-show.loca.lt/api/embargo/aceptados';
+        const url = 'https://little-doodles-jump.loca.lt/api/embargo/aceptados';
 
         const response = await fetch(url, {
             method: 'GET',
@@ -108,7 +108,7 @@ const mostrar = (clientes) => {
         let botonPDF = '';
         if (cliente.ruta_desprendible && cliente.ruta_desprendible !== '') {
             botonPDF = `
-            <a class="btn btn-md btn-info visualizar-pdf" href="https://silent-mirrors-show.loca.lt/uploads/${cliente.ruta_desprendible}" target="_blank">
+            <a class="btn btn-md btn-info visualizar-pdf" href="https://little-doodles-jump.loca.lt/uploads/${cliente.ruta_desprendible}" target="_blank">
                 <i class="fas fa-eye"></i> Ver
             </a>
         `;
@@ -127,10 +127,10 @@ const mostrar = (clientes) => {
             <td class="align-middle">
                 <div class="d-flex align-items-center px-2 py-1">
                     <div>
-                        <img src="https://silent-mirrors-show.loca.lt${cliente.foto_perfil}" 
+                        <img src="https://little-doodles-jump.loca.lt${cliente.foto_perfil}" 
                             class="avatar avatar-lg me-3 foto-cliente" 
                             alt="${cliente.nombres}"
-                            data-src="https://silent-mirrors-show.loca.lt${cliente.foto_perfil}">
+                            data-src="https://little-doodles-jump.loca.lt${cliente.foto_perfil}">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                         <span class="text-xs font-weight-bold text-dark mb-1">${cliente.nombres} ${cliente.apellidos}</span>
@@ -262,7 +262,7 @@ document.getElementById('btnConfirmarDesprendible').addEventListener('click', as
     formData.append('estado_embargo', estadoEmbargo); // Esto actualiza el estado si lo necesitas
 
     try {
-        const response = await fetch('https://silent-mirrors-show.loca.lt/api/subir-desprendible-embargos', {
+        const response = await fetch('https://little-doodles-jump.loca.lt/api/subir-desprendible-embargos', {
             method: 'POST',
             body: formData
         });
