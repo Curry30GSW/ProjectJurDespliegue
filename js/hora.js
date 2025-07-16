@@ -104,7 +104,7 @@ function confirmLogout() {
                     sessionStorage.clear();
                     localStorage.removeItem('token');
                     setTimeout(() => {
-                        window.location.href = '../pages/login.html';
+                        window.location.href = '..login.html';
                     }, 500);
                 });
         }

@@ -12,19 +12,19 @@ if (!token) {
         allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '../pages/login.html';
+            window.location.href = '..login.html';
         }
     });
 
     setTimeout(() => {
-        window.location.href = '../pages/login.html';
+        window.location.href = '..login.html';
     }, 5000);
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
-        window.location.href = '../pages/login.html';
+        window.location.href = '..login.html';
         return;
     }
     obtenerClientes();

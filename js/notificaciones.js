@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
-        window.location.href = '../pages/login.html';
+        window.location.href = '..login.html';
         return;
     }
     mostrarTodasLasAlertas();
