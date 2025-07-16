@@ -23,7 +23,7 @@ if (!token) {
 async function obtenerClientes() {
     try {
         const token = sessionStorage.getItem('token');
-        const url = 'http://localhost:3000/api/clientes-insolvencias';
+        const url = 'https://cdb43d23d78a.ngrok-free.app/api/clientes-insolvencias';
 
 
         const response = await fetch(url, {
@@ -135,10 +135,10 @@ const mostrar = (clientes) => {
             <td>
                 <div class="d-flex align-items-center px-2 py-1">
                     <div>
-                        <img src="http://localhost:3000${cliente.foto_perfil}" 
+                        <img src="https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}" 
                             class="avatar avatar-lg me-3 foto-cliente" 
                             alt="${cliente.nombres}"
-                            data-src="http://localhost:3000${cliente.foto_perfil}">
+                            data-src="https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                         <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         if (cliente.foto) {
-            $('#fotoperfilModal').attr('src', `http://localhost:3000${cliente.foto}`);
+            $('#fotoperfilModal').attr('src', `https://cdb43d23d78a.ngrok-free.app${cliente.foto}`);
         } else {
             $('#fotoperfilModal').attr('src', '../assets/img/avatar.png');
         }
@@ -744,7 +744,7 @@ document.getElementById('formCrearInsolvencia').addEventListener('submit', funct
             });
 
             // Enviar datos al servidor
-            fetch('http://localhost:3000/api/actualizar-insolvencias', {
+            fetch('https://cdb43d23d78a.ngrok-free.app/api/actualizar-insolvencias', {
                 method: 'PUT',
                 body: formData
             })
@@ -792,7 +792,7 @@ document.addEventListener('click', async function (e) {
         const cedula = e.target.dataset.cedula;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/insolvencia/cedula/${cedula}`);
+            const response = await fetch(`https://cdb43d23d78a.ngrok-free.app/api/insolvencia/cedula/${cedula}`);
             const data = await response.json();
             console.log("Respuesta completa de la API:", data);
             if (data.success && data.data) {
@@ -833,7 +833,7 @@ function cargarDatosEnFormulario(cliente) {
     // Foto de perfil
     const foto = document.getElementById('fotoperfilModal');
     if (foto) {
-        foto.src = cliente.foto_perfil ? `http://localhost:3000${cliente.foto_perfil}` : '../assets/img/avatar.png';
+        foto.src = cliente.foto_perfil ? `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}` : '../assets/img/avatar.png';
         foto.onerror = function () {
             this.src = '../assets/img/avatar.png';
         };
@@ -973,7 +973,7 @@ function cargarDatosEnFormulario(cliente) {
 
         const filePreview = document.getElementById('filePreviewAutoliquidador');
         filePreview.innerHTML = `
-            <a href="http://localhost:3000${cliente.autoliquidador}" target="_blank" class="btn btn-md btn-outline-info mt-2">
+            <a href="https://cdb43d23d78a.ngrok-free.app${cliente.autoliquidador}" target="_blank" class="btn btn-md btn-outline-info mt-2">
                 <i class="fas fa-eye me-1"></i> Ver archivo
             </a>
         `;
@@ -1055,7 +1055,7 @@ function cargarDatosEnFormulario(cliente) {
     if (cliente.ruta_desprendible) {
         const filePreview = document.getElementById('filePreviewDesprendible');
         filePreview.innerHTML = `
-        <a href="http://localhost:3000${cliente.ruta_desprendible}" target="_blank" class="btn btn-outline-info btn-md" title="Ver desprendible">
+        <a href="https://cdb43d23d78a.ngrok-free.app${cliente.ruta_desprendible}" target="_blank" class="btn btn-outline-info btn-md" title="Ver desprendible">
             <i class="fas fa-eye"></i> Ver Desprendible
         </a>
     `;
@@ -1065,7 +1065,7 @@ function cargarDatosEnFormulario(cliente) {
     if (cliente.acta_aceptacion) {
         const filePreview = document.getElementById('filePreviewActa');
         filePreview.innerHTML = `
-        <a href="http://localhost:3000${cliente.acta_aceptacion}" target="_blank" class="btn btn-outline-info btn-md" title="Ver acta de aceptación">
+        <a href="https://cdb43d23d78a.ngrok-free.app${cliente.acta_aceptacion}" target="_blank" class="btn btn-outline-info btn-md" title="Ver acta de aceptación">
             <i class="fas fa-eye"></i> Ver Acta
         </a>
     `;
@@ -1115,7 +1115,7 @@ document.querySelector('#tablaClientes tbody').addEventListener('click', functio
         const fila = boton.closest('tr');
         const foto = fila.querySelector('.foto-cliente')?.getAttribute('data-src');
 
-        fetch(`http://localhost:3000/api/clientes/${cedula}`)
+        fetch(`https://cdb43d23d78a.ngrok-free.app/api/clientes/${cedula}`)
             .then(response => response.json())
             .then(cliente => {
                 // Llenar datos en el modal
@@ -1138,7 +1138,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     // Foto de perfil
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
-        ? `http://localhost:3000${cliente.foto_perfil}`
+        ? `https://cdb43d23d78a.ngrok-free.app${cliente.foto_perfil}`
         : (fotoUrl || '../assets/img/avatar.png');
 
 
@@ -1229,7 +1229,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     const bienesInmueblesDiv = document.getElementById('detalleBienesInmuebles');
     if (cliente.bienes === "1" && cliente.bienes_inmuebles) {
         bienesInmueblesDiv.innerHTML = `
-         <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.bienes_inmuebles}', '_blank')">
+         <button class="btn btn-sm btn-outline-primary" onclick="window.open('https://cdb43d23d78a.ngrok-free.app${cliente.bienes_inmuebles}', '_blank')">
             Ver Documento de Bienes
         </button>`;
     } else if (cliente.bienes === "1") {
@@ -1245,7 +1245,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     const dataCreditoDiv = document.getElementById('detalleDataCredito');
     if (cliente.datacred === "1" && cliente.data_credPdf) {
         dataCreditoDiv.innerHTML = `
-        <button class="btn btn-sm btn-outline-primary" onclick="window.open('http://localhost:3000${cliente.data_credPdf}', '_blank')">
+        <button class="btn btn-sm btn-outline-primary" onclick="window.open('https://cdb43d23d78a.ngrok-free.app${cliente.data_credPdf}', '_blank')">
             Ver Reporte de DataCrédito
         </button>`;
     } else if (cliente.datacred === "1") {
@@ -1349,7 +1349,7 @@ const ModalSeen = document.getElementById('modalVerDetalle');
 function actualizarBotonPDF(elementId, url, textoBoton) {
     const elemento = document.getElementById(elementId);
     if (url) {
-        const fullUrl = url.startsWith('http') ? url : `http://localhost:3000${url}`;
+        const fullUrl = url.startsWith('http') ? url : `https://cdb43d23d78a.ngrok-free.app${url}`;
         elemento.innerHTML = `
             <a href="${fullUrl}" target="_blank" class="btn btn-danger btn-lg">
                 <i class="fas fa-file-pdf me-1"></i> ${textoBoton}

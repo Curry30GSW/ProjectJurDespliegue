@@ -64,7 +64,7 @@ function eliminarNotificacion(htmlId, idEmbargo) {
             controller.abort();
         }, 15000);
 
-        fetch(`http://localhost:3000/api/embargos/${idEmbargo}/notificar`, {
+        fetch(`https://cdb43d23d78a.ngrok-free.app/api/embargos/${idEmbargo}/notificar`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -134,8 +134,8 @@ function mostrarTodasLasAlertas() {
     contenedor.classList.remove('scroll-active');
 
     Promise.all([
-        fetch("http://localhost:3000/api/clientes-embargos").then(res => res.json()),
-        fetch("http://localhost:3000/api/notificaciones-embargo").then(res => res.json())
+        fetch("https://cdb43d23d78a.ngrok-free.app/api/clientes-embargos").then(res => res.json()),
+        fetch("https://cdb43d23d78a.ngrok-free.app/api/notificaciones-embargo").then(res => res.json())
     ])
         .then(([clientesData, notificacionesData]) => {
             const hoy = new Date();
