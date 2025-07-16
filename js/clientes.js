@@ -35,13 +35,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+
                 }
             });
 
             if (!response.ok) throw new Error('Error en la solicitud');
 
-            clientes = await response.json();
+            const text = await response.text();
+            console.log('📦 Respuesta cruda:', text);
 
             if (!Array.isArray(clientes) || clientes.length === 0) {
                 Swal.fire({
