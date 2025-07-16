@@ -11,12 +11,12 @@ if (!token) {
         allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '..login.html';
+            window.location.href = 'login.html';
         }
     });
 
     setTimeout(() => {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
     }, 5000);
 }
 
@@ -59,7 +59,7 @@ async function obtenerClientes() {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
         return;
     }
     obtenerClientes();
@@ -175,7 +175,7 @@ const mostrar = (clientes) => {
 // Esperar a que el DOM cargue completamente
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
         return;
     }
     obtenerClientes();
@@ -736,7 +736,7 @@ document.getElementById('formCrearInsolvencia').addEventListener('submit', funct
         if (result.isConfirmed) {
             // Mostrar carga mientras se envía
             Swal.fire({
-                title: 'Enviando datos...',
+                title: 'Enviando datos.',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();

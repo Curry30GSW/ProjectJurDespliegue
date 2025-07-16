@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Mostrar estado de carga
             resultadoDiv.classList.add('d-none');
             sinResultadosDiv.classList.add('d-none');
-            btnBuscar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+            btnBuscar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando.';
             btnBuscar.disabled = true;
 
             const response = await fetch(`https://0086b16377e5.ngrok-free.app/api/cliente-embargos/${cedula}`);

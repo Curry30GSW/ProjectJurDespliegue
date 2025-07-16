@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
         return;
     }
     mostrarTodasLasAlertas();
@@ -50,7 +50,7 @@ function eliminarNotificacion(htmlId, idEmbargo) {
         if (!result.isConfirmed) return;
 
         Swal.fire({
-            title: 'Procesando...',
+            title: 'Procesando.',
             html: 'Actualizando estado de la notificación',
             allowOutsideClick: false,
             didOpen: () => {
@@ -130,7 +130,7 @@ function posponerNotificacion(htmlId) {
 
 function mostrarTodasLasAlertas() {
     const contenedor = document.getElementById("notificaciones-contenedor");
-    contenedor.innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin"></i> Cargando notificaciones...</div>';
+    contenedor.innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin"></i> Cargando notificaciones.</div>';
     contenedor.classList.remove('scroll-active');
 
     Promise.all([

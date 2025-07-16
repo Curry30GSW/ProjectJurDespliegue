@@ -12,18 +12,18 @@ if (!token) {
         allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '..login.html';
+            window.location.href = 'login.html';
         }
     });
 
     setTimeout(() => {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
     }, 5000);
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
     if (!token) {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
         return;
     }
     async function obtenerClientes() {

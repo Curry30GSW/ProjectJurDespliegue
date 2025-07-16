@@ -1,5 +1,5 @@
 // stylelint-disable property-disallowed-list
-@mixin transition($transition...) {
+@mixin transition($transition.) {
   @if length($transition) == 0 {
     $transition: $transition-base;
   }
@@ -17,7 +17,12 @@
       transition: $transition;
     }
 
-    @if $enable-reduced-motion and nth($transition, 1) != null and nth($transition, 1) != none {
+    @if $enable-reduced-motion and
+      nth($transition, 1) !=
+      null and
+      nth($transition, 1) !=
+      none
+    {
       @media (prefers-reduced-motion: reduce) {
         transition: none;
       }

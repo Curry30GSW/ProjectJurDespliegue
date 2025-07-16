@@ -11,18 +11,18 @@ if (!token) {
         allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '..login.html';
+            window.location.href = 'login.html';
         }
     });
 
     setTimeout(() => {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
     }, 5000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!sessionStorage.getItem('token')) {
-        window.location.href = '..login.html';
+        window.location.href = 'login.html';
         return;
     }
     obtenerClientes();
@@ -59,8 +59,8 @@ function inicializarTabla() {
             "infoPostFix": "",
             "thousands": ",",
             "lengthMenu": "Mostrar _MENU_ registros",
-            "loadingRecords": "Cargando...",
-            "processing": "Procesando...",
+            "loadingRecords": "Cargando.",
+            "processing": "Procesando.",
             "search": "Buscar:",
             "zeroRecords": "No se encontraron registros coincidentes",
             "oPaginate": {

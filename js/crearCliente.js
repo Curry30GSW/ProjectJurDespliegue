@@ -449,7 +449,7 @@ async function handleFormSubmit(e) {
   // Estado de carga
   const originalText = submitBtn.innerHTML;
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando.';
 
   try {
     // 1. Validar campos obligatorios e inválidos
