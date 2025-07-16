@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function obtenerClientes() {
         try {
             const token = sessionStorage.getItem('token');
-            const url = 'https://little-queens-cry.loca.lt/api/clientes';
+            const url = 'https://fast-papers-film.loca.lt/api/clientes';
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -95,10 +95,10 @@ const mostrar = (clientes) => {
             <td>
             <div class="d-flex align-items-center px-2 py-1">
                 <div>
-                    <img src="https://little-queens-cry.loca.lt${cliente.foto_perfil}" 
+                    <img src="https://fast-papers-film.loca.lt${cliente.foto_perfil}" 
                         class="avatar avatar-lg me-3 foto-cliente" 
                         alt="${cliente.nombres}"
-                        data-src="https://little-queens-cry.loca.lt${cliente.foto_perfil}">
+                        data-src="https://fast-papers-film.loca.lt${cliente.foto_perfil}">
                 </div>
                 <div class="d-flex flex-column justify-content-center">
                     <h6 class="mb-0 text-xs">${cliente.nombres} ${cliente.apellidos}</h6>
@@ -155,7 +155,7 @@ document.querySelector('#tablaClientes tbody').addEventListener('click', functio
         const fila = boton.closest('tr');
         const foto = fila.querySelector('.foto-cliente')?.getAttribute('data-src');
 
-        fetch(`https://little-queens-cry.loca.lt/api/clientes/${cedula}`)
+        fetch(`https://fast-papers-film.loca.lt/api/clientes/${cedula}`)
             .then(response => response.json())
             .then(cliente => {
                 // Llenar datos en el modal
@@ -178,7 +178,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
     // Foto de perfil
     const fotoPerfil = document.getElementById('detalleFotoPerfil');
     fotoPerfil.src = cliente.foto_perfil
-        ? `https://little-queens-cry.loca.lt${cliente.foto_perfil}`
+        ? `https://fast-papers-film.loca.lt${cliente.foto_perfil}`
         : (fotoUrl || 'assets/img/avatar.png');
 
 
@@ -375,7 +375,7 @@ function llenarModalDetalle(cliente, fotoUrl) {
 function actualizarBotonPDF(elementId, url, textoBoton) {
     const elemento = document.getElementById(elementId);
     if (url) {
-        const fullUrl = url.startsWith('http') ? url : `https://little-queens-cry.loca.lt${url}`;
+        const fullUrl = url.startsWith('http') ? url : `https://fast-papers-film.loca.lt${url}`;
         elemento.innerHTML = `
             <a href="${fullUrl}" target="_blank" class="btn btn-danger btn-lg">
                 <i class="fas fa-file-pdf me-1"></i> ${textoBoton}
@@ -400,7 +400,7 @@ $(document).on('click', '.editar-cliente', function () {
 
 
     // Obtener datos del cliente desde la API
-    $.get(`https://little-queens-cry.loca.lt/api/clientes/${cedula}`, function (cliente) {
+    $.get(`https://fast-papers-film.loca.lt/api/clientes/${cedula}`, function (cliente) {
         console.log('Datos completos del cliente recibidos:', cliente);
         const salarioFormateado = new Intl.NumberFormat('es-CO', {
             style: 'currency',
@@ -502,7 +502,7 @@ $(document).on('click', '.editar-cliente', function () {
 
         // Mostrar la foto de perfil si existe
         if (cliente.foto_perfil) {
-            $('#editarFotoPerfil').attr('src', `https://little-queens-cry.loca.lt${cliente.foto_perfil}`);
+            $('#editarFotoPerfil').attr('src', `https://fast-papers-film.loca.lt${cliente.foto_perfil}`);
         }
 
         // Mostrar botón para ver Desprendible si existe
@@ -511,7 +511,7 @@ $(document).on('click', '.editar-cliente', function () {
                 .removeClass('d-none')
                 .off('click')
                 .on('click', function () {
-                    window.open(`https://little-queens-cry.loca.lt${cliente.desprendible}`, '_blank');
+                    window.open(`https://fast-papers-film.loca.lt${cliente.desprendible}`, '_blank');
                 });
         } else {
             $('#verDesprendible').addClass('d-none');
@@ -524,7 +524,7 @@ $(document).on('click', '.editar-cliente', function () {
                 .off('click')
                 .on('click', function () {
                     // Si hay varios archivos, puedes abrir todos o uno solo, aquí se abre el primero como ejemplo:
-                    window.open(`https://little-queens-cry.loca.lt${cliente.bienes_inmuebles}`, '_blank');
+                    window.open(`https://fast-papers-film.loca.lt${cliente.bienes_inmuebles}`, '_blank');
                 });
         } else {
             $('#verBienesInmuebles').addClass('d-none');
@@ -535,7 +535,7 @@ $(document).on('click', '.editar-cliente', function () {
                 .removeClass('d-none')
                 .off('click')
                 .on('click', function () {
-                    window.open(`https://little-queens-cry.loca.lt${cliente.cedula_pdf}`, '_blank');
+                    window.open(`https://fast-papers-film.loca.lt${cliente.cedula_pdf}`, '_blank');
                 });
         } else {
             $('#verCedulaPDF').addClass('d-none');
@@ -671,7 +671,7 @@ $('#formEditarCliente').submit(function (e) {
 
 
     $.ajax({
-        url: `https://little-queens-cry.loca.lt/api/clientes/${cedula}`,
+        url: `https://fast-papers-film.loca.lt/api/clientes/${cedula}`,
         type: 'PUT',
         data: formData,
         contentType: false,
